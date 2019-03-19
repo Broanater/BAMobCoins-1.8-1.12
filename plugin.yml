@@ -1,0 +1,10 @@
+name: BAMobCoins
+version: 2.10
+description: This plugin is used to add a virtual currency to Minecraft in the form of MobCoins which are obtained by killing mobs. A shop to spend the MobCoins is also included in this plugin.
+main: ca.live.brodya.mobcoins.Main
+author: Brody A.
+commands:
+  mobcoins:
+    aliases: [mc]
+    
+softdepend: [PlaceholderAPI]
