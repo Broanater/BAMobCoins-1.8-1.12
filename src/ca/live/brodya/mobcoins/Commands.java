@@ -18,15 +18,20 @@ public class Commands implements CommandExecutor
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
 	{
-		if (cmd.getName().equalsIgnoreCase("mobcoins"))
+		if (cmd.getName().equalsIgnoreCase("BAMobCoins"))
 		{
 			if ((sender instanceof Player))
 			{
 				if (args.length == 0)
 				{
-					Player p = (Player) sender;
-					p.openInventory(Utils.showInventory(p));
-					return true;
+					if (sender.hasPermission("BAMobCoins.shop"))
+					{
+						Player p = (Player) sender;
+						p.openInventory(Utils.showInventory(p));
+						return true;
+					}
+
+					Utils.insufficientPermissions(sender, "/BAMobCoins");
 				}
 
 				if (args.length == 1)
@@ -34,49 +39,96 @@ public class Commands implements CommandExecutor
 
 					if ((args[0].equalsIgnoreCase("balance")) || (args[0].equalsIgnoreCase("bal")))
 					{
-						Player p = (Player) sender;
-						p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You have "
-								+ CoinsAPI.getCoins(p.getUniqueId().toString()) + " MobCoins!");
-						return false;
+						if (sender.hasPermission("BAMobCoins.balance"))
+						{
+							Player p = (Player) sender;
+							p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You have " + CoinsAPI.getCoins(p.getUniqueId().toString()) + " MobCoins!");
+
+							return true;
+						}
+
+						Utils.insufficientPermissions(sender, "/BAMobCoins balance");
+						return true;
 					}
 
 					if (args[0].equalsIgnoreCase("reload"))
 					{
-						if (sender.hasPermission("mobcoins.reload") || sender.isOp())
+						if (sender.hasPermission("BAMobCoins.reload"))
 						{
 							this.plugin.reloadConfig();
 							sender.sendMessage(Utils.getprefix() + " " + ChatColor.GREEN + "reloaded!");
 
-							return false;
+							return true;
 						}
 
-						sender.sendMessage(Utils.getprefix() + ChatColor.RED + " Insufficient Permissions!");
+						Utils.insufficientPermissions(sender, "/BAMobCoins reload");
+						return true;
 					}
+
+					if (args[0].equalsIgnoreCase("help"))
+					{
+						if (sender.hasPermission("BAMobCoins.help"))
+						{
+							sender.sendMessage(ChatColor.GRAY + "-------------------[ " + ChatColor.GOLD + "BAMobCoins V1.0 Help " + ChatColor.GRAY + "]-------------------");
+							sender.sendMessage(ChatColor.GOLD + "/BAMobCoins " + ChatColor.DARK_GRAY + ": " + ChatColor.GRAY + "Opens the shop GUI.");
+							sender.sendMessage(ChatColor.GOLD + "/BAMobCoins balance " + ChatColor.DARK_GRAY + ": " + ChatColor.GRAY + "See your balance.");
+							sender.sendMessage(ChatColor.GOLD + "/BAMobCoins balance <players ign> " + ChatColor.DARK_GRAY + ": " + ChatColor.GRAY + "See other players balance.");
+							sender.sendMessage(ChatColor.GOLD + "/BAMobCoins pay <players ign> <amount>" + ChatColor.DARK_GRAY + ": " + ChatColor.GRAY + "Pay another player from your balance.");
+							sender.sendMessage(ChatColor.GOLD + "/BAMobCoins add <players ign> <amount>" + ChatColor.DARK_GRAY + ": " + ChatColor.GRAY + "Adds MobCoins to a players balance.");
+							sender.sendMessage(ChatColor.GOLD + "/BAMobCoins set <players ign> <amount>" + ChatColor.DARK_GRAY + ": " + ChatColor.GRAY + "Set a players balance.");
+							sender.sendMessage(ChatColor.GOLD + "/BAMobCoins remove <players ign> <amount>" + ChatColor.DARK_GRAY + ": " + ChatColor.GRAY + "Removes MobCoins from a players balance.");
+							sender.sendMessage(ChatColor.GOLD + "/BAMobCoins reload " + ChatColor.DARK_GRAY + ": " + ChatColor.GRAY + "Reloads the plugins config files.");
+							sender.sendMessage(ChatColor.GOLD + "/BAMobCoins help " + ChatColor.DARK_GRAY + ": " + ChatColor.GRAY + "Sends the help message listing commands.");
+							sender.sendMessage(ChatColor.GRAY + "-----------------------------------------------------");
+
+							return true;
+						}
+
+						Utils.insufficientPermissions(sender, "/BAMobCoins help");
+						return true;
+					}
+
 				}
 
-				if ((args.length == 2) && ((args[0].equalsIgnoreCase("balance")) || (args[0].equalsIgnoreCase("bal"))))
+				if (args.length == 2)
 				{
-					Player pl = Bukkit.getServer().getPlayer(args[1]);
-					Player p = (Player) sender;
-					p.sendMessage(Utils.getprefix() + ChatColor.GRAY + pl.getName() + " has "
-							+ CoinsAPI.getCoins(pl.getUniqueId().toString()) + " MobCoins!");
-
-					return false;
+					if(args[0].equalsIgnoreCase("balance") || args[0].equalsIgnoreCase("bal"))
+					{
+						if (sender.hasPermission("BaMobCoins.balance.others"))
+						{
+							Player pl = Bukkit.getServer().getPlayer(args[1]);
+							Player p = (Player) sender;
+							
+							int balance = CoinsAPI.getCoins(pl.getUniqueId().toString());
+							if(balance > 1)
+							{
+								p.sendMessage(Utils.getprefix() + ChatColor.GRAY + pl.getDisplayName() + " has " + balance + " " + Utils.getCurrencyNamePlural() + "!");
+							}
+							else
+							{
+								p.sendMessage(Utils.getprefix() + ChatColor.GRAY + pl.getDisplayName() + " has " + balance + " " + Utils.getCurrencyNameSingle() + "!");
+							}
+	
+							return true;
+						}
+	
+						Utils.insufficientPermissions(sender, "/BAMobCoins balance <players ign>");
+						return true;
+					}
 				}
 
 				if (args.length == 3)
 				{
-					if ((args[0].equalsIgnoreCase("give")) || (args[0].equals("add")))
+					if (args[0].equals("add"))
 					{
-						if (sender.hasPermission("mobcoins.give"))
+						if (sender.hasPermission("BAMobCoins.add"))
 						{
 							String player = args[1];
 							Player p = Bukkit.getServer().getPlayer(player);
 							String pl = p.getUniqueId().toString();
 							if (!CoinsAPI.playerExists(pl))
 							{
-								sender.sendMessage(Utils.getprefix() + ChatColor.GRAY
-										+ " That Player Has Never Joined The Server!");
+								sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " That player has never joined the server!");
 								return true;
 							}
 
@@ -84,26 +136,33 @@ public class Commands implements CommandExecutor
 							try
 							{
 								amount = Integer.parseInt(args[2]);
-							} catch (Exception e)
+							}
+							catch (Exception e)
 							{
-								sender.sendMessage(
-										Utils.getprefix() + ChatColor.GRAY + " Please enter a whole Number!");
+								sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " Please enter a whole number!");
 								return true;
 							}
 
 							CoinsAPI.addCoins(pl, amount);
-							sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Gave " + p.getDisplayName()
-									+ " " + amount + " MobCoins!");
-							return true;
+							if (amount > 1)
+							{
+								sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You added " + amount + " " + Utils.getCurrencyNamePlural() + " to " + p.getDisplayName());
+								return true;
+							}
+							else
+							{
+								sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You added " + amount + " " + Utils.getCurrencyNameSingle() + " to " + p.getDisplayName());
+								return true;
+							}
 						}
 
-						sender.sendMessage(Utils.getprefix() + ChatColor.RED + " Insufficient Permissions!");
+						Utils.insufficientPermissions(sender, "/BaMobCoins add <players ign> <amount>");
 						return true;
 					}
 
 					if (args[0].equalsIgnoreCase("remove"))
 					{
-						if (sender.hasPermission("mobcoins.remove"))
+						if (sender.hasPermission("BAMobCoins.remove"))
 						{
 							String player = args[1];
 							Player p = Bukkit.getServer().getPlayer(player);
@@ -111,8 +170,7 @@ public class Commands implements CommandExecutor
 
 							if (!CoinsAPI.playerExists(UUID))
 							{
-								sender.sendMessage(Utils.getprefix() + ChatColor.GRAY
-										+ " That player has never joined the server!");
+								sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " That player has never joined the server!");
 								return true;
 							}
 
@@ -120,52 +178,63 @@ public class Commands implements CommandExecutor
 							try
 							{
 								amount = Integer.parseInt(args[2]);
-							} catch (Exception e)
+							}
+							catch (Exception e)
 							{
-								sender.sendMessage(
-										Utils.getprefix() + ChatColor.GRAY + " Please enter a whole number!");
+								sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " Please enter a whole number!");
 								return true;
 							}
 
 							CoinsAPI.removeCoins(UUID, amount);
-							sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You took " + amount
-									+ " MobCoins from " + player + "!");
-							return true;
+
+							if (amount > 1)
+							{
+								sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You removed " + amount + Utils.getCurrencyNamePlural() + " from " + p.getDisplayName() + "!");
+								return true;
+							}
+							else
+							{
+								sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You removed " + amount + Utils.getCurrencyNameSingle() + " from " + p.getDisplayName() + "!");
+								return true;
+							}
 						}
 
-						sender.sendMessage(Utils.getprefix() + ChatColor.RED + " Insufficient permissions!");
+						Utils.insufficientPermissions(sender, "/BaMobCoins remove <players ign> <amount>");
 						return true;
 					}
 
 					if (args[0].equalsIgnoreCase("set"))
 					{
-						if (sender.hasPermission("mobcoins.set"))
+						if (sender.hasPermission("BAMobCoins.set"))
 						{
 							String player = args[1];
 							Player p = Bukkit.getServer().getPlayer(player);
 							String pl = p.getUniqueId().toString();
+
 							if (!CoinsAPI.playerExists(pl))
 							{
-								sender.sendMessage(Utils.getprefix() + ChatColor.GRAY
-										+ " That Player Has Never Joined The Server!");
+								sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " That player has never joined the server!");
 								return true;
 							}
+
 							int amount = 0;
 							try
 							{
 								amount = Integer.parseInt(args[2]);
-							} catch (Exception e)
+							}
+							catch (Exception e)
 							{
-								sender.sendMessage(
-										Utils.getprefix() + ChatColor.GRAY + " Please Enter A Whole Number!");
+								sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " Please enter a whole number!");
 								return true;
 							}
+
 							CoinsAPI.setCoins(pl, amount);
-							sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You set " + player
-									+ "'s MobCoins to " + amount + "!");
+
+							sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You set " + p.getDisplayName() + "'s " + Utils.getCurrencyNameSingle() + "balance to " + amount + "!");
 							return true;
 						}
-						sender.sendMessage(Utils.getprefix() + ChatColor.RED + " Insufficient Permissions!");
+
+						Utils.insufficientPermissions(sender, "/BaMobCoins set <players ign> <amount>");
 						return true;
 					}
 
@@ -173,177 +242,180 @@ public class Commands implements CommandExecutor
 					{
 						if (!(sender instanceof Player))
 						{
-							sender.sendMessage(
-									Utils.getprefix() + ChatColor.GRAY + " You Must be a player to do that command!");
-						}
-						String player = args[1];
-						Player p = Bukkit.getServer().getPlayer(player);
-						if (p == null)
-						{
-							sender.sendMessage(
-									Utils.getprefix() + ChatColor.GRAY + " That Player Has Never Joined The Server!");
+							sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You must be a player to do that command!");
 							return true;
 						}
-						String pl = p.getUniqueId().toString();
-						String cs = sender.getName();
-						Player pcs = Bukkit.getServer().getPlayer(cs);
-						String plcs = pcs.getUniqueId().toString();
-						if (sender.getName().toLowerCase().equals(player.toLowerCase()))
-						{
-							sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Can't Pay Yourself!");
-							return true;
-						}
-						if (!CoinsAPI.playerExists(pl))
-						{
-							sender.sendMessage(
-									Utils.getprefix() + ChatColor.GRAY + " That Player Has Never Joined The Server!");
-							return true;
-						}
-						int amount = 0;
-						try
-						{
-							amount = Integer.parseInt(args[2]);
-						} catch (Exception e)
-						{
-							sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " Please Enter A Whole Number!");
-							return true;
-						}
-						if (CoinsAPI.getCoins(plcs).intValue() >= amount)
-						{
-							CoinsAPI.addCoins(pl, amount);
-							CoinsAPI.removeCoins(plcs, amount);
-							sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You payed " + player + " "
-									+ amount + " MobCoin(s)!");
-							p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " you were payed " + amount
-									+ " MobCoin(s) by " + cs + "!");
-						} else
-						{
-							sender.sendMessage(
-									Utils.getprefix() + ChatColor.GRAY + " You do not have enough mobcoins!");
-						}
-						return true;
-					}
-				} else
-				{
-					sender.sendMessage(ChatColor.GRAY + "-------------------[ " + ChatColor.GOLD + "MobCoins Help "
-							+ ChatColor.GRAY + "]-------------------");
-					sender.sendMessage(ChatColor.GOLD + "/MobCoins " + ChatColor.DARK_GRAY + ": " + ChatColor.GRAY
-							+ "Opens The GUI");
 
-					sender.sendMessage(ChatColor.GOLD + "/MobCoins balance " + ChatColor.DARK_GRAY + ": "
-							+ ChatColor.GRAY + "Tells You You Balance");
-					sender.sendMessage(ChatColor.GOLD + "/MobCoins balance <Name> " + ChatColor.DARK_GRAY + ": "
-							+ ChatColor.GRAY + "Tells You You Balance of another player");
-					sender.sendMessage(ChatColor.GOLD + "/MobCoins reload " + ChatColor.DARK_GRAY + ": "
-							+ ChatColor.GRAY + "Reloads The Plugin");
-					sender.sendMessage(ChatColor.GOLD + "/MobCoins pay <name> <amount>" + ChatColor.DARK_GRAY + ": "
-							+ ChatColor.GRAY + "Pay a player");
-					sender.sendMessage(ChatColor.GOLD + "/MobCoins add <name> <amount>" + ChatColor.DARK_GRAY + ": "
-							+ ChatColor.GRAY + "Give a player MobCoins");
-					sender.sendMessage(ChatColor.GOLD + "/MobCoins set <name> <amount>" + ChatColor.DARK_GRAY + ": "
-							+ ChatColor.GRAY + "Set a players mobcoins");
-					sender.sendMessage(ChatColor.GOLD + "/MobCoins remove <name> <amount>" + ChatColor.DARK_GRAY + ": "
-							+ ChatColor.GRAY + "Remove a players MobCoins");
-					sender.sendMessage(ChatColor.GOLD + "/MobCoins help " + ChatColor.DARK_GRAY + ": " + ChatColor.GRAY
-							+ "View a helpful list of commands!");
-					sender.sendMessage(ChatColor.GRAY + "-----------------------------------------------------");
-				}
-			} else
-			{
-				if ((args[0].equalsIgnoreCase("give")) || (args[0].equals("add")))
-				{
-					if (sender.hasPermission("mobcoins.give"))
-					{
-						String player = args[1];
-						Player p = Bukkit.getServer().getPlayer(player);
-						String pl = p.getUniqueId().toString();
-						if (!CoinsAPI.playerExists(pl))
+						if (sender.hasPermission("BAMobCoins.pay"))
 						{
-							sender.sendMessage(
-									Utils.getprefix() + ChatColor.GRAY + " That Player Has Never Joined The Server!");
+							String player = args[1];
+							Player p = Bukkit.getServer().getPlayer(player);
+							if (p == null)
+							{
+								sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " That player has never joined the server!");
+								return true;
+							}
+							String pl = p.getUniqueId().toString();
+							String cs = sender.getName();
+							Player pcs = Bukkit.getServer().getPlayer(cs);
+							String plcs = pcs.getUniqueId().toString();
+							if (sender.getName().toLowerCase().equals(player.toLowerCase()))
+							{
+								sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You can't pay yourself!");
+								return true;
+							}
+							if (!CoinsAPI.playerExists(pl))
+							{
+								sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " That player has never joined the server!");
+								return true;
+							}
+							int amount = 0;
+							try
+							{
+								amount = Integer.parseInt(args[2]);
+							}
+							catch (Exception e)
+							{
+								sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " Please enter a whole number!");
+								return true;
+							}
+
+							if (CoinsAPI.getCoins(plcs).intValue() >= amount)
+							{
+								CoinsAPI.addCoins(pl, amount);
+								CoinsAPI.removeCoins(plcs, amount);
+								if (amount > 1)
+								{
+									sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You payed " + player + " " + amount + " " + Utils.getCurrencyNamePlural() + "!");
+									p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " you were payed " + amount + " " + Utils.getCurrencyNamePlural() + " by " + cs + "!");
+								}
+								else
+								{
+									sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You payed " + player + " " + amount + " " + Utils.getCurrencyNameSingle() + "!");
+									p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You were payed " + amount + " " + Utils.getCurrencyNameSingle() + " by " + cs + "!");
+								}
+							}
+							else
+							{
+								sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You do not have enough mobcoins!");
+							}
 							return true;
 						}
-						int amount = 0;
-						try
-						{
-							amount = Integer.parseInt(args[2]);
-						} catch (Exception e)
-						{
-							sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " Please Enter A Whole Number!");
-							return true;
-						}
-						CoinsAPI.addCoins(pl, amount);
-						sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Gave " + player + " " + amount
-								+ " MobCoins!");
+
+						Utils.insufficientPermissions(sender, "/BaMobCoins pay <players ign> <amount>");
 						return true;
 					}
-					sender.sendMessage(Utils.getprefix() + ChatColor.RED + " Insufficient Permissions!");
-					return true;
+					
+					
+					
+				}
+				
+				sender.sendMessage(Utils.getprefix() + ChatColor.RED + " Unknown command! Type /bamobcoins help for a list of commands.");
+				return true;
+				/* End of if testing if a player ran the command */
+			}
+			else /* Commands run from console Eg. Not a player */
+			{
+				if (args[0].equals("add"))
+				{
+					String player = args[1];
+					Player p = Bukkit.getServer().getPlayer(player);
+					String pl = p.getUniqueId().toString();
+					if (!CoinsAPI.playerExists(pl))
+					{
+						sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " That player has never joined the server!");
+						return true;
+					}
+
+					int amount = 0;
+					try
+					{
+						amount = Integer.parseInt(args[2]);
+					}
+					catch (Exception e)
+					{
+						sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " Please enter a whole number!");
+						return true;
+					}
+
+					CoinsAPI.addCoins(pl, amount);
+					if (amount > 1)
+					{
+						sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You added " + amount + " " + Utils.getCurrencyNamePlural() + " to " + p.getDisplayName());
+						return true;
+					}
+					else
+					{
+						sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You added " + amount + " " + Utils.getCurrencyNameSingle() + " to " + p.getDisplayName());
+						return true;
+					}
 				}
 
 				if (args[0].equalsIgnoreCase("remove"))
 				{
-					if (sender.hasPermission("mobcoins.remove"))
+					String player = args[1];
+					Player p = Bukkit.getServer().getPlayer(player);
+					String UUID = p.getUniqueId().toString();
+
+					if (!CoinsAPI.playerExists(UUID))
 					{
-						String player = args[1];
-						Player p = Bukkit.getServer().getPlayer(player);
-						String pl = p.getUniqueId().toString();
-						if (!CoinsAPI.playerExists(pl))
-						{
-							sender.sendMessage(
-									Utils.getprefix() + ChatColor.GRAY + " That Player Has Never Joined The Server!");
-							return true;
-						}
-						int amount = 0;
-						try
-						{
-							amount = Integer.parseInt(args[2]);
-						} catch (Exception e)
-						{
-							sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " Please Enter A Whole Number!");
-							return true;
-						}
-						CoinsAPI.removeCoins(pl, amount);
-						sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Took " + amount
-								+ " MobCoins from " + player + "!");
+						sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " That player has never joined the server!");
 						return true;
 					}
-					sender.sendMessage(Utils.getprefix() + ChatColor.RED + " Insufficient Permissions!");
-					return true;
+
+					int amount = 0;
+					try
+					{
+						amount = Integer.parseInt(args[2]);
+					}
+					catch (Exception e)
+					{
+						sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " Please enter a whole number!");
+						return true;
+					}
+
+					CoinsAPI.removeCoins(UUID, amount);
+
+					if (amount > 1)
+					{
+						sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You removed " + amount + Utils.getCurrencyNamePlural() + " from " + p.getDisplayName() + "!");
+						return true;
+					}
+					else
+					{
+						sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You removed " + amount + Utils.getCurrencyNameSingle() + " from " + p.getDisplayName() + "!");
+						return true;
+					}
 				}
 
 				if (args[0].equalsIgnoreCase("set"))
 				{
-					if (sender.hasPermission("mobcoins.set"))
+					String player = args[1];
+					Player p = Bukkit.getServer().getPlayer(player);
+					String pl = p.getUniqueId().toString();
+
+					if (!CoinsAPI.playerExists(pl))
 					{
-						String player = args[1];
-						Player p = Bukkit.getServer().getPlayer(player);
-						String pl = p.getUniqueId().toString();
-						if (!CoinsAPI.playerExists(pl))
-						{
-							sender.sendMessage(
-									Utils.getprefix() + ChatColor.GRAY + " That Player Has Never Joined The Server!");
-							return true;
-						}
-						int amount = 0;
-						try
-						{
-							amount = Integer.parseInt(args[2]);
-						} catch (Exception e)
-						{
-							sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " Please Enter A Whole Number!");
-							return true;
-						}
-						CoinsAPI.setCoins(pl, amount);
-						sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You set " + player + "'s MobCoins to "
-								+ amount + "!");
+						sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " That player has never joined the server!");
 						return true;
 					}
-					sender.sendMessage(Utils.getprefix() + ChatColor.RED + " Insufficient Permissions!");
+
+					int amount = 0;
+					try
+					{
+						amount = Integer.parseInt(args[2]);
+					}
+					catch (Exception e)
+					{
+						sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " Please enter a whole number!");
+						return true;
+					}
+
+					CoinsAPI.setCoins(pl, amount);
+
+					sender.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You set " + p.getDisplayName() + "'s " + Utils.getCurrencyNameSingle() + "balance to " + amount + "!");
 					return true;
 				}
-
-				sender.sendMessage(Utils.getprefix() + ChatColor.RED + " You Must Be A Player!");
 			}
 		}
 

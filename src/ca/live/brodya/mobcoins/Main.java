@@ -37,10 +37,10 @@ public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 		Bukkit.getServer().getPluginManager().registerEvents(this, this);
 		System.out.print("-------------------------------");
 		System.out.print("");
-		System.out.print("MobCoins Enabled!");
+		System.out.print("    MobCoins Enabled!");
 		System.out.print("");
 		System.out.print("-------------------------------");
-		getCommand("mobcoins").setExecutor(new Commands(this));
+		getCommand("BAMobCoins").setExecutor(new Commands(this));
 		registerEvents();
 		createFile();
 		loadBal();
@@ -97,7 +97,7 @@ public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 
 	public void createFile()
 	{
-		File file = new File("plugins//Mobcoins//Balances.yml");
+		File file = new File("plugins//BAMobCoins//Balances.yml");
 		if (!file.exists())
 		{
 			try
@@ -111,7 +111,7 @@ public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 
 	public void saveBal()
 	{
-		File file = new File("plugins//Mobcoins//Balances.yml");
+		File file = new File("plugins//BAMobCoins//Balances.yml");
 		YamlConfiguration bal = YamlConfiguration.loadConfiguration(file);
 		for (String UUID : this.coins.keySet())
 		{
@@ -128,7 +128,7 @@ public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 
 	public void loadBal()
 	{
-		File file = new File("plugins//Mobcoins//Balances.yml");
+		File file = new File("plugins//BAMobCoins//Balances.yml");
 		YamlConfiguration bal = YamlConfiguration.loadConfiguration(file);
 		for (String UUID : bal.getKeys(false))
 		{

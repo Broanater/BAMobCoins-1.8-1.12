@@ -96,20 +96,28 @@ public class Events implements org.bukkit.event.Listener
 
 						p.closeInventory();
 						CoinsAPI.removeCoins(player, Utils.getPrice(i, p));
-						p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Brought an Item From The Shop!");
+						p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You brought an item from the shop!");
 						java.util.List<String> command = plugin.getConfig().getStringList("Shop." + i + ".Commands");
 						for (String cmd : command)
 						{
-							org.bukkit.Bukkit.getServer().dispatchCommand(
-									org.bukkit.Bukkit.getServer().getConsoleSender(),
-									cmd.replace("%player%", e.getWhoClicked().getName()));
+							if(cmd.startsWith("MESSAGE"))
+							{
+								String message = cmd.replace("MESSAGE", "");
+								Utils.sendMessage(p, message);
+							}
+							else
+							{
+								org.bukkit.Bukkit.getServer().dispatchCommand(org.bukkit.Bukkit.getServer().getConsoleSender(), cmd.replace("%player%", e.getWhoClicked().getName()));
+							}
 						}
-					} else
+					}
+					else
 					{
 						p.closeInventory();
-						p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You don't have enough Mobcoins!");
+						p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You don't have enough " + Utils.getCurrencyNamePlural() + "!");
 					}
-				} else
+				}
+				else
 				{
 					e.setCancelled(true);
 				}
@@ -133,7 +141,10 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
+					{
 						return;
+					}
+
 					String player = p.getUniqueId().toString();
 					if (p.getItemInHand() != null)
 					{
@@ -145,23 +156,22 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Killed A Pig and Gained " + (counter1 + 1) + " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("pig", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
-										
+
 										return;
 									}
 								}
 							}
 						}
 					}
-					
-					
-					p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You killed a pig and gained 1 Mobcoin!");
+
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("pig", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
 		}
-		
+
 		if (e.getEntityType() == EntityType.SHEEP)
 		{
 			Random object = new Random();
@@ -184,8 +194,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Sheep and Gained " + (counter1 + 1) + " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("sheep", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -193,11 +202,13 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Killed A Sheep and Gained 1 Mobcoin!");
+
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("sheep", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
 		}
+
 		if (e.getEntityType() == EntityType.CHICKEN)
 		{
 			Random object = new Random();
@@ -220,8 +231,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Chicken and Gained " + (counter1 + 1) + " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("chicken", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -229,7 +239,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Killed A Chicken and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("chicken", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -256,8 +266,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Bat and Gained " + (counter1 + 1) + " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("bat", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -265,7 +274,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Killed A Bat and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("bat", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -292,8 +301,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Squid and Gained " + (counter1 + 1) + " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("squid", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -301,7 +309,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Killed A Squid and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("squid", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -328,8 +336,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Rabbit and Gained " + (counter1 + 1) + " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("rabbit", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -337,7 +344,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Killed A Rabbit and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("rabbit", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -364,9 +371,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Mushroom Cow and Gained " + (counter1 + 1)
-												+ " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("mushroom cow", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -374,8 +379,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(
-							Utils.getprefix() + ChatColor.GRAY + " You Killed A Mushroom Cow and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("mushroom cow", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -402,8 +406,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Snowman and Gained " + (counter1 + 1) + " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("snowman", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -411,7 +414,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Killed A Snowman and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("snowman", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -438,8 +441,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Ocelot and Gained " + (counter1 + 1) + " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("ocelot", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -447,7 +449,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Killed A Ocelot and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("ocelot", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -474,8 +476,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Horse and Gained " + (counter1 + 1) + " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("horse", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -483,7 +484,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Killed A Horse and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("horse", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -517,8 +518,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Zombie and Gained " + (counter1 + 1) + " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("zombie", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -526,7 +526,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Killed A Zombie and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("zombie", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -553,8 +553,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Skeleton and Gained " + (counter1 + 1) + " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("skeleton", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -562,7 +561,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Killed A Skeleon and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("skeleton", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -589,8 +588,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Spider and Gained " + (counter1 + 1) + " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("spider", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -598,7 +596,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Killed A Spider and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("spider", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -625,8 +623,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Creeper and Gained " + (counter1 + 1) + " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("creeper", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -634,7 +631,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Killed A Creeper and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("creeper", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -661,8 +658,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Enderman and Gained " + (counter1 + 1) + " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("enderman", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -670,7 +666,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Killed A Enderman and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("enderman", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -697,8 +693,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Blaze and Gained " + (counter1 + 1) + " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("blaze", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -706,7 +701,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Killed A Blaze and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("blaze", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -733,8 +728,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Witch and Gained " + (counter1 + 1) + " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("witch", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -742,7 +736,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Killed A Witch and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("witch", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -769,9 +763,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Cave Spider and Gained " + (counter1 + 1)
-												+ " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("cave spider", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -779,8 +771,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(
-							Utils.getprefix() + ChatColor.GRAY + " You Killed A Cave Spider and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("cave spider", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -807,9 +798,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Silverfish and Gained " + (counter1 + 1)
-												+ " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("silverfish", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -817,8 +806,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(
-							Utils.getprefix() + ChatColor.GRAY + " You Killed A Silverfish and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("silverfish", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -845,9 +833,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Magma Cube and Gained " + (counter1 + 1)
-												+ " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("magma cube", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -855,8 +841,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(
-							Utils.getprefix() + ChatColor.GRAY + " You Killed A Magma Cube and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("magma cube", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -883,9 +868,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Endermite and Gained " + (counter1 + 1)
-												+ " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("endermite", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -893,7 +876,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Killed A Endermite and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("endermite", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -920,8 +903,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Guardian and Gained " + (counter1 + 1) + " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("guardian", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -929,7 +911,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Killed A Guardian and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("guardian", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -956,8 +938,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Ghast and Gained " + (counter1 + 1) + " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("ghast", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -965,7 +946,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Killed A Ghast and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("ghast", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -992,8 +973,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Slime and Gained " + (counter1 + 1) + " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("slime", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -1001,7 +981,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Killed A Slime and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("slime", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -1028,8 +1008,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Giant and Gained " + (counter1 + 1) + " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("giant", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -1037,7 +1016,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Killed A Giant and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("giant", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -1064,8 +1043,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Wither and Gained " + (counter1 + 1) + " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("wither", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -1073,7 +1051,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Killed A Wither and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("wither", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -1100,9 +1078,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Ender Dragon and Gained " + (counter1 + 1)
-												+ " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("ender dragon", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -1110,8 +1086,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(
-							Utils.getprefix() + ChatColor.GRAY + " You Killed A Ender Dragon and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("ender dragon", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -1145,8 +1120,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Villager and Gained " + (counter1 + 1) + " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("villager", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -1154,7 +1128,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Killed A Villager and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("villager", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -1181,9 +1155,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Iron Golem and Gained " + (counter1 + 1)
-												+ " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("iron golem", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -1191,8 +1163,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(
-							Utils.getprefix() + ChatColor.GRAY + " You Killed A Iron Golem and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("iron golem", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -1219,8 +1190,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Wolf and Gained " + (counter1 + 1) + " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("wolf", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -1228,7 +1198,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Killed A Wolf and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("wolf", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -1255,8 +1225,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Wolf and Gained " + (counter1 + 1) + " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("pig zombie", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -1264,7 +1233,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Killed A Wolf and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("pig zombie", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}
@@ -1297,8 +1266,7 @@ public class Events implements org.bukkit.event.Listener
 								{
 									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
 									{
-										p.sendMessage(Utils.getprefix() + ChatColor.GRAY
-												+ " You Killed A Player and Gained " + (counter1 + 1) + " Mobcoins!");
+										p.sendMessage(Utils.getCurrencyIncreaseMessage("player", counter1 + 1));
 										CoinsAPI.addCoins(player, counter1 + 1);
 										return;
 									}
@@ -1306,7 +1274,7 @@ public class Events implements org.bukkit.event.Listener
 							}
 						}
 					}
-					p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You Killed A Player and Gained 1 Mobcoin!");
+					p.sendMessage(Utils.getCurrencyIncreaseMessage("player", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
 			}

@@ -1,17 +1,18 @@
 #
-#    MobCoins by Brody
-#    github: https://github.com/Broanater/MobCoins
+#    BAMobCoins
 #
 Options:
   Prefix: '&7[&6BAMobCoins&7]'
   Title: '&7[&6BAMobCoins - Shop&7]'
+  CurrencyNameSingle: '&bMobCoin'
+  CurrencyNamePlural: '&bMobCoins'
 Shop:
   '0':
     Item: CAKE
     Meta: 0
     Amount: 1
     Slot: 14
-    DisplayName: '&b&lKingRank!'
+    DisplayName: '&b&lKing Rank!'
     Price: 100
     Lore: ''
     Commands:
@@ -21,7 +22,7 @@ Shop:
     Meta: 0
     Amount: 1
     Slot: 13
-    DisplayName: '&b&lGuardianRank!'
+    DisplayName: '&b&lGuardian Rank!'
     Price: 100
     Lore: ''
     Commands:
@@ -31,53 +32,12 @@ Shop:
     Meta: 0
     Amount: 1
     Slot: 12
-    DisplayName: '&b&lAvengerRank!'
+    DisplayName: '&b&lAvenger Rank!'
     Price: 100
     Lore: ''
     Commands:
     - pex user %player% group add Avenger
   '3':
-    Item: TRIPWIRE_HOOK
-    Meta: 0
-    Amount: 1
-    Slot: 30
-    DisplayName: '&b&lMythical Crate Key!'
-    Price: 100
-    Lore: ''
-    Commands:
-    - Put crate command here
-  '4':
-    Item: TRIPWIRE_HOOK
-    Meta: 0
-    Amount: 1
-    Slot: 31
-    DisplayName: '&b&lCustom Enchant Crate Key!'
-    Price: 100
-    Lore: ''
-    Commands:
-    - Put crate command here
-  '5':
-    Item: TRIPWIRE_HOOK
-    Meta: 0
-    Amount: 1
-    Slot: 32
-    DisplayName: '&b&lLegendery Crate Key!'
-    Price: 100
-    Lore: ''
-    Commands:
-    - Put crate command here
-  '6':
-    Item: FEATHER
-    Meta: 0
-    Amount: 1
-    Slot: 40
-    DisplayName: '&b&lFly!'
-    Price: 100
-    Lore: ''
-    Commands:
-    - pex user %player% add essentials.fly
-    - pex user %player% add essentials.fly.safelogin
-  '7':
     Item: GOLD_INGOT
     Meta: 0
     Amount: 1
@@ -87,7 +47,7 @@ Shop:
     Lore: ''
     Commands:
     - eco give %player% 20000
-  '8':
+  '4':
     Item: GOLD_INGOT
     Meta: 0
     Amount: 1
@@ -97,7 +57,7 @@ Shop:
     Lore: ''
     Commands:
     - eco give %player% 50000
-  '9':
+  '5':
     Item: GOLD_INGOT
     Meta: 0
     Amount: 1
@@ -107,9 +67,64 @@ Shop:
     Lore: ''
     Commands:
     - eco give %player% 100000
+  '6':
+    Item: TRIPWIRE_HOOK
+    Meta: 0
+    Amount: 1
+    Slot: 30
+    DisplayName: '&b&lMythical Crate Key!'
+    Price: 100
+    Lore: ''
+    Commands:
+    - Put crate command here
+  '7':
+    Item: TRIPWIRE_HOOK
+    Meta: 0
+    Amount: 1
+    Slot: 31
+    DisplayName: '&b&lCustom Enchant Crate Key!'
+    Price: 100
+    Lore: ''
+    Commands:
+    - Put crate command here
+  '8':
+    Item: TRIPWIRE_HOOK
+    Meta: 0
+    Amount: 1
+    Slot: 32
+    DisplayName: '&b&lLegendery Crate Key!'
+    Price: 100
+    Lore: ''
+    Commands:
+    - Put crate command here
+  '9':
+    Item: FEATHER
+    Meta: 0
+    Amount: 1
+    Slot: 39
+    DisplayName: '&b&lFly!'
+    Price: 100
+    Lore: ''
+    Commands:
+    - pex user %player% add essentials.fly
+    - pex user %player% add essentials.fly.safelogin
+  '10':
+    Item: GOLD_INGOT
+    Meta: 0
+    Amount: 1
+    Slot: 41
+    DisplayName: '&d&lA confidence boost'
+    Price: 100
+    Lore: ''
+    Commands:
+    - MESSAGE You're doing great setting up this config!
 DropChances:
-  #Leave value as -1 for them to not be active
-  #Passive Mobs
+  # Leave value as -1 for them to not be active
+  # The value entered is the percent for the drop.
+  # eg 
+  #   BAT: 20
+  # Means theres a 20% chance a bat will give a coin when killed.
+  # Passive Mobs
   BAT: -1
   SQUID: -1
   RABBIT: -1
@@ -121,7 +136,7 @@ DropChances:
   SNOWMAN: -1
   OCELOT: -1
   HORSE: -1
-  #Hostile Mobs
+  # Hostile Mobs
   ZOMBIE: -1
   SKELETON: -1
   SPIDER: -1
@@ -139,10 +154,10 @@ DropChances:
   GIANT: -1
   WITHER: -1
   ENDERDRAGON: -1
-  #Neutral Mobs
+  # Neutral Mobs
   VILLAGER: -1
   IRONGOLEM: -1
   PIGMAN: -1
   WOLF: -1
-  #Can even set it up for players
+  # Can even set it up for players
   PLAYER: -1
