@@ -1,8 +1,14 @@
 #
 #    BAMobCoins
 #
+####################################################
+# %PLAYER% - Will be replaced with the player who clicked the item (Buying from the shop)
+# [MESSAGE] - Will send a message to the player
+# [BROADCAST] - Will broadcast a message to the whole server
+######################################################
 Options:
   Prefix: '&7[&6BAMobCoins&7]'
+  BroadcastPrefix: '&7[&b&lAnnouncment&7]'
   Title: '&7[&6BAMobCoins - Shop&7]'
   CurrencyNameSingle: '&bMobCoin'
   CurrencyNamePlural: '&bMobCoins'
@@ -12,31 +18,31 @@ Shop:
     Meta: 0
     Amount: 1
     Slot: 14
-    DisplayName: '&b&lKing Rank!'
+    DisplayName: '&b&lDev Rank!'
     Price: 100
     Lore: ''
     Commands:
-    - pex user %player% group add BrodyRank
+    - 'pex user %PLAYER% group add Dev'
   '1':
     Item: CAKE
     Meta: 0
     Amount: 1
     Slot: 13
-    DisplayName: '&b&lGuardian Rank!'
+    DisplayName: '&b&lBAMobCoins Rank!'
     Price: 100
     Lore: ''
     Commands:
-    - pex user %player% group add Mobcoins
+    - 'pex user %PLAYER% group add BAMobCoins'
   '2':
     Item: CAKE
     Meta: 0
     Amount: 1
     Slot: 12
-    DisplayName: '&b&lAvenger Rank!'
+    DisplayName: '&b&lPlayer Rank!'
     Price: 100
     Lore: ''
     Commands:
-    - pex user %player% group add Avenger
+    - 'pex user %PLAYER% group add Player'
   '3':
     Item: GOLD_INGOT
     Meta: 0
@@ -46,7 +52,7 @@ Shop:
     Price: 100
     Lore: ''
     Commands:
-    - eco give %player% 20000
+    - 'eco give %PLAYER% 20000'
   '4':
     Item: GOLD_INGOT
     Meta: 0
@@ -56,7 +62,7 @@ Shop:
     Price: 100
     Lore: ''
     Commands:
-    - eco give %player% 50000
+    - 'eco give %PLAYER% 50000'
   '5':
     Item: GOLD_INGOT
     Meta: 0
@@ -66,7 +72,7 @@ Shop:
     Price: 100
     Lore: ''
     Commands:
-    - eco give %player% 100000
+    - 'eco give %PLAYER% 100000'
   '6':
     Item: TRIPWIRE_HOOK
     Meta: 0
@@ -76,7 +82,7 @@ Shop:
     Price: 100
     Lore: ''
     Commands:
-    - Put crate command here
+    - 'Put crate command here'
   '7':
     Item: TRIPWIRE_HOOK
     Meta: 0
@@ -86,7 +92,7 @@ Shop:
     Price: 100
     Lore: ''
     Commands:
-    - Put crate command here
+    - 'Put crate command here'
   '8':
     Item: TRIPWIRE_HOOK
     Meta: 0
@@ -96,7 +102,7 @@ Shop:
     Price: 100
     Lore: ''
     Commands:
-    - Put crate command here
+    - 'Put crate command here'
   '9':
     Item: FEATHER
     Meta: 0
@@ -106,18 +112,29 @@ Shop:
     Price: 100
     Lore: ''
     Commands:
-    - pex user %player% add essentials.fly
-    - pex user %player% add essentials.fly.safelogin
+    - 'pex user %PLAYER% add essentials.fly'
+    - 'pex user %PLAYER% add essentials.fly.safelogin'
   '10':
     Item: GOLD_INGOT
     Meta: 0
     Amount: 1
-    Slot: 41
+    Slot: 40
     DisplayName: '&d&lA confidence boost'
     Price: 100
     Lore: ''
     Commands:
-    - MESSAGE You're doing great setting up this config!
+    # Take notice to the double single quote. This will allow it to be displayed.
+    - '[MESSAGE] You''re doing great setting up this config'
+  '11':
+    Item: DRAGON_EGG
+    Meta: 0
+    Amount: 1
+    Slot: 41
+    DisplayName: '&b&lNothing!'
+    Price: 100
+    Lore: ''
+    Commands:
+    - '[BROADCAST] &d%PLAYER% &fhas bought nothing!'
 DropChances:
   # Leave value as -1 for them to not be active
   # The value entered is the percent for the drop.

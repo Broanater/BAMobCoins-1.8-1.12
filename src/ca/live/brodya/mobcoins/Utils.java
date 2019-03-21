@@ -578,7 +578,7 @@ public class Utils implements Listener
 		return title;
 	}
 
-	public static String getprefix()
+	public static String getPrefix()
 	{
 		String prefix = ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("Options.Prefix"));
 		return prefix;
@@ -650,29 +650,41 @@ public class Utils implements Listener
 		return plugin.getConfig().getInt("Players." + p.getUniqueId() + ".Tokens") >= plugin.getConfig().getInt("Shop." + slot + ".Price");
 	}
 	
+	public static String getBroadcastPrefix()
+	{
+		String prefix = ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("Options.BroadcastPrefix"));
+		return prefix;
+	}
+	
 	public static String getCurrencyIncreaseMessage(String sMob, int sCoinsRecieved)
 	{
 		String message = "";
 		if(sCoinsRecieved > 1)
 		{
-			message = Utils.getprefix() + ChatColor.GRAY + " You killed a " + sMob  + " and gained " + sCoinsRecieved + " " + getCurrencyNamePlural() + "!";
+			message = Utils.getPrefix() + ChatColor.GRAY + " You killed a " + sMob  + " and gained " + sCoinsRecieved + " " + getCurrencyNamePlural() + "!";
 		}
 		else
 		{
-			message = Utils.getprefix() + ChatColor.GRAY + " You killed a " + sMob  + " and gained " + sCoinsRecieved + " " + getCurrencyNameSingle() + "!";
+			message = Utils.getPrefix() + ChatColor.GRAY + " You killed a " + sMob  + " and gained " + sCoinsRecieved + " " + getCurrencyNameSingle() + "!";
 		}
 		return message;
 	}
 	
 	public static void insufficientPermissions(CommandSender sSender, String sCommand)
 	{
-		sSender.sendMessage(Utils.getprefix() + ChatColor.RED + " Insufficient permission! " + ChatColor.AQUA + "You do not have access to " + sCommand);
+		sSender.sendMessage(getPrefix() + ChatColor.RED + " Insufficient permission! " + ChatColor.AQUA + "You do not have access to " + sCommand);
 	}
 	
 	
 	public static void sendMessage(CommandSender sSender, String sMessage)
 	{
-		sSender.sendMessage(Utils.getprefix() + ChatColor.AQUA + sMessage);
+		sSender.sendMessage(getPrefix() + ChatColor.AQUA + sMessage);
+	}
+	
+	public static void sendBroadcast(String sMessage)
+	{
+		String message = ChatColor.translateAlternateColorCodes('&', sMessage);
+		Bukkit.broadcastMessage(getBroadcastPrefix() + message);
 	}
 	
 }

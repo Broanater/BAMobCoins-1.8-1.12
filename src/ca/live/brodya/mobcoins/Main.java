@@ -37,7 +37,7 @@ public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 		Bukkit.getServer().getPluginManager().registerEvents(this, this);
 		System.out.print("-------------------------------");
 		System.out.print("");
-		System.out.print("    MobCoins Enabled!");
+		System.out.print("    BAMobCoins Enabled!");
 		System.out.print("");
 		System.out.print("-------------------------------");
 		getCommand("BAMobCoins").setExecutor(new Commands(this));
@@ -61,7 +61,7 @@ public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 	{
 		System.out.print("-------------------------------");
 		System.out.print("");
-		System.out.print("MobCoins Disabled!");
+		System.out.print("    BAMobCoins Disabled!");
 		System.out.print("");
 		System.out.print("-------------------------------");
 		saveBal();

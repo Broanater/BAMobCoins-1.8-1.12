@@ -96,25 +96,31 @@ public class Events implements org.bukkit.event.Listener
 
 						p.closeInventory();
 						CoinsAPI.removeCoins(player, Utils.getPrice(i, p));
-						p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You brought an item from the shop!");
+						p.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You brought an item from the shop!");
 						java.util.List<String> command = plugin.getConfig().getStringList("Shop." + i + ".Commands");
 						for (String cmd : command)
 						{
-							if(cmd.startsWith("MESSAGE"))
+							String request = cmd.replace("%PLAYER%", e.getWhoClicked().getName());
+							if(cmd.startsWith("[MESSAGE]"))
 							{
-								String message = cmd.replace("MESSAGE", "");
-								Utils.sendMessage(p, message);
+								request = request.replace("[MESSAGE]", "");
+								Utils.sendMessage(p, request);
+							}
+							else if(cmd.startsWith("[BROADCAST]"))
+							{
+								request = request.replace("[BROADCAST]", "");
+								Utils.sendBroadcast(request);
 							}
 							else
 							{
-								org.bukkit.Bukkit.getServer().dispatchCommand(org.bukkit.Bukkit.getServer().getConsoleSender(), cmd.replace("%player%", e.getWhoClicked().getName()));
+								org.bukkit.Bukkit.getServer().dispatchCommand(org.bukkit.Bukkit.getServer().getConsoleSender(), request);
 							}
 						}
 					}
 					else
 					{
 						p.closeInventory();
-						p.sendMessage(Utils.getprefix() + ChatColor.GRAY + " You don't have enough " + Utils.getCurrencyNamePlural() + "!");
+						p.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You don't have enough " + Utils.getCurrencyNamePlural() + "!");
 					}
 				}
 				else
