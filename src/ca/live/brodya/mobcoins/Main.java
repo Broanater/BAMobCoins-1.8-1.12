@@ -16,6 +16,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 
+import ca.live.brodya.mobcoins.updater.UpdateChecker;
+
 public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 {
 	HashMap<String, Integer> coins = new HashMap<String, Integer>();
@@ -45,16 +47,8 @@ public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 		createFile();
 		loadBal();
 
-		/*
-		 * Automatic update check try { URL checkURL = new
-		 * URL("https://api.spigotmc.org/legacy/update.php?resource=38676");
-		 * URLConnection con = checkURL.openConnection(); String newVersion = new
-		 * BufferedReader(new InputStreamReader(con.getInputStream())).readLine(); if
-		 * (!getDescription().getVersion().equals(newVersion)) {
-		 * System.out.print("An update was found! New version: " + newVersion +
-		 * " download: https://www.spigotmc.org/resources/38676/"); } } catch
-		 * (IOException e1) { e1.printStackTrace(); }
-		 */
+		/* Check if theres any updates for the plugin on spigot. */
+		new UpdateChecker(this).checkForUpdate();
 	}
 
 	public void onDisable()
@@ -72,8 +66,8 @@ public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 	{
 
 		/*
-		final Player p = e.getPlayer();
-		 * Op automatic update check if (p.isOp()) { try { URL checkURL = new
+		 * final Player p = e.getPlayer(); Op automatic update check if (p.isOp()) { try
+		 * { URL checkURL = new
 		 * URL("https://api.spigotmc.org/legacy/update.php?resource=38676");
 		 * URLConnection con = checkURL.openConnection(); String newVersion = new
 		 * BufferedReader(new InputStreamReader(con.getInputStream())).readLine(); if
@@ -103,7 +97,8 @@ public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 			try
 			{
 				file.createNewFile();
-			} catch (IOException localIOException)
+			}
+			catch (IOException localIOException)
 			{
 			}
 		}
@@ -121,7 +116,8 @@ public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 		try
 		{
 			bal.save(file);
-		} catch (IOException localIOException)
+		}
+		catch (IOException localIOException)
 		{
 		}
 	}
