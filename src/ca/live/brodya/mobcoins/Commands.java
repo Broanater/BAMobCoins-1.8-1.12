@@ -7,6 +7,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import ca.live.brodya.mobcoins.templates.CustomItem;
+
 public class Commands implements CommandExecutor
 {
 	Main plugin;
@@ -45,9 +47,9 @@ public class Commands implements CommandExecutor
 							/* Get the balance of the one sending the command. */
 							Player p = (Player) sender;
 							int balance = CoinsAPI.getCoins(p.getUniqueId().toString());
-							
+
 							/* Send the message to the one requesting the balance based on the value. */
-							if(balance == 1)
+							if (balance == 1)
 							{
 								p.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You have " + balance + " " + Utils.getCurrencyNameSingle() + ChatColor.GRAY + "!");
 							}
@@ -81,7 +83,7 @@ public class Commands implements CommandExecutor
 					{
 						if (sender.hasPermission("BAMobCoins.help"))
 						{
-							sender.sendMessage(ChatColor.GRAY + "-------------------[ " + ChatColor.GOLD + "BAMobCoins V1.0 Help " + ChatColor.GRAY + "]-------------------");
+							sender.sendMessage(ChatColor.GRAY + "-------------------[ " + ChatColor.GOLD + "BAMobCoins V" + plugin.getDescription().getVersion() + " Help " + ChatColor.GRAY + "]-------------------");
 							sender.sendMessage(ChatColor.GOLD + "/BAMobCoins " + ChatColor.DARK_GRAY + ": " + ChatColor.GRAY + "Opens the shop GUI.");
 							sender.sendMessage(ChatColor.GOLD + "/BAMobCoins balance " + ChatColor.DARK_GRAY + ": " + ChatColor.GRAY + "See your balance.");
 							sender.sendMessage(ChatColor.GOLD + "/BAMobCoins balance <players ign> " + ChatColor.DARK_GRAY + ": " + ChatColor.GRAY + "See other players balance.");
@@ -104,18 +106,18 @@ public class Commands implements CommandExecutor
 
 				if (args.length == 2)
 				{
-					if(args[0].equalsIgnoreCase("balance") || args[0].equalsIgnoreCase("bal"))
+					if (args[0].equalsIgnoreCase("balance") || args[0].equalsIgnoreCase("bal"))
 					{
 						if (sender.hasPermission("BaMobCoins.balance.others"))
 						{
 							/* Get the Player of the on to check the balance of. */
 							Player toCheck = Bukkit.getServer().getPlayer(args[1]);
-							
+
 							/* Get the balance of the player. */
 							int balance = CoinsAPI.getCoins(toCheck.getUniqueId().toString());
-							
+
 							/* Send the message to the one requesting the balance based on the value. */
-							if(balance > 1)
+							if (balance > 1)
 							{
 								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + toCheck.getDisplayName() + " has " + balance + " " + Utils.getCurrencyNamePlural() + ChatColor.GRAY + "!");
 							}
@@ -123,10 +125,10 @@ public class Commands implements CommandExecutor
 							{
 								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + toCheck.getDisplayName() + " has " + balance + " " + Utils.getCurrencyNameSingle() + ChatColor.GRAY + "!");
 							}
-	
+
 							return true;
 						}
-	
+
 						Utils.insufficientPermissions(sender, "/BAMobCoins balance <players ign>");
 						return true;
 					}
@@ -148,7 +150,6 @@ public class Commands implements CommandExecutor
 								return true;
 							}
 
-							
 							/* Ensure they're adding a whole number. */
 							int amount = 0;
 							try
@@ -161,14 +162,13 @@ public class Commands implements CommandExecutor
 								return true;
 							}
 
-							
 							/* Check if they're trying to add 0 */
-							if(amount == 0)
+							if (amount == 0)
 							{
 								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You cannot add 0 " + Utils.getCurrencyNamePlural() + ChatColor.GRAY + " to a users balance!");
 								return true;
 							}
-							
+
 							/* Add the coins and send correct message. */
 							CoinsAPI.addCoins(pl, amount);
 							if (amount > 1)
@@ -213,16 +213,14 @@ public class Commands implements CommandExecutor
 								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " Please enter a whole number!");
 								return true;
 							}
-							
-							
+
 							/* Ensure they're not trying to remove 0. */
-							if(amount == 0)
+							if (amount == 0)
 							{
 								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You cannot remove 0 " + Utils.getCurrencyNamePlural() + ChatColor.GRAY + " from a users balance!");
 								return true;
 							}
-							
-							
+
 							/* Remove the coins. */
 							CoinsAPI.removeCoins(UUID, amount);
 
@@ -290,7 +288,7 @@ public class Commands implements CommandExecutor
 
 						if (sender.hasPermission("BAMobCoins.pay"))
 						{
-							/* Ensure the one receiving the  coins has joined the server. */
+							/* Ensure the one receiving the coins has joined the server. */
 							String player = args[1];
 							Player p = Bukkit.getServer().getPlayer(player);
 							if (p == null)
@@ -298,26 +296,26 @@ public class Commands implements CommandExecutor
 								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " That player has never joined the server!");
 								return true;
 							}
-							
+
 							String receivingUuid = p.getUniqueId().toString(); /* Receiving Coins UUID */
 							String senderIgn = sender.getName(); /* Sending Coins IGN */
 							Player sendingPlayer = Bukkit.getServer().getPlayer(senderIgn); /* Sending Coins Player */
 							String sendingUuid = sendingPlayer.getUniqueId().toString(); /* Sending Coins UUID */
-							
+
 							/* Check if the player is attempting to pay themselves. */
 							if (sender.getName().toLowerCase().equals(player.toLowerCase()))
 							{
 								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You can't pay yourself!");
 								return true;
 							}
-							
+
 							/* Ensure the player exists in the balances file. */
 							if (!CoinsAPI.playerExists(receivingUuid))
 							{
 								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " That player has never joined the server!");
 								return true;
 							}
-							
+
 							/* Ensure the amount trying to be sent is a whole number. */
 							int toSend = 0;
 							try
@@ -331,19 +329,22 @@ public class Commands implements CommandExecutor
 							}
 
 							/* Ensure they aren't trying to send 0 coins. */
-							if(toSend == 0)
+							if (toSend == 0)
 							{
-								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You cannot send 0 " + Utils.getCurrencyNamePlural() + ChatColor.GRAY + " to "  + p.getDisplayName());
+								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You cannot send 0 " + Utils.getCurrencyNamePlural() + ChatColor.GRAY + " to " + p.getDisplayName());
 								return true;
 							}
-							
+
 							/* Ensure the one trying to send has enough to send to the other user. */
 							if (CoinsAPI.getCoins(sendingUuid).intValue() >= toSend)
 							{
-								/* Add the coins to the receiving player, remove the coins from the sending player. */
+								/*
+								 * Add the coins to the receiving player, remove the coins from the sending
+								 * player.
+								 */
 								CoinsAPI.addCoins(receivingUuid, toSend);
 								CoinsAPI.removeCoins(sendingUuid, toSend);
-								
+
 								/* Send the correct message depending on the amount. */
 								if (toSend > 1)
 								{
@@ -366,11 +367,33 @@ public class Commands implements CommandExecutor
 						Utils.insufficientPermissions(sender, "/BaMobCoins pay <players ign> <amount>");
 						return true;
 					}
-					
-					
-					
+
+					/* /bamobcoins giveItem <player> <itemId> */
+					if (args[0].equalsIgnoreCase("giveItem"))
+					{
+						if (sender.hasPermission("BAMobCoins.giveItem"))
+						{
+							for (CustomItem customItem : Utils.getShopItems())
+							{
+								if (customItem.itemId.equalsIgnoreCase(args[2]))
+								{
+									Player player = Bukkit.getPlayer(args[1]);
+
+									Utils.runShopCommands(player, customItem.commands);
+									return true;
+								}
+							}
+							
+							String message = " &bCould not find " + args[2] + ". Please ensure you are entering the name correctly.";
+							sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(message));
+						}
+
+						Utils.insufficientPermissions(sender, "/BaMobCoins giveItem <players ign> <itemId>");
+						return true;
+					}
+
 				}
-				
+
 				sender.sendMessage(Utils.getPrefix() + ChatColor.RED + " Unknown command! Type /bamobcoins help for a list of commands.");
 				return true;
 				/* End of if testing if a player ran the command */
@@ -389,7 +412,6 @@ public class Commands implements CommandExecutor
 						return true;
 					}
 
-					
 					/* Ensure they're adding a whole number. */
 					int amount = 0;
 					try
@@ -402,14 +424,13 @@ public class Commands implements CommandExecutor
 						return true;
 					}
 
-					
 					/* Check if they're trying to add 0 */
-					if(amount == 0)
+					if (amount == 0)
 					{
 						sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You cannot add 0 " + Utils.getCurrencyNamePlural() + ChatColor.GRAY + " to a users balance!");
 						return true;
 					}
-					
+
 					/* Add the coins and send correct message. */
 					CoinsAPI.addCoins(pl, amount);
 					if (amount > 1)
@@ -448,16 +469,14 @@ public class Commands implements CommandExecutor
 						sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " Please enter a whole number!");
 						return true;
 					}
-					
-					
+
 					/* Ensure they're not trying to remove 0. */
-					if(amount == 0)
+					if (amount == 0)
 					{
 						sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You cannot remove 0 " + Utils.getCurrencyNamePlural() + ChatColor.GRAY + " from a users balance!");
 						return true;
 					}
-					
-					
+
 					/* Remove the coins. */
 					CoinsAPI.removeCoins(UUID, amount);
 
@@ -502,6 +521,20 @@ public class Commands implements CommandExecutor
 
 					sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You set " + p.getDisplayName() + "'s " + Utils.getCurrencyNameSingle() + "balance to " + amount + "!");
 					return true;
+				}
+
+				if (args[0].equalsIgnoreCase("giveItem"))
+				{
+					for (CustomItem customItem : Utils.getShopItems())
+					{
+						if (customItem.itemId.equalsIgnoreCase(args[2]))
+						{
+							Player player = Bukkit.getPlayer(args[1]);
+
+							Utils.runShopCommands(player, customItem.commands);
+							return true;
+						}
+					}
 				}
 			}
 		}

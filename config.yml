@@ -13,7 +13,7 @@ Options:
   CurrencyNameSingle: '&bMobCoin'
   CurrencyNamePlural: '&bMobCoins'
 Shop:
-  '0':
+  DevRank: #<-- This value MUST be unique
     Item: CAKE
     Meta: 0
     Amount: 1
@@ -23,7 +23,7 @@ Shop:
     Lore: ''
     Commands:
     - 'pex user %PLAYER% group add Dev'
-  '1':
+  MobCoinRank:
     Item: CAKE
     Meta: 0
     Amount: 1
@@ -33,7 +33,7 @@ Shop:
     Lore: ''
     Commands:
     - 'pex user %PLAYER% group add BAMobCoins'
-  '2':
+  PlayerRank:
     Item: CAKE
     Meta: 0
     Amount: 1
@@ -43,7 +43,7 @@ Shop:
     Lore: ''
     Commands:
     - 'pex user %PLAYER% group add Player'
-  '3':
+  20kEco:
     Item: GOLD_INGOT
     Meta: 0
     Amount: 1
@@ -53,7 +53,7 @@ Shop:
     Lore: ''
     Commands:
     - 'eco give %PLAYER% 20000'
-  '4':
+  50kEco:
     Item: GOLD_INGOT
     Meta: 0
     Amount: 1
@@ -63,7 +63,7 @@ Shop:
     Lore: ''
     Commands:
     - 'eco give %PLAYER% 50000'
-  '5':
+  100kEco:
     Item: GOLD_INGOT
     Meta: 0
     Amount: 1
@@ -73,7 +73,7 @@ Shop:
     Lore: ''
     Commands:
     - 'eco give %PLAYER% 100000'
-  '6':
+  MythicalCrate:
     Item: TRIPWIRE_HOOK
     Meta: 0
     Amount: 1
@@ -83,7 +83,7 @@ Shop:
     Lore: ''
     Commands:
     - 'Put crate command here'
-  '7':
+  EnchantCrate:
     Item: TRIPWIRE_HOOK
     Meta: 0
     Amount: 1
@@ -93,7 +93,7 @@ Shop:
     Lore: ''
     Commands:
     - 'Put crate command here'
-  '8':
+  LegendaryCrate:
     Item: TRIPWIRE_HOOK
     Meta: 0
     Amount: 1
@@ -103,7 +103,7 @@ Shop:
     Lore: ''
     Commands:
     - 'Put crate command here'
-  '9':
+  FlyCommand:
     Item: FEATHER
     Meta: 0
     Amount: 1
@@ -114,7 +114,7 @@ Shop:
     Commands:
     - 'pex user %PLAYER% add essentials.fly'
     - 'pex user %PLAYER% add essentials.fly.safelogin'
-  '10':
+  ConfidenceBoost:
     Item: GOLD_INGOT
     Meta: 0
     Amount: 1
@@ -125,14 +125,16 @@ Shop:
     Commands:
     # Take notice to the double single quote. This will allow it to be displayed.
     - '[MESSAGE] You''re doing great setting up this config'
-  '11':
+  Nothing:
     Item: DRAGON_EGG
     Meta: 0
     Amount: 1
     Slot: 41
     DisplayName: '&b&lNothing!'
     Price: 100
-    Lore: ''
+    Lore:
+    - '&bThis is the best purchase'
+    - '&byou will &d&lEVER &bmake.'
     Commands:
     - '[BROADCAST] &d%PLAYER% &fhas bought nothing!'
 DropChances:

@@ -12,64 +12,16 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import ca.live.brodya.mobcoins.templates.CustomItem;
+
 public class Events implements org.bukkit.event.Listener
 {
+	@SuppressWarnings("unused")
 	private static Main plugin;
-	File CE = new File("plugins//CustomEnchants//config.yml");
-	YamlConfiguration CEConfig = YamlConfiguration.loadConfiguration(CE);
 
 	public Events(Main pl)
 	{
 		plugin = pl;
-	}
-
-	public static String convertPower(int i)
-	{
-		if (i <= 0)
-		{
-			return "I";
-		}
-		if (i == 1)
-		{
-			return "I";
-		}
-		if (i == 2)
-		{
-			return "II";
-		}
-		if (i == 3)
-		{
-			return "III";
-		}
-		if (i == 4)
-		{
-			return "IV";
-		}
-		if (i == 5)
-		{
-			return "V";
-		}
-		if (i == 6)
-		{
-			return "VI";
-		}
-		if (i == 7)
-		{
-			return "VII";
-		}
-		if (i == 8)
-		{
-			return "VIII";
-		}
-		if (i == 9)
-		{
-			return "IX";
-		}
-		if (i == 10)
-		{
-			return "X";
-		}
-		return i + "";
 	}
 
 	@EventHandler
@@ -86,36 +38,19 @@ public class Events implements org.bukkit.event.Listener
 		if (e.getInventory().getTitle().equals(Utils.getTitle()))
 		{
 			Player p = (Player) e.getWhoClicked();
-			for (int i = 0; i < 28; i++)
+			for (CustomItem customItem : Utils.getShopItems())
 			{
-				if (e.getCurrentItem().equals(Utils.getItem(i, p)))
+				if (e.getCurrentItem().equals(Utils.getItem(customItem.itemId, p)))
 				{
 					String player = p.getUniqueId().toString();
-					if (CoinsAPI.getCoins(player).intValue() >= Utils.getPrice(i, p))
+					if (CoinsAPI.getCoins(player).intValue() >= customItem.price)
 					{
 
 						p.closeInventory();
-						CoinsAPI.removeCoins(player, Utils.getPrice(i, p));
+						CoinsAPI.removeCoins(player, customItem.price);
 						p.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You brought an item from the shop!");
-						java.util.List<String> command = plugin.getConfig().getStringList("Shop." + i + ".Commands");
-						for (String cmd : command)
-						{
-							String request = cmd.replace("%PLAYER%", e.getWhoClicked().getName());
-							if(cmd.startsWith("[MESSAGE]"))
-							{
-								request = request.replace("[MESSAGE]", "");
-								Utils.sendMessage(p, request);
-							}
-							else if(cmd.startsWith("[BROADCAST]"))
-							{
-								request = request.replace("[BROADCAST]", "");
-								Utils.sendBroadcast(request);
-							}
-							else
-							{
-								org.bukkit.Bukkit.getServer().dispatchCommand(org.bukkit.Bukkit.getServer().getConsoleSender(), request);
-							}
-						}
+						
+						Utils.runShopCommands(p, customItem.commands);
 					}
 					else
 					{
@@ -152,25 +87,6 @@ public class Events implements org.bukkit.event.Listener
 					}
 
 					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
-					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("pig", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-
-										return;
-									}
-								}
-							}
-						}
-					}
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("pig", 1));
 					CoinsAPI.addCoins(player, 1);
@@ -188,26 +104,11 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("sheep", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("sheep", 1));
 					CoinsAPI.addCoins(player, 1);
@@ -225,26 +126,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("chicken", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("chicken", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -260,26 +147,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("bat", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("bat", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -295,26 +168,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("squid", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("squid", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -330,26 +189,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("rabbit", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("rabbit", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -365,26 +210,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("mushroom cow", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("mushroom cow", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -400,26 +231,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("snowman", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("snowman", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -435,26 +252,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("ocelot", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("ocelot", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -470,26 +273,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("horse", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("horse", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -512,26 +301,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("zombie", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("zombie", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -547,26 +322,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("skeleton", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("skeleton", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -582,26 +343,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("spider", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("spider", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -617,26 +364,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("creeper", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("creeper", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -652,26 +385,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("enderman", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("enderman", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -687,26 +406,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("blaze", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("blaze", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -722,26 +427,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("witch", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("witch", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -757,26 +448,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("cave spider", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("cave spider", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -792,26 +469,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("silverfish", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("silverfish", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -827,26 +490,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("magma cube", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("magma cube", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -862,26 +511,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("endermite", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("endermite", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -897,26 +532,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("guardian", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("guardian", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -932,26 +553,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("ghast", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("ghast", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -967,26 +574,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("slime", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("slime", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -1002,26 +595,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("giant", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+						
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("giant", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -1039,24 +618,7 @@ public class Events implements org.bukkit.event.Listener
 					if (p == null)
 						return;
 					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
-					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("wither", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
-					}
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("wither", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -1072,26 +634,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("ender dragon", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("ender dragon", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -1114,26 +662,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("villager", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("villager", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -1149,26 +683,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("iron golem", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("iron golem", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -1184,26 +704,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("wolf", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("wolf", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -1219,26 +725,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("pig zombie", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("pig zombie", 1));
 					CoinsAPI.addCoins(player, 1);
 				}
@@ -1260,26 +752,12 @@ public class Events implements org.bukkit.event.Listener
 				{
 					Player p = e.getEntity().getKiller();
 					if (p == null)
-						return;
-					String player = p.getUniqueId().toString();
-					if (p.getItemInHand() != null)
 					{
-						if (p.getItemInHand().hasItemMeta())
-						{
-							if (p.getItemInHand().getItemMeta().hasLore())
-							{
-								for (int counter1 = 1; counter1 <= CEConfig.getInt("MaxPower.Coins"); counter1++)
-								{
-									if (Utils.hasenchant("Coins " + convertPower(counter1), p.getItemInHand()))
-									{
-										p.sendMessage(Utils.getCurrencyIncreaseMessage("player", counter1 + 1));
-										CoinsAPI.addCoins(player, counter1 + 1);
-										return;
-									}
-								}
-							}
-						}
+						return;
 					}
+					
+					String player = p.getUniqueId().toString();
+
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("player", 1));
 					CoinsAPI.addCoins(player, 1);
 				}

@@ -13,6 +13,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import ca.live.brodya.mobcoins.templates.CustomItem;
+
 public class Utils implements Listener
 {
 	private static Main plugin;
@@ -20,25 +22,6 @@ public class Utils implements Listener
 	public Utils(Main pl)
 	{
 		plugin = pl;
-	}
-
-	public static Boolean hasenchant(String Enchant, ItemStack item)
-	{
-		if (item.hasItemMeta())
-		{
-			if (item.getItemMeta().hasLore())
-			{
-				List<String> lore = item.getItemMeta().getLore();
-				for (String l : lore)
-				{
-					if (ChatColor.stripColor(l).equals(Enchant))
-					{
-						return true;
-					}
-				}
-			}
-		}
-		return false;
 	}
 
 	/* 
@@ -279,13 +262,6 @@ public class Utils implements Listener
 	 * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 */
 
-	
-	private static int getSlot(int i)
-	{
-		int slot = plugin.getConfig().getInt("Shop." + i + ".Slot");
-		return slot;
-	}
-
 	public static ItemStack createItem(Material mat, int amt, int durability, String name)
 	{
 		ItemStack item = new ItemStack(mat, amt);
@@ -302,34 +278,33 @@ public class Utils implements Listener
 		return slot;
 	}
 
-	public static ItemStack getItem(int i, Player p)
+	public static ItemStack getItem(String itemId, Player p)
 	{
-		if (!plugin.getConfig().contains("Shop." + i))
+		if (!plugin.getConfig().contains("Shop." + itemId))
 		{
 			return null;
 		}
 
-		int amnt = plugin.getConfig().getInt("Shop." + i + ".Amount");
-		int id = plugin.getConfig().getInt("Shop." + i + ".Meta");
+		int amnt = plugin.getConfig().getInt("Shop." + itemId + ".Amount");
+		int id = plugin.getConfig().getInt("Shop." + itemId + ".Meta");
 
-		ItemStack item = new ItemStack(Material.getMaterial(plugin.getConfig().getString("Shop." + i + ".Item").toUpperCase()), amnt, (short) id);
-		ItemMeta im = item.getItemMeta();
-		im.setDisplayName(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("Shop." + i + ".DisplayName")));
+		ItemStack item = new ItemStack(Material.getMaterial(plugin.getConfig().getString("Shop." + itemId + ".Item").toUpperCase()), amnt, (short) id);
+		ItemMeta meta = item.getItemMeta();
+		meta.setDisplayName(Utils.convertColorCodes(plugin.getConfig().getString("Shop." + itemId + ".DisplayName")));
 
-		ArrayList<String> lore = new ArrayList<String>();
-		if (plugin.getConfig().contains("Shop." + i + ".Lore"))
+		List<String> loreRaw = plugin.getConfig().getStringList("Shop." + itemId + ".Lore");
+
+		loreRaw.add("&7Price: " + plugin.getConfig().getInt("Shop." + itemId + ".Price"));
+
+		List<String> lore = new ArrayList<String>();
+		for(String loreLine : loreRaw)
 		{
-			lore.add(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("Shop." + i + ".Lore")));
-		}
-
-		lore.add(ChatColor.GRAY + "Price: " + plugin.getConfig().getInt(new StringBuilder("Shop.").append(i).append(".Price").toString()));
-
-		if (plugin.getConfig().getInt("Players." + p.getUniqueId() + ".Tokens") < plugin.getConfig().getInt("Shop." + i + ".Price"))
-		{
-			im.setLore(lore);
+			lore.add(Utils.convertColorCodes(loreLine));
 		}
 		
-		item.setItemMeta(im);
+		meta.setLore(lore);
+		
+		item.setItemMeta(meta);
 		return item;
 	}
 
@@ -600,6 +575,29 @@ public class Utils implements Listener
 	{
 		return plugin.getConfig().contains("Players." + p.getUniqueId());
 	}
+	
+	public static List<CustomItem> getShopItems()
+	{
+		List<CustomItem> customItems = new ArrayList<CustomItem>();
+		for (String key : plugin.getConfig().getConfigurationSection("Shop").getKeys(false))
+		{
+		    String material = plugin.getConfig().getString("Shop." + key + ".Item");
+		    int meta = plugin.getConfig().getInt("Shop." + key + ".Meta");
+		    int amount = plugin.getConfig().getInt("Shop." + key + ".Amount");
+		    int slot = plugin.getConfig().getInt("Shop." + key + ".Slot");
+		    String displayName = plugin.getConfig().getString("Shop." + key + ".DisplayName");
+		    int price = plugin.getConfig().getInt("Shop." + key + ".Price");
+		    List<String> lore = plugin.getConfig().getStringList("Shop." + key + ".Lore");
+		    List<String> commands = plugin.getConfig().getStringList("Shop." + key + ".Commands");
+			
+			
+			CustomItem customItem = new CustomItem(key, material, meta, amount, slot, displayName, price, lore, commands);
+			customItems.add(customItem);
+		}
+		
+		
+		return customItems;
+	}
 
 	public static Inventory showInventory(Player p)
 	{
@@ -631,9 +629,9 @@ public class Utils implements Listener
 		inv.setItem(51, getBorder());
 		inv.setItem(52, getBorder());
 		inv.setItem(53, getBorder());
-		for (int i = 0; i < 28; i++)
+		for (CustomItem customItem : getShopItems())
 		{
-			inv.setItem(getSlot(i), getItem(i, p));
+			inv.setItem(customItem.slot, getItem(customItem.itemId, p));
 		}
 		inv.setItem(0, getBorder());
 		return inv;
@@ -683,8 +681,35 @@ public class Utils implements Listener
 	
 	public static void sendBroadcast(String sMessage)
 	{
-		String message = ChatColor.translateAlternateColorCodes('&', sMessage);
-		Bukkit.broadcastMessage(getBroadcastPrefix() + message);
+		Bukkit.broadcastMessage(getBroadcastPrefix() + " " +convertColorCodes(sMessage));
+	}
+	
+	public static String convertColorCodes(String sString)
+	{
+		String newString = ChatColor.translateAlternateColorCodes('&', sString);
+		return newString;
+	}
+	
+	public static void runShopCommands(Player player, List<String> sCommands)
+	{
+		for(String command : sCommands)
+		{
+			String request = command.replace("%PLAYER%", player.getName());
+			if(request.startsWith("[MESSAGE]"))
+			{
+				request = request.replace("[MESSAGE]", "");
+				Utils.sendMessage(player, request);
+			}
+			else if(request.startsWith("[BROADCAST]"))
+			{
+				request = request.replace("[BROADCAST]", "");
+				sendBroadcast(request);
+			}
+			else
+			{
+				org.bukkit.Bukkit.getServer().dispatchCommand(org.bukkit.Bukkit.getServer().getConsoleSender(), request);
+			}
+		}
 	}
 	
 }
