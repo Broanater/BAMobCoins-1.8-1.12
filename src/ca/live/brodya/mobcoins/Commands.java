@@ -48,15 +48,12 @@ public class Commands implements CommandExecutor
 							Player p = (Player) sender;
 							int balance = CoinsAPI.getCoins(p.getUniqueId().toString());
 
-							/* Send the message to the one requesting the balance based on the value. */
-							if (balance == 1)
-							{
-								p.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You have " + balance + " " + Utils.getCurrencyNameSingle() + ChatColor.GRAY + "!");
-							}
-							else
-							{
-								p.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You have " + balance + " " + Utils.getCurrencyNamePlural() + ChatColor.GRAY + "!");
-							}
+							String message = Messages.getYourBalance();
+
+							message = message.replace("%BALANCE%", String.valueOf(balance));
+
+							p.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(message));
+
 							return true;
 						}
 
@@ -70,7 +67,8 @@ public class Commands implements CommandExecutor
 						{
 							/* Reload the plugins config file. */
 							this.plugin.reloadConfig();
-							sender.sendMessage(Utils.getPrefix() + " " + ChatColor.GREEN + "reloaded!");
+							Messages.reloadMessages();
+							sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getReload()));
 
 							return true;
 						}
@@ -116,16 +114,12 @@ public class Commands implements CommandExecutor
 							/* Get the balance of the player. */
 							int balance = CoinsAPI.getCoins(toCheck.getUniqueId().toString());
 
-							/* Send the message to the one requesting the balance based on the value. */
-							if (balance > 1)
-							{
-								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + toCheck.getDisplayName() + " has " + balance + " " + Utils.getCurrencyNamePlural() + ChatColor.GRAY + "!");
-							}
-							else
-							{
-								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + toCheck.getDisplayName() + " has " + balance + " " + Utils.getCurrencyNameSingle() + ChatColor.GRAY + "!");
-							}
+							String message = Messages.getOtherBalance();
 
+							message = message.replace("%BALANCE%", String.valueOf(balance));
+							message = message.replace("%PLAYER%", sender.getName());
+
+							sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(message));
 							return true;
 						}
 
@@ -141,12 +135,12 @@ public class Commands implements CommandExecutor
 						if (sender.hasPermission("BAMobCoins.add"))
 						{
 							/* Make sure that player has joined the server. */
-							String player = args[1];
-							Player p = Bukkit.getServer().getPlayer(player);
-							String pl = p.getUniqueId().toString();
-							if (!CoinsAPI.playerExists(pl))
+							String receiverIgn = args[1];
+							Player receiver = Bukkit.getServer().getPlayer(receiverIgn);
+							String receiverUuid = receiver.getUniqueId().toString();
+							if (!CoinsAPI.playerExists(receiverUuid))
 							{
-								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " That player has never joined the server!");
+								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getGlobalNeverJoined()));
 								return true;
 							}
 
@@ -158,27 +152,31 @@ public class Commands implements CommandExecutor
 							}
 							catch (Exception e)
 							{
-								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " Please enter a whole number!");
+								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getGlobalWholeNumber()));
 								return true;
 							}
 
 							/* Check if they're trying to add 0 */
 							if (amount == 0)
 							{
-								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You cannot add 0 " + Utils.getCurrencyNamePlural() + ChatColor.GRAY + " to a users balance!");
+								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getAddZero()));
 								return true;
 							}
 
 							/* Add the coins and send correct message. */
-							CoinsAPI.addCoins(pl, amount);
+							CoinsAPI.addCoins(receiverUuid, amount);
 							if (amount > 1)
 							{
-								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You added " + amount + " " + Utils.getCurrencyNamePlural() + ChatColor.GRAY + " to " + p.getDisplayName());
-								return true;
-							}
-							else
-							{
-								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You added " + amount + " " + Utils.getCurrencyNameSingle() + ChatColor.GRAY + " to " + p.getDisplayName());
+								String adminMessage = Messages.getAddAdmin();
+								adminMessage = adminMessage.replace("%AMOUNT%", String.valueOf(amount));
+								adminMessage = adminMessage.replace("%PLAYER%", receiverIgn);
+								
+								String playerMessage = Messages.getAddPlayer();
+								playerMessage = playerMessage.replace("%AMOUNT%", String.valueOf(amount));
+								playerMessage = playerMessage.replace("%PLAYER%", receiverIgn);
+								
+								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(adminMessage));
+								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(playerMessage));
 								return true;
 							}
 						}
@@ -192,13 +190,13 @@ public class Commands implements CommandExecutor
 						if (sender.hasPermission("BAMobCoins.remove"))
 						{
 							/* Ensure the player has joined the server */
-							String player = args[1];
-							Player p = Bukkit.getServer().getPlayer(player);
-							String UUID = p.getUniqueId().toString();
+							String receiverIgn = args[1];
+							Player receiver = Bukkit.getServer().getPlayer(receiverIgn);
+							String UUID = receiver.getUniqueId().toString();
 
 							if (!CoinsAPI.playerExists(UUID))
 							{
-								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " That player has never joined the server!");
+								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getGlobalNeverJoined()));
 								return true;
 							}
 
@@ -210,30 +208,32 @@ public class Commands implements CommandExecutor
 							}
 							catch (Exception e)
 							{
-								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " Please enter a whole number!");
+								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getGlobalWholeNumber()));
 								return true;
 							}
 
 							/* Ensure they're not trying to remove 0. */
 							if (amount == 0)
 							{
-								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You cannot remove 0 " + Utils.getCurrencyNamePlural() + ChatColor.GRAY + " from a users balance!");
+								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getRemoveZero()));
 								return true;
 							}
 
 							/* Remove the coins. */
 							CoinsAPI.removeCoins(UUID, amount);
 
-							if (amount > 1)
-							{
-								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You removed " + amount + Utils.getCurrencyNamePlural() + " from " + p.getDisplayName() + "!");
-								return true;
-							}
-							else
-							{
-								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You removed " + amount + Utils.getCurrencyNameSingle() + " from " + p.getDisplayName() + "!");
-								return true;
-							}
+							String adminMessage = Messages.getRemoveAdmin();
+							adminMessage = adminMessage.replace("%PLAYER%", receiverIgn);
+							adminMessage = adminMessage.replace("%AMOUNT%", String.valueOf(amount));
+							
+							String playerMessage = Messages.getRemovePlayer();
+							playerMessage = playerMessage.replace("%PLAYER%", receiverIgn);
+							playerMessage = playerMessage.replace("%AMOUNT%", String.valueOf(amount));
+							
+							
+							sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(adminMessage));
+							receiver.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(playerMessage));
+							return true;
 						}
 
 						Utils.insufficientPermissions(sender, "/BAMobCoins remove <players ign> <amount>");
@@ -245,12 +245,12 @@ public class Commands implements CommandExecutor
 						if (sender.hasPermission("BAMobCoins.set"))
 						{
 							/* Ensure the player has joined the server. */
-							String player = args[1];
-							Player p = Bukkit.getServer().getPlayer(player);
-							String pl = p.getUniqueId().toString();
+							String receiverIgn = args[1];
+							Player receiver = Bukkit.getServer().getPlayer(receiverIgn);
+							String pl = receiver.getUniqueId().toString();
 							if (!CoinsAPI.playerExists(pl))
 							{
-								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " That player has never joined the server!");
+								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getGlobalNeverJoined()));
 								return true;
 							}
 
@@ -262,14 +262,23 @@ public class Commands implements CommandExecutor
 							}
 							catch (Exception e)
 							{
-								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " Please enter a whole number!");
+								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getGlobalWholeNumber()));
 								return true;
 							}
 
 							/* Set the balance */
 							CoinsAPI.setCoins(pl, amount);
 
-							sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You set " + p.getDisplayName() + "'s " + Utils.getCurrencyNameSingle() + "balance to " + amount + "!");
+							String adminMessage = Messages.getSetAdmin();
+							adminMessage = adminMessage.replace("%PLAYER%", receiverIgn);
+							adminMessage = adminMessage.replace("%AMOUNT%", String.valueOf(amount));
+							
+							String playerMessage = Messages.getSetPlayer();
+							playerMessage = playerMessage.replace("%PLAYER%", receiverIgn);
+							playerMessage = playerMessage.replace("%AMOUNT%", String.valueOf(amount));
+							
+							sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(adminMessage));
+							receiver.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(playerMessage));
 							return true;
 						}
 
@@ -282,37 +291,38 @@ public class Commands implements CommandExecutor
 						/* Double check that the one running this command is a player. */
 						if (!(sender instanceof Player))
 						{
-							sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You must be a player to do that command!");
+							
+							sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getGlobalNonPlayer()));
 							return true;
 						}
 
 						if (sender.hasPermission("BAMobCoins.pay"))
 						{
 							/* Ensure the one receiving the coins has joined the server. */
-							String player = args[1];
-							Player p = Bukkit.getServer().getPlayer(player);
-							if (p == null)
+							String receiverIgn = args[1];
+							Player receiver = Bukkit.getServer().getPlayer(receiverIgn);
+							if (receiver == null)
 							{
-								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " That player has never joined the server!");
+								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getGlobalNeverJoined()));
 								return true;
 							}
 
-							String receivingUuid = p.getUniqueId().toString(); /* Receiving Coins UUID */
+							String receivingUuid = receiver.getUniqueId().toString(); /* Receiving Coins UUID */
 							String senderIgn = sender.getName(); /* Sending Coins IGN */
 							Player sendingPlayer = Bukkit.getServer().getPlayer(senderIgn); /* Sending Coins Player */
 							String sendingUuid = sendingPlayer.getUniqueId().toString(); /* Sending Coins UUID */
 
 							/* Check if the player is attempting to pay themselves. */
-							if (sender.getName().toLowerCase().equals(player.toLowerCase()))
+							if (sender.getName().equalsIgnoreCase(receiverIgn))
 							{
-								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You can't pay yourself!");
+								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getPaySelf()));
 								return true;
 							}
 
 							/* Ensure the player exists in the balances file. */
 							if (!CoinsAPI.playerExists(receivingUuid))
 							{
-								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " That player has never joined the server!");
+								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getGlobalNeverJoined()));
 								return true;
 							}
 
@@ -324,14 +334,19 @@ public class Commands implements CommandExecutor
 							}
 							catch (Exception e)
 							{
-								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " Please enter a whole number!");
+								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getGlobalWholeNumber()));
 								return true;
 							}
 
 							/* Ensure they aren't trying to send 0 coins. */
 							if (toSend == 0)
 							{
-								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You cannot send 0 " + Utils.getCurrencyNamePlural() + ChatColor.GRAY + " to " + p.getDisplayName());
+								String message = Messages.getPaySendZero();
+								message = message.replace("%AMOUNT%", "0");
+								message = message.replace("%SENDER%", senderIgn);
+								message = message.replace("%RECEIVER%", receiverIgn);
+
+								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(message));
 								return true;
 							}
 
@@ -345,21 +360,27 @@ public class Commands implements CommandExecutor
 								CoinsAPI.addCoins(receivingUuid, toSend);
 								CoinsAPI.removeCoins(sendingUuid, toSend);
 
-								/* Send the correct message depending on the amount. */
-								if (toSend > 1)
-								{
-									sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You payed " + player + " " + toSend + " " + Utils.getCurrencyNamePlural() + ChatColor.GRAY + "!");
-									p.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You were payed " + toSend + " " + Utils.getCurrencyNamePlural() + ChatColor.GRAY + " by " + senderIgn + "!");
-								}
-								else
-								{
-									sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You payed " + player + " " + toSend + " " + Utils.getCurrencyNameSingle() + "!");
-									p.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You were payed " + toSend + " " + Utils.getCurrencyNameSingle() + " by " + senderIgn + "!");
-								}
+								String messageSender = Messages.getPaySender();
+								messageSender = messageSender.replace("%AMOUNT%", String.valueOf(toSend));
+								messageSender = messageSender.replace("%SENDER%", senderIgn);
+								messageSender = messageSender.replace("%RECEIVER%", receiverIgn);
+
+								String messageReceiver = Messages.getPayReceiver();
+								messageReceiver = messageReceiver.replace("%AMOUNT%", String.valueOf(toSend));
+								messageReceiver = messageReceiver.replace("%SENDER%", senderIgn);
+								messageReceiver = messageReceiver.replace("%RECEIVER%", receiverIgn);
+
+								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(messageSender));
+								receiver.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(messageReceiver));
 							}
 							else
 							{
-								sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You do not have enough mobcoins!");
+								String message = Messages.getPayNotEnough();
+								message = message.replace("%AMOUNT%", String.valueOf(toSend));
+								message = message.replace("%SENDER%", senderIgn);
+								message = message.replace("%RECEIVER%", receiverIgn);
+
+								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(message));
 							}
 							return true;
 						}
@@ -373,19 +394,39 @@ public class Commands implements CommandExecutor
 					{
 						if (sender.hasPermission("BAMobCoins.giveItem"))
 						{
+							String receiverIgn = args[1];
+							Player receiver = Bukkit.getPlayer(receiverIgn);
+							String itemId = args[2];
+							
 							for (CustomItem customItem : Utils.getShopItems())
 							{
-								if (customItem.itemId.equalsIgnoreCase(args[2]))
+								if (customItem.itemId.equalsIgnoreCase(itemId))
 								{
-									Player player = Bukkit.getPlayer(args[1]);
 
-									Utils.runShopCommands(player, customItem.commands);
+									Utils.runShopCommands(receiver, customItem.commands);
+									
+									
+									String adminMessage = Messages.getGiveItemAdmin();
+									adminMessage = adminMessage.replace("%PLAYER%", receiverIgn);
+									adminMessage = adminMessage.replace("%ITEM%", itemId);
+									
+									String playerMessage = Messages.getGiveItemPlayer();
+									playerMessage = playerMessage.replace("%PLAYER%", receiverIgn);
+									playerMessage = playerMessage.replace("%ITEM%", itemId);
+									
+									sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(adminMessage));
+									receiver.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(playerMessage));
+									
 									return true;
 								}
 							}
 							
-							String message = " &bCould not find " + args[2] + ". Please ensure you are entering the name correctly.";
-							sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(message));
+							/* Item they tried to give doesn't exist */
+							String message = Messages.getGiveItemUnfound();
+							message = message.replace("%PLAYER%", receiverIgn);
+							message = message.replace("%ITEM%", itemId);
+							
+							sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(message));
 						}
 
 						Utils.insufficientPermissions(sender, "/BaMobCoins giveItem <players ign> <itemId>");
@@ -403,12 +444,11 @@ public class Commands implements CommandExecutor
 				if (args[0].equals("add"))
 				{
 					/* Make sure that player has joined the server. */
-					String player = args[1];
-					Player p = Bukkit.getServer().getPlayer(player);
-					String pl = p.getUniqueId().toString();
-					if (!CoinsAPI.playerExists(pl))
+					String receiverIgn = args[1];
+					Player receiver = Bukkit.getServer().getPlayer(receiverIgn);
+					String receiverUuid = receiver.getUniqueId().toString();
+					if (!CoinsAPI.playerExists(receiverUuid))
 					{
-						sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " That player has never joined the server!");
 						return true;
 					}
 
@@ -420,41 +460,42 @@ public class Commands implements CommandExecutor
 					}
 					catch (Exception e)
 					{
-						sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " Please enter a whole number!");
 						return true;
 					}
 
 					/* Check if they're trying to add 0 */
 					if (amount == 0)
 					{
-						sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You cannot add 0 " + Utils.getCurrencyNamePlural() + ChatColor.GRAY + " to a users balance!");
+						String message = Messages.getAddZero();
+						message = message.replace("%AMOUNT%", String.valueOf(amount));
+						message = message.replace("%PLAYER", receiverIgn);
+						
+						sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(message));
 						return true;
 					}
 
 					/* Add the coins and send correct message. */
-					CoinsAPI.addCoins(pl, amount);
-					if (amount > 1)
-					{
-						sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You added " + amount + " " + Utils.getCurrencyNamePlural() + ChatColor.GRAY + " to " + p.getDisplayName());
-						return true;
-					}
-					else
-					{
-						sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You added " + amount + " " + Utils.getCurrencyNameSingle() + ChatColor.GRAY + " to " + p.getDisplayName());
-						return true;
-					}
+					CoinsAPI.addCoins(receiverUuid, amount);
+					
+					String playerMessage = Messages.getAddPlayer();
+					playerMessage = playerMessage.replace("%AMOUNT%", String.valueOf(amount));
+					playerMessage = playerMessage.replace("%PLAYER%", receiverIgn);
+					
+					
+					receiver.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(playerMessage));
+					return true;
+
 				}
 
 				if (args[0].equalsIgnoreCase("remove"))
 				{
 					/* Ensure the player has joined the server */
-					String player = args[1];
-					Player p = Bukkit.getServer().getPlayer(player);
-					String UUID = p.getUniqueId().toString();
+					String receiverIgn = args[1];
+					Player receiver = Bukkit.getServer().getPlayer(receiverIgn);
+					String receiverUuid = receiver.getUniqueId().toString();
 
-					if (!CoinsAPI.playerExists(UUID))
+					if (!CoinsAPI.playerExists(receiverUuid))
 					{
-						sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " That player has never joined the server!");
 						return true;
 					}
 
@@ -466,41 +507,35 @@ public class Commands implements CommandExecutor
 					}
 					catch (Exception e)
 					{
-						sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " Please enter a whole number!");
 						return true;
 					}
 
 					/* Ensure they're not trying to remove 0. */
 					if (amount == 0)
 					{
-						sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You cannot remove 0 " + Utils.getCurrencyNamePlural() + ChatColor.GRAY + " from a users balance!");
 						return true;
 					}
 
 					/* Remove the coins. */
-					CoinsAPI.removeCoins(UUID, amount);
+					CoinsAPI.removeCoins(receiverUuid, amount);
 
-					if (amount > 1)
-					{
-						sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You removed " + amount + Utils.getCurrencyNamePlural() + " from " + p.getDisplayName() + "!");
-						return true;
-					}
-					else
-					{
-						sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You removed " + amount + Utils.getCurrencyNameSingle() + " from " + p.getDisplayName() + "!");
-						return true;
-					}
+					String playerMessage = Messages.getRemovePlayer();
+					playerMessage = playerMessage.replace("%AMOUNT%", String.valueOf(amount));
+					playerMessage = playerMessage.replace("%PLAYER%", receiverIgn);
+					
+					
+					receiver.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(playerMessage));
+					return true;
 				}
 
 				if (args[0].equalsIgnoreCase("set"))
 				{
 					/* Ensure the player has joined the server. */
-					String player = args[1];
-					Player p = Bukkit.getServer().getPlayer(player);
-					String pl = p.getUniqueId().toString();
-					if (!CoinsAPI.playerExists(pl))
+					String receiverIgn = args[1];
+					Player receiver = Bukkit.getServer().getPlayer(receiverIgn);
+					String receiverUuid = receiver.getUniqueId().toString();
+					if (!CoinsAPI.playerExists(receiverUuid))
 					{
-						sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " That player has never joined the server!");
 						return true;
 					}
 
@@ -512,26 +547,38 @@ public class Commands implements CommandExecutor
 					}
 					catch (Exception e)
 					{
-						sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " Please enter a whole number!");
 						return true;
 					}
 
 					/* Set the balance */
-					CoinsAPI.setCoins(pl, amount);
+					CoinsAPI.setCoins(receiverUuid, amount);
 
-					sender.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You set " + p.getDisplayName() + "'s " + Utils.getCurrencyNameSingle() + "balance to " + amount + "!");
+					String playerMessage = Messages.getSetPlayer();
+					playerMessage = playerMessage.replace("%AMOUNT%", String.valueOf(amount));
+					playerMessage = playerMessage.replace("%PLAYER%", receiverIgn);
+					
+					receiver.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(playerMessage));
 					return true;
 				}
 
 				if (args[0].equalsIgnoreCase("giveItem"))
 				{
+					String receiverIgn = args[0];
+					Player receiver = Bukkit.getPlayer(args[1]);
+					String itemId = args[2];
+					
 					for (CustomItem customItem : Utils.getShopItems())
 					{
-						if (customItem.itemId.equalsIgnoreCase(args[2]))
+						if (customItem.itemId.equalsIgnoreCase(itemId))
 						{
-							Player player = Bukkit.getPlayer(args[1]);
 
-							Utils.runShopCommands(player, customItem.commands);
+							Utils.runShopCommands(receiver, customItem.commands);
+							
+							String playerMessage = Messages.getGiveItemPlayer();
+							playerMessage = playerMessage.replace("%PLAYER%", receiverIgn);
+							playerMessage = playerMessage.replace("%ITEM%", itemId);
+							
+							receiver.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(playerMessage));
 							return true;
 						}
 					}

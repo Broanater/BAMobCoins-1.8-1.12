@@ -44,8 +44,9 @@ public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 		System.out.print("-------------------------------");
 		getCommand("BAMobCoins").setExecutor(new Commands(this));
 		registerEvents();
-		createFile();
-		loadBal();
+		createBalanceFile();
+		loadBalance();
+		createMessagesFile();
 
 		/* Check if theres any updates for the plugin on spigot. */
 		new UpdateChecker(this).checkForUpdate();
@@ -58,27 +59,7 @@ public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 		System.out.print("    BAMobCoins Disabled!");
 		System.out.print("");
 		System.out.print("-------------------------------");
-		saveBal();
-	}
-
-	@EventHandler
-	public void onJoin(PlayerJoinEvent e)
-	{
-
-		/*
-		 * final Player p = e.getPlayer(); Op automatic update check if (p.isOp()) { try
-		 * { URL checkURL = new
-		 * URL("https://api.spigotmc.org/legacy/update.php?resource=38676");
-		 * URLConnection con = checkURL.openConnection(); String newVersion = new
-		 * BufferedReader(new InputStreamReader(con.getInputStream())).readLine(); if
-		 * (!getDescription().getVersion().equals(newVersion)) {
-		 * p.sendMessage(Utils.getprefix() + ChatColor.GRAY +
-		 * "An update was found! New version: " + newVersion +
-		 * " download: https://www.spigotmc.org/resources/38676/"); } } catch
-		 * (IOException e1) { e1.printStackTrace(); }
-		 * 
-		 * }
-		 */
+		saveBalance();
 	}
 
 	private void registerEvents()
@@ -87,9 +68,14 @@ public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 		pm.registerEvents(new Utils(this), this);
 		pm.registerEvents(new Events(this), this);
 		pm.registerEvents(new CoinsAPI(this), this);
+		pm.registerEvents(new Messages(this), this);
 	}
 
-	public void createFile()
+	
+	/*
+	 * Balance file stuff
+	 */
+	public void createBalanceFile()
 	{
 		File file = new File("plugins//BAMobCoins//Balances.yml");
 		if (!file.exists())
@@ -98,13 +84,13 @@ public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 			{
 				file.createNewFile();
 			}
-			catch (IOException localIOException)
+			catch (IOException e)
 			{
 			}
 		}
 	}
 
-	public void saveBal()
+	public void saveBalance()
 	{
 		File file = new File("plugins//BAMobCoins//Balances.yml");
 		YamlConfiguration bal = YamlConfiguration.loadConfiguration(file);
@@ -122,7 +108,7 @@ public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 		}
 	}
 
-	public void loadBal()
+	public void loadBalance()
 	{
 		File file = new File("plugins//BAMobCoins//Balances.yml");
 		YamlConfiguration bal = YamlConfiguration.loadConfiguration(file);
@@ -130,5 +116,20 @@ public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 		{
 			this.coins.put(UUID, Integer.valueOf(bal.getInt(UUID)));
 		}
+	}
+	
+	
+	/*
+	 * Messages file stuff.
+	 */
+	public void createMessagesFile()
+	{
+		File file = new File(this.getDataFolder(), "Messages.yml");
+		if(!file.exists())
+		{
+			/* If it doesn't exists copy it from the jar */
+			this.saveResource("Messages.yml", false);
+		}
+		Messages.reloadMessages();
 	}
 }

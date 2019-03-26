@@ -37,25 +37,34 @@ public class Events implements org.bukkit.event.Listener
 	{
 		if (e.getInventory().getTitle().equals(Utils.getTitle()))
 		{
-			Player p = (Player) e.getWhoClicked();
+			Player receiver = (Player) e.getWhoClicked();
 			for (CustomItem customItem : Utils.getShopItems())
 			{
-				if (e.getCurrentItem().equals(Utils.getItem(customItem.itemId, p)))
+				if (e.getCurrentItem().equals(Utils.getItem(customItem.itemId, receiver)))
 				{
-					String player = p.getUniqueId().toString();
-					if (CoinsAPI.getCoins(player).intValue() >= customItem.price)
+					String receiverUuid = receiver.getUniqueId().toString();
+					if (CoinsAPI.getCoins(receiverUuid).intValue() >= customItem.price)
 					{
-
-						p.closeInventory();
-						CoinsAPI.removeCoins(player, customItem.price);
-						p.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You brought an item from the shop!");
+						receiver.closeInventory();
+						CoinsAPI.removeCoins(receiverUuid, customItem.price);
 						
-						Utils.runShopCommands(p, customItem.commands);
+						String message = Messages.getShopBoughtItem();
+						message = message.replace("%ITEM%", customItem.displayName);
+						message = message.replace("%PRICE%", String.valueOf(customItem.price));
+						
+						receiver.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(message));
+						
+						Utils.runShopCommands(receiver, customItem.commands);
 					}
 					else
 					{
-						p.closeInventory();
-						p.sendMessage(Utils.getPrefix() + ChatColor.GRAY + " You don't have enough " + Utils.getCurrencyNamePlural() + "!");
+						receiver.closeInventory();
+						
+						String message = Messages.getShopNotEnough();
+						message = message.replace("%ITEM%", customItem.displayName);
+						message = message.replace("%PRICE%", String.valueOf(customItem.price));
+						
+						receiver.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(message));
 					}
 				}
 				else

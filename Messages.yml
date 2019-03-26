@@ -1,0 +1,52 @@
+#
+#  All messages have the prefix infront of them.
+#
+Messages:
+  Global:
+    Never_Joined: '&7That player has never joined the server!'
+    Whole_Number: '&7Please enter a whole number.'
+    Non_Player: '&7You must be a player to run this command.'
+  Balanace:
+    # %BALANCE% - Will be replaced by the players balance.
+    # %PLAYER% - Will be replaced by the players name whos balance is being checked.
+    Your_Balance: '&bYour balance is, &a%BALANCE%.'
+    Other_Balance: '&b%PLAYER%''s balance is %BALANCE%.'
+  Pay:
+    # %AMOUNT% - Will be replaced by the amount sent.
+    # %SENDER% - Will be replaced by the name of the player sending the coins.
+    # %RECEIVER% - Will be replaced by the name of the player receiving the coins.
+    Sender: '&7You payed %RECEIVER% %AMOUNT% Mob Coins!'
+    Receiver: '&7You were paided %AMOUNT% Mob Coins by %SENDER%'
+    Self: '&7You can''t pay yourself!'
+    Zero: '&7You cannot send 0 Mob Coins to %RECEIVER%!'
+    Not_Enough: '&7You do not have enough Mob Coins!'
+  Add:
+    # %AMOUNT% - Will be replaced by the amount sent.
+    # %PLAYER% - Will be replaced by the players name receiving the coins.
+    Admin_Message: '&bYou have added &a%AMOUNT% &bmobcoins to %PLAYER%''s balance.'
+    Player_Message: '&bYou have received &a%AMOUNT% &bmobcoins.'
+    Zero: '&7You cannot add 0 to %PLAYER%''s balance!'
+  Set:
+    # %AMOUNT% - Will be replaced by the amount sent.
+    # %PLAYER% - Will be replaced by the players name receiving the coins.
+    Admin_Message: '&7You set %PLAYER%''s balance to %AMOUNT%.'
+    Player_Message: '&7Your balance has been set to %AMOUNT%.'
+  Remove:
+    # %AMOUNT% - Will be replaced by the amount sent
+    # %PLAYER% - Will be replaced by the players name receiving the coins.
+    Admin_Message: '&7You have removed %AMOUNT% from %PLAYER%''s balance.'
+    Player_Message: '&7%AMOUNT% Mob Coins have been removed from your balance.'
+    Zero: '&7You cannot remove 0 Mob Coins from %PLAYER%''s balance.'
+  GiveItem:
+    # %PLAYER% - Will be replaced by the players name receiving the coins.
+    # %ITEM% - Will be replaced with the name of the item being given.
+    Admin_Message: '&7You gave %PLAYER% %ITEM%.'
+    Player_Message: '&7You have been given %ITEM%.'
+    Unfound_Item: '&7Could not find %ITEM%. Please ensure you are entering the correct name.'
+  Shop:
+    # %ITEM% - Will be replaced by the item bought.
+    # %PRICE% - Will be replaced by the price of the item.
+    Bought_Item: ''
+    Not_Enough: ''
+  Reload:
+    Admin_Message: '&7config and messages &areloaded.'

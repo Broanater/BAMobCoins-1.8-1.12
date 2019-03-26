@@ -1,5 +1,9 @@
 package ca.live.brodya.mobcoins;
 
+import java.io.File;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +11,8 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
@@ -24,10 +30,8 @@ public class Utils implements Listener
 		plugin = pl;
 	}
 
-	/* 
-	 * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	/*
 	 * Passive Mobs Start
-	 * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 */
 	public static int getPig()
 	{
@@ -94,16 +98,12 @@ public class Utils implements Listener
 		int slot = plugin.getConfig().getInt("DropChances.CHICKEN");
 		return slot;
 	}
-	/* 
-	 * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	/*
 	 * Passive Mobs End
-	 * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 */
 
-	/* 
-	 * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	/*
 	 * Hostile Mobs Start
-	 * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 */
 	public static int getZombie()
 	{
@@ -206,16 +206,12 @@ public class Utils implements Listener
 		int slot = plugin.getConfig().getInt("DropChances.WITCH");
 		return slot;
 	}
-	/* 
-	 * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	/*
 	 * Hostile Mobs End
-	 * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 */
 
-	/* 
-	 * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	/*
 	 * Neutral Mobs Start
-	 * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 */
 	public static int getIronGolem()
 	{
@@ -240,26 +236,20 @@ public class Utils implements Listener
 		int slot = plugin.getConfig().getInt("DropChances.PIGMAN");
 		return slot;
 	}
-	/* 
-	 * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	/*
 	 * Neutral Mobs End
-	 * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 */
 
-	/* 
-	 * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	/*
 	 * Player Start
-	 * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 */
 	public static int getPlayer()
 	{
 		int slot = plugin.getConfig().getInt("DropChances.PLAYER");
 		return slot;
 	}
-	/* 
-	 * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	/*
 	 * Player End
-	 * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 */
 
 	public static ItemStack createItem(Material mat, int amt, int durability, String name)
@@ -297,13 +287,13 @@ public class Utils implements Listener
 		loreRaw.add("&7Price: " + plugin.getConfig().getInt("Shop." + itemId + ".Price"));
 
 		List<String> lore = new ArrayList<String>();
-		for(String loreLine : loreRaw)
+		for (String loreLine : loreRaw)
 		{
 			lore.add(Utils.convertColorCodes(loreLine));
 		}
-		
+
 		meta.setLore(lore);
-		
+
 		item.setItemMeta(meta);
 		return item;
 	}
@@ -358,9 +348,7 @@ public class Utils implements Listener
 		float playerPercent = getPlayer();
 
 		/* Passive mobcoin display */
-		if (batPercent > 0 || squidPercent > 0 || rabbitPercent > 0 || chickenPercent > 0 || pigPercent > 0
-				|| sheepPercent > 0 || cowPercent > 0 || mushroomCowPercent > 0 || snowmanPercent > 0
-				|| ocelotPercent > 0 || horsePercent > 0)
+		if (batPercent > 0 || squidPercent > 0 || rabbitPercent > 0 || chickenPercent > 0 || pigPercent > 0 || sheepPercent > 0 || cowPercent > 0 || mushroomCowPercent > 0 || snowmanPercent > 0 || ocelotPercent > 0 || horsePercent > 0)
 		{
 			lore.add(ChatColor.AQUA + "" + ChatColor.BOLD + "Passive Mobs:");
 		}
@@ -410,10 +398,7 @@ public class Utils implements Listener
 		}
 
 		/* Hostile mobcoin chance display */
-		if (zombiePercent > 0 || skeletonPercent > 0 || spiderPercent > 0 || caveSpiderPercent > 0 || creeperPercent > 0
-				|| endermanPercent > 0 || blazePercent > 0 || silverfishPercent > 0 || witchPercent > 0
-				|| magmaCubePercent > 0 || endermitePercent > 0 || guardianPercent > 0 || ghastPercent > 0
-				|| slimePercent > 0 || giantPercent > 0 || witherPercent > 0 || enderDragonPercent > 0)
+		if (zombiePercent > 0 || skeletonPercent > 0 || spiderPercent > 0 || caveSpiderPercent > 0 || creeperPercent > 0 || endermanPercent > 0 || blazePercent > 0 || silverfishPercent > 0 || witchPercent > 0 || magmaCubePercent > 0 || endermitePercent > 0 || guardianPercent > 0 || ghastPercent > 0 || slimePercent > 0 || giantPercent > 0 || witherPercent > 0 || enderDragonPercent > 0)
 		{
 			lore.add(ChatColor.AQUA + "" + ChatColor.BOLD + "Hostile Mobs:");
 		}
@@ -517,7 +502,7 @@ public class Utils implements Listener
 		{
 			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Players (" + getPlayer() + "%)");
 		}
-		
+
 		meta.setLore(lore);
 		item.setItemMeta(meta);
 		return item;
@@ -528,7 +513,7 @@ public class Utils implements Listener
 		String player = p.getUniqueId().toString();
 		ItemStack item = new ItemStack(Material.DOUBLE_PLANT);
 		ItemMeta im = item.getItemMeta();
-		if(CoinsAPI.getCoins(player) > 1)
+		if (CoinsAPI.getCoins(player) > 1)
 		{
 			im.setDisplayName(ChatColor.BOLD + "" + ChatColor.GOLD + "You have " + CoinsAPI.getCoins(player) + " " + getCurrencyNamePlural());
 		}
@@ -558,44 +543,42 @@ public class Utils implements Listener
 		String prefix = ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("Options.Prefix"));
 		return prefix;
 	}
-	
+
 	public static String getCurrencyNameSingle()
 	{
 		String currency = ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("Options.CurrencyNameSingle"));
-		return currency; 
+		return currency;
 	}
-	
+
 	public static String getCurrencyNamePlural()
 	{
 		String currency = ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("Options.CurrencyNamePlural"));
-		return currency; 
+		return currency;
 	}
 
 	public static boolean hasAccount(Player p)
 	{
 		return plugin.getConfig().contains("Players." + p.getUniqueId());
 	}
-	
+
 	public static List<CustomItem> getShopItems()
 	{
 		List<CustomItem> customItems = new ArrayList<CustomItem>();
 		for (String key : plugin.getConfig().getConfigurationSection("Shop").getKeys(false))
 		{
-		    String material = plugin.getConfig().getString("Shop." + key + ".Item");
-		    int meta = plugin.getConfig().getInt("Shop." + key + ".Meta");
-		    int amount = plugin.getConfig().getInt("Shop." + key + ".Amount");
-		    int slot = plugin.getConfig().getInt("Shop." + key + ".Slot");
-		    String displayName = plugin.getConfig().getString("Shop." + key + ".DisplayName");
-		    int price = plugin.getConfig().getInt("Shop." + key + ".Price");
-		    List<String> lore = plugin.getConfig().getStringList("Shop." + key + ".Lore");
-		    List<String> commands = plugin.getConfig().getStringList("Shop." + key + ".Commands");
-			
-			
+			String material = plugin.getConfig().getString("Shop." + key + ".Item");
+			int meta = plugin.getConfig().getInt("Shop." + key + ".Meta");
+			int amount = plugin.getConfig().getInt("Shop." + key + ".Amount");
+			int slot = plugin.getConfig().getInt("Shop." + key + ".Slot");
+			String displayName = plugin.getConfig().getString("Shop." + key + ".DisplayName");
+			int price = plugin.getConfig().getInt("Shop." + key + ".Price");
+			List<String> lore = plugin.getConfig().getStringList("Shop." + key + ".Lore");
+			List<String> commands = plugin.getConfig().getStringList("Shop." + key + ".Commands");
+
 			CustomItem customItem = new CustomItem(key, material, meta, amount, slot, displayName, price, lore, commands);
 			customItems.add(customItem);
 		}
-		
-		
+
 		return customItems;
 	}
 
@@ -647,60 +630,59 @@ public class Utils implements Listener
 	{
 		return plugin.getConfig().getInt("Players." + p.getUniqueId() + ".Tokens") >= plugin.getConfig().getInt("Shop." + slot + ".Price");
 	}
-	
+
 	public static String getBroadcastPrefix()
 	{
 		String prefix = ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("Options.BroadcastPrefix"));
 		return prefix;
 	}
-	
+
 	public static String getCurrencyIncreaseMessage(String sMob, int sCoinsRecieved)
 	{
 		String message = "";
-		if(sCoinsRecieved > 1)
+		if (sCoinsRecieved > 1)
 		{
-			message = Utils.getPrefix() + ChatColor.GRAY + " You killed a " + sMob  + " and gained " + sCoinsRecieved + " " + getCurrencyNamePlural() + "!";
+			message = Utils.getPrefix() + ChatColor.GRAY + " You killed a " + sMob + " and gained " + sCoinsRecieved + " " + getCurrencyNamePlural() + "!";
 		}
 		else
 		{
-			message = Utils.getPrefix() + ChatColor.GRAY + " You killed a " + sMob  + " and gained " + sCoinsRecieved + " " + getCurrencyNameSingle() + "!";
+			message = Utils.getPrefix() + ChatColor.GRAY + " You killed a " + sMob + " and gained " + sCoinsRecieved + " " + getCurrencyNameSingle() + "!";
 		}
 		return message;
 	}
-	
+
 	public static void insufficientPermissions(CommandSender sSender, String sCommand)
 	{
 		sSender.sendMessage(getPrefix() + ChatColor.RED + " Insufficient permission! " + ChatColor.AQUA + "You do not have access to " + sCommand);
 	}
-	
-	
+
 	public static void sendMessage(CommandSender sSender, String sMessage)
 	{
 		sSender.sendMessage(getPrefix() + ChatColor.AQUA + sMessage);
 	}
-	
+
 	public static void sendBroadcast(String sMessage)
 	{
-		Bukkit.broadcastMessage(getBroadcastPrefix() + " " +convertColorCodes(sMessage));
+		Bukkit.broadcastMessage(getBroadcastPrefix() + " " + convertColorCodes(sMessage));
 	}
-	
+
 	public static String convertColorCodes(String sString)
 	{
 		String newString = ChatColor.translateAlternateColorCodes('&', sString);
 		return newString;
 	}
-	
+
 	public static void runShopCommands(Player player, List<String> sCommands)
 	{
-		for(String command : sCommands)
+		for (String command : sCommands)
 		{
 			String request = command.replace("%PLAYER%", player.getName());
-			if(request.startsWith("[MESSAGE]"))
+			if (request.startsWith("[MESSAGE]"))
 			{
 				request = request.replace("[MESSAGE]", "");
 				Utils.sendMessage(player, request);
 			}
-			else if(request.startsWith("[BROADCAST]"))
+			else if (request.startsWith("[BROADCAST]"))
 			{
 				request = request.replace("[BROADCAST]", "");
 				sendBroadcast(request);
@@ -711,5 +693,8 @@ public class Utils implements Listener
 			}
 		}
 	}
+
+	
+	
 	
 }
