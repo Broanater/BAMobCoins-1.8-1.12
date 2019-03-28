@@ -44,9 +44,11 @@ public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 		System.out.print("-------------------------------");
 		getCommand("BAMobCoins").setExecutor(new Commands(this));
 		registerEvents();
+		
+		
 		createBalanceFile();
 		loadBalance();
-		createMessagesFile();
+		Messages.reloadMessages();
 
 		/* Check if theres any updates for the plugin on spigot. */
 		new UpdateChecker(this).checkForUpdate();
@@ -116,20 +118,5 @@ public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 		{
 			this.coins.put(UUID, Integer.valueOf(bal.getInt(UUID)));
 		}
-	}
-	
-	
-	/*
-	 * Messages file stuff.
-	 */
-	public void createMessagesFile()
-	{
-		File file = new File(this.getDataFolder(), "Messages.yml");
-		if(!file.exists())
-		{
-			/* If it doesn't exists copy it from the jar */
-			this.saveResource("Messages.yml", false);
-		}
-		Messages.reloadMessages();
 	}
 }

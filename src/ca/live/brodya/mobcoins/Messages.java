@@ -31,25 +31,22 @@ public class Messages implements Listener
 		messagesConfig = YamlConfiguration.loadConfiguration(messagesConfigFile);
 
 		/* Get the default from the jar. */
-		Reader defConfigStream = null;
-		try
+		if(!messagesConfigFile.exists())
 		{
-			defConfigStream = new InputStreamReader(plugin.getResource("Messages.yml"), "UTF8");
-		}
-		catch (UnsupportedEncodingException e)
-		{
+			/* If it doesn't exists copy it from the jar */
+			plugin.saveResource("Messages.yml", false);
 		}
 		
-		if (defConfigStream != null)
+		if (messagesConfigFile != null)
 		{
-			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(messagesConfigFile);
 			messagesConfig.setDefaults(defConfig);
 		}
 	}
 	
 	public static String getGlobalNeverJoined()
 	{
-		return messagesConfig.getString("Message.Global.Never_Joined");
+		return messagesConfig.getString("Messages.Global.Never_Joined");
 	}
 	
 	public static String getGlobalWholeNumber()

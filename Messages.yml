@@ -6,7 +6,7 @@ Messages:
     Never_Joined: '&7That player has never joined the server!'
     Whole_Number: '&7Please enter a whole number.'
     Non_Player: '&7You must be a player to run this command.'
-  Balanace:
+  Balance:
     # %BALANCE% - Will be replaced by the players balance.
     # %PLAYER% - Will be replaced by the players name whos balance is being checked.
     Your_Balance: '&bYour balance is, &a%BALANCE%.'
@@ -46,7 +46,7 @@ Messages:
   Shop:
     # %ITEM% - Will be replaced by the item bought.
     # %PRICE% - Will be replaced by the price of the item.
-    Bought_Item: ''
-    Not_Enough: ''
+    Bought_Item: '&7You bought %ITEM% for %PRICE%.'
+    Not_Enough: '&7You don''t have %PRICE% to buy %ITEM%'
   Reload:
-    Admin_Message: '&7config and messages &areloaded.'
+    Admin_Message: '&7Config and messages &areloaded.'

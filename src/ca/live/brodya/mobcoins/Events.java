@@ -27,9 +27,9 @@ public class Events implements org.bukkit.event.Listener
 	@EventHandler
 	public void OnPlayerJoin(PlayerJoinEvent e)
 	{
-		Player p = e.getPlayer();
-		String player = p.getUniqueId().toString();
-		CoinsAPI.createPlayer(player);
+		Player player = e.getPlayer();
+		String playerUuid = player.getUniqueId().toString();
+		CoinsAPI.createPlayer(playerUuid);
 	}
 
 	@EventHandler

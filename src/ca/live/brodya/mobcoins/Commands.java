@@ -67,6 +67,8 @@ public class Commands implements CommandExecutor
 						{
 							/* Reload the plugins config file. */
 							this.plugin.reloadConfig();
+							
+							
 							Messages.reloadMessages();
 							sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getReload()));
 
@@ -99,6 +101,111 @@ public class Commands implements CommandExecutor
 						Utils.insufficientPermissions(sender, "/BAMobCoins help");
 						return true;
 					}
+					
+					
+					if (args[0].equalsIgnoreCase("messages") || args[0].equalsIgnoreCase("msgs"))
+					{
+						if (sender.hasPermission("BAMobCoins.messages"))
+						{
+							/* Global Messages */
+							String neverJoined = Utils.convertColorCodes("&fNever_Joined: " + Messages.getGlobalNeverJoined());
+							String wholeNumber = Utils.convertColorCodes("&fWhole_Number: " + Messages.getGlobalWholeNumber());
+							String nonPlayer = Utils.convertColorCodes("&fNon_Player: " + Messages.getGlobalWholeNumber());
+							
+							/* Balance Messages */
+							String yourBalance = Utils.convertColorCodes("&fYour_Balance: " + Messages.getYourBalance());
+							String otherBalance = Utils.convertColorCodes("&fOther_Balance: " + Messages.getOtherBalance());
+							
+							/* Pay Messages */
+							String paySender = Utils.convertColorCodes("&fSender: " + Messages.getPaySender());
+							String payReceiver = Utils.convertColorCodes("&fReceiver: " + Messages.getPayReceiver());
+							String paySelf = Utils.convertColorCodes("&fSelf: " + Messages.getPaySelf());
+							String payZero = Utils.convertColorCodes("&fZero: " + Messages.getPaySendZero());
+							String payNotEnough = Utils.convertColorCodes("&fNot_Enough: " + Messages.getPayNotEnough());
+							
+							/* Add Messages */
+							String addAdmin = Utils.convertColorCodes("&fAdmin_Message: " + Messages.getAddAdmin());
+							String addPlayer = Utils.convertColorCodes("&fPlayer_Message: " + Messages.getAddPlayer());
+							String addZero = Utils.convertColorCodes("&fZero: " + Messages.getAddZero());
+							
+							/* Set Messages */
+							String setAdmin = Utils.convertColorCodes("&fAdmin_Message: " + Messages.getSetAdmin());
+							String setPlayer = Utils.convertColorCodes("&fPlayer_Message: " + Messages.getSetPlayer());
+							
+							/* Remove Messages */
+							String removeAdmin = Utils.convertColorCodes("&fAdmin_Message: " + Messages.getRemoveAdmin());
+							String removePlayer = Utils.convertColorCodes("&fPlayer_Message: " + Messages.getRemovePlayer());
+							String removeZero = Utils.convertColorCodes("&fZero: " + Messages.getRemoveZero());
+							
+							/* Give Item Messages */
+							String giveItemAdmin = Utils.convertColorCodes("&fAdmin_Message: " + Messages.getGiveItemAdmin());
+							String giveItemPlayer = Utils.convertColorCodes("&fPlayer_Message: " + Messages.getGiveItemPlayer());
+							String giveItemUnFound = Utils.convertColorCodes("&fUnfound_Item: " + Messages.getGiveItemUnfound());
+							
+							/* Shop Messages */
+							String shopBoughtItem = Utils.convertColorCodes("&fBought_Item: " + Messages.getShopBoughtItem());
+							String shopNotEnough = Utils.convertColorCodes("&fNot_Enough: " + Messages.getShopNotEnough());
+							
+							/* Reload Message */
+							String reloadAdmin = Utils.convertColorCodes("&fAdmin_Message: " + Messages.getReload());
+							
+							
+							
+							
+							
+							sender.sendMessage(ChatColor.GRAY + "-------------[ " + ChatColor.GOLD + "BAMobCoins V" + plugin.getDescription().getVersion() + " Messages " + ChatColor.GRAY + "]-------------");
+							
+							sender.sendMessage(Utils.convertColorCodes("&6Global Messages"));
+							sender.sendMessage("  " + neverJoined);
+							sender.sendMessage("  " + wholeNumber);
+							sender.sendMessage("  " + nonPlayer);
+							
+							sender.sendMessage(Utils.convertColorCodes("&6Balance Messages"));
+							sender.sendMessage("  " + yourBalance);
+							sender.sendMessage("  " + otherBalance);
+
+							sender.sendMessage(Utils.convertColorCodes("&6Pay Messages"));
+							sender.sendMessage("  " + paySender);
+							sender.sendMessage("  " + payReceiver);
+							sender.sendMessage("  " + paySelf);
+							sender.sendMessage("  " + payZero);
+							sender.sendMessage("  " + payNotEnough);
+							
+							sender.sendMessage(Utils.convertColorCodes("&6Add Messages"));
+							sender.sendMessage("  " + addAdmin);
+							sender.sendMessage("  " + addPlayer);
+							sender.sendMessage("  " + addZero);
+							
+							sender.sendMessage(Utils.convertColorCodes("&6Set Messages"));
+							sender.sendMessage("  " + setAdmin);
+							sender.sendMessage("  " + setPlayer);
+							
+							sender.sendMessage(Utils.convertColorCodes("&6Remove Messages"));
+							sender.sendMessage("  " + removeAdmin);
+							sender.sendMessage("  " + removePlayer);
+							sender.sendMessage("  " + removeZero);
+							
+							sender.sendMessage(Utils.convertColorCodes("&6Give Item Messages"));
+							sender.sendMessage("  " + giveItemAdmin);
+							sender.sendMessage("  " + giveItemPlayer);
+							sender.sendMessage("  " + giveItemUnFound);
+							
+							sender.sendMessage(Utils.convertColorCodes("&6Shop Messages"));
+							sender.sendMessage("  " + shopBoughtItem);
+							sender.sendMessage("  " + shopNotEnough);
+							
+							sender.sendMessage(Utils.convertColorCodes("&6Reload Messages"));
+							sender.sendMessage("  " + reloadAdmin);
+							
+							sender.sendMessage(ChatColor.GRAY + "-----------------------------------------------------");
+
+							return true;
+						}
+
+						Utils.insufficientPermissions(sender, "/BAMobCoins help");
+						return true;
+					}
+					
 
 				}
 
