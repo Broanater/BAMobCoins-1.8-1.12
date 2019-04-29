@@ -653,7 +653,11 @@ public class Utils implements Listener
 
 	public static void insufficientPermissions(CommandSender sSender, String sCommand)
 	{
-		sSender.sendMessage(getPrefix() + ChatColor.RED + " Insufficient permission! " + ChatColor.AQUA + "You do not have access to " + sCommand);
+		String message = Messages.getGlobalInsufficientPermission();
+		
+		message = message.replace("%COMMAND%", sCommand);
+		
+		sSender.sendMessage(getPrefix() + " " + convertColorCodes(message));
 	}
 
 	public static void sendMessage(CommandSender sSender, String sMessage)
@@ -671,7 +675,41 @@ public class Utils implements Listener
 		String newString = ChatColor.translateAlternateColorCodes('&', sString);
 		return newString;
 	}
+	
+	public static ItemStack getCoinItem(int amount)
+	{
+		if (!plugin.getConfig().contains("Coin"))
+		{
+			return null;
+		}
 
+		String name = plugin.getConfig().getString("Coin.Name");
+		int id = plugin.getConfig().getInt("Coin.Meta");
+
+		ItemStack item = new ItemStack(Material.getMaterial(plugin.getConfig().getString("Coin.Item").toUpperCase()), amount, (short) id);
+		ItemMeta meta = item.getItemMeta();
+		meta.setDisplayName(Utils.convertColorCodes(name));
+
+		List<String> loreRaw = plugin.getConfig().getStringList("Coin.Lore");
+
+		List<String> lore = new ArrayList<String>();
+		for (String loreLine : loreRaw)
+		{
+			lore.add(Utils.convertColorCodes(loreLine));
+		}
+
+		meta.setLore(lore);
+
+		item.setItemMeta(meta);
+		return item;
+	}
+
+	public static void withdrawCoins(Player player, int amount)
+	{
+		player.getInventory().addItem(getCoinItem(amount));
+		CoinsAPI.removeCoins(player.getUniqueId().toString(), amount);
+	}
+	
 	public static void runShopCommands(Player player, List<String> sCommands)
 	{
 		for (String command : sCommands)
@@ -689,7 +727,7 @@ public class Utils implements Listener
 			}
 			else
 			{
-				org.bukkit.Bukkit.getServer().dispatchCommand(org.bukkit.Bukkit.getServer().getConsoleSender(), request);
+				Bukkit.getServer().dispatchCommand(org.bukkit.Bukkit.getServer().getConsoleSender(), request);
 			}
 		}
 	}

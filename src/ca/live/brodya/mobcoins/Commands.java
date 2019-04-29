@@ -1,5 +1,7 @@
 package ca.live.brodya.mobcoins;
 
+import java.util.ArrayList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -83,17 +85,14 @@ public class Commands implements CommandExecutor
 					{
 						if (sender.hasPermission("BAMobCoins.help"))
 						{
-							sender.sendMessage(ChatColor.GRAY + "-------------------[ " + ChatColor.GOLD + "BAMobCoins V" + plugin.getDescription().getVersion() + " Help " + ChatColor.GRAY + "]-------------------");
-							sender.sendMessage(ChatColor.GOLD + "/BAMobCoins " + ChatColor.DARK_GRAY + ": " + ChatColor.GRAY + "Opens the shop GUI.");
-							sender.sendMessage(ChatColor.GOLD + "/BAMobCoins balance " + ChatColor.DARK_GRAY + ": " + ChatColor.GRAY + "See your balance.");
-							sender.sendMessage(ChatColor.GOLD + "/BAMobCoins balance <players ign> " + ChatColor.DARK_GRAY + ": " + ChatColor.GRAY + "See other players balance.");
-							sender.sendMessage(ChatColor.GOLD + "/BAMobCoins pay <players ign> <amount>" + ChatColor.DARK_GRAY + ": " + ChatColor.GRAY + "Pay another player from your balance.");
-							sender.sendMessage(ChatColor.GOLD + "/BAMobCoins add <players ign> <amount>" + ChatColor.DARK_GRAY + ": " + ChatColor.GRAY + "Adds MobCoins to a players balance.");
-							sender.sendMessage(ChatColor.GOLD + "/BAMobCoins set <players ign> <amount>" + ChatColor.DARK_GRAY + ": " + ChatColor.GRAY + "Set a players balance.");
-							sender.sendMessage(ChatColor.GOLD + "/BAMobCoins remove <players ign> <amount>" + ChatColor.DARK_GRAY + ": " + ChatColor.GRAY + "Removes MobCoins from a players balance.");
-							sender.sendMessage(ChatColor.GOLD + "/BAMobCoins reload " + ChatColor.DARK_GRAY + ": " + ChatColor.GRAY + "Reloads the plugins config files.");
-							sender.sendMessage(ChatColor.GOLD + "/BAMobCoins help " + ChatColor.DARK_GRAY + ": " + ChatColor.GRAY + "Sends the help message listing commands.");
-							sender.sendMessage(ChatColor.GRAY + "-----------------------------------------------------");
+							ArrayList<String> helpMessages = Messages.getHelp();
+							
+							for(String message : helpMessages)
+							{
+								message = message.replace("%VERSION%", plugin.getDescription().getVersion());
+								
+								sender.sendMessage(Utils.convertColorCodes(message));
+							}
 
 							return true;
 						}
@@ -111,6 +110,8 @@ public class Commands implements CommandExecutor
 							String neverJoined = Utils.convertColorCodes("&fNever_Joined: " + Messages.getGlobalNeverJoined());
 							String wholeNumber = Utils.convertColorCodes("&fWhole_Number: " + Messages.getGlobalWholeNumber());
 							String nonPlayer = Utils.convertColorCodes("&fNon_Player: " + Messages.getGlobalWholeNumber());
+							String insufficientPermission = Utils.convertColorCodes("&fInsufficient_Permission: " + Messages.getGlobalInsufficientPermission());
+							String unknownCommand = Utils.convertColorCodes("&fUnknown_Command: " + Messages.getGlobalUnknownCommand());
 							
 							/* Balance Messages */
 							String yourBalance = Utils.convertColorCodes("&fYour_Balance: " + Messages.getYourBalance());
@@ -146,6 +147,11 @@ public class Commands implements CommandExecutor
 							String shopBoughtItem = Utils.convertColorCodes("&fBought_Item: " + Messages.getShopBoughtItem());
 							String shopNotEnough = Utils.convertColorCodes("&fNot_Enough: " + Messages.getShopNotEnough());
 							
+							/* Coin Messages */
+							String coinWithdraw = Utils.convertColorCodes("&fWithdraw: " + Messages.getCoinWithdraw());
+							String coinDeposit = Utils.convertColorCodes("&fDeposit: " + Messages.getCoinDeposit());
+							String coinZero = Utils.convertColorCodes("&fZero: " + Messages.getCoinZero());
+							
 							/* Reload Message */
 							String reloadAdmin = Utils.convertColorCodes("&fAdmin_Message: " + Messages.getReload());
 							
@@ -159,6 +165,8 @@ public class Commands implements CommandExecutor
 							sender.sendMessage("  " + neverJoined);
 							sender.sendMessage("  " + wholeNumber);
 							sender.sendMessage("  " + nonPlayer);
+							sender.sendMessage("  " + insufficientPermission);
+							sender.sendMessage("  " + unknownCommand);
 							
 							sender.sendMessage(Utils.convertColorCodes("&6Balance Messages"));
 							sender.sendMessage("  " + yourBalance);
@@ -193,6 +201,11 @@ public class Commands implements CommandExecutor
 							sender.sendMessage(Utils.convertColorCodes("&6Shop Messages"));
 							sender.sendMessage("  " + shopBoughtItem);
 							sender.sendMessage("  " + shopNotEnough);
+
+							sender.sendMessage(Utils.convertColorCodes("&6Coin Messages"));
+							sender.sendMessage("  " + coinWithdraw);
+							sender.sendMessage("  " + coinDeposit);
+							sender.sendMessage("  " + coinZero);
 							
 							sender.sendMessage(Utils.convertColorCodes("&6Reload Messages"));
 							sender.sendMessage("  " + reloadAdmin);
@@ -202,7 +215,7 @@ public class Commands implements CommandExecutor
 							return true;
 						}
 
-						Utils.insufficientPermissions(sender, "/BAMobCoins help");
+						Utils.insufficientPermissions(sender, "/BAMobCoins messages");
 						return true;
 					}
 					
@@ -213,7 +226,7 @@ public class Commands implements CommandExecutor
 				{
 					if (args[0].equalsIgnoreCase("balance") || args[0].equalsIgnoreCase("bal"))
 					{
-						if (sender.hasPermission("BaMobCoins.balance.others"))
+						if (sender.hasPermission("BAMobCoins.balance.others"))
 						{
 							/* Get the Player of the on to check the balance of. */
 							Player toCheck = Bukkit.getServer().getPlayer(args[1]);
@@ -233,6 +246,38 @@ public class Commands implements CommandExecutor
 						Utils.insufficientPermissions(sender, "/BAMobCoins balance <players ign>");
 						return true;
 					}
+					
+					if (args[0].equalsIgnoreCase("withdraw"))
+					{
+						if (sender.hasPermission("BAMobCoins.withdraw"))
+						{
+							Player player = (Player) sender;
+							int amount = Integer.valueOf(args[1]);
+							
+							if(amount == 0)
+							{
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getCoinZero()));
+								return true;
+							}
+							
+							if(CoinsAPI.getCoins(player.getUniqueId().toString()) >= amount)
+							{
+								String message = Messages.getCoinWithdraw();
+								
+								message = message.replace("%AMOUNT%", String.valueOf(amount));
+								
+								Utils.withdrawCoins(player, amount);
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(message));
+							}
+							
+							
+							return true;
+						}
+
+						Utils.insufficientPermissions(sender, "/BAHappyHour reload");
+						return true;
+					}
+					
 				}
 
 				if (args.length == 3)
@@ -541,8 +586,9 @@ public class Commands implements CommandExecutor
 					}
 
 				}
-
-				sender.sendMessage(Utils.getPrefix() + ChatColor.RED + " Unknown command! Type /bamobcoins help for a list of commands.");
+				
+				
+				sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getGlobalUnknownCommand()));
 				return true;
 				/* End of if testing if a player ran the command */
 			}

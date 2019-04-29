@@ -12,6 +12,12 @@ Options:
   Title: '&7[&6BAMobCoins - Shop&7]'
   CurrencyNameSingle: '&bMobCoin'
   CurrencyNamePlural: '&bMobCoins'
+Coin:
+  Item: DOUBLE_PLANT
+  Meta: 0
+  Name: '&6&lMob Coin'
+  Lore:
+  - '&7Right click to deposit!'
 Shop:
   DevRank: #<-- This value MUST be unique
     Item: CAKE

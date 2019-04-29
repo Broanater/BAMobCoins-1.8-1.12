@@ -10,7 +10,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.ItemStack;
 
 import ca.live.brodya.mobcoins.templates.CustomItem;
 
@@ -31,6 +33,29 @@ public class Events implements org.bukkit.event.Listener
 		String playerUuid = player.getUniqueId().toString();
 		CoinsAPI.createPlayer(playerUuid);
 	}
+	
+	
+	@EventHandler
+	public void rightClickItem(PlayerInteractEvent event)
+	{
+		Player player = event.getPlayer();
+		ItemStack item = player.getItemInHand();
+		int amount = item.getAmount();
+		
+		if(item.equals(Utils.getCoinItem(amount)))
+		{
+			CoinsAPI.addCoins(player.getUniqueId().toString(), amount);
+			player.getInventory().removeItem(item);
+			
+			String message = Messages.getCoinDeposit();
+			
+			message = message.replace("%AMOUNT%", String.valueOf(amount));
+			
+			player.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(message));
+		}
+		
+	}
+	
 
 	@EventHandler
 	public void OnInvClick(InventoryClickEvent e)

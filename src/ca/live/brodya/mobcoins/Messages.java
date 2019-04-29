@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -57,6 +58,16 @@ public class Messages implements Listener
 	public static String getGlobalNonPlayer()
 	{
 		return messagesConfig.getString("Messages.Global.Non_Player");
+	}
+	
+	public static String getGlobalInsufficientPermission()
+	{
+		return messagesConfig.getString("Messages.Global.Insufficient_Permission");
+	}
+	
+	public static String getGlobalUnknownCommand()
+	{
+		return messagesConfig.getString("Messages.Global.Unknown_Command");
 	}
 	
 	public static String getYourBalance()
@@ -158,9 +169,30 @@ public class Messages implements Listener
 	{
 		return messagesConfig.getString("Messages.Shop.Not_Enough");
 	}
+
+	public static String getCoinWithdraw()
+	{
+		return messagesConfig.getString("Messages.Coin.Withdraw");
+	}
+
+	public static String getCoinDeposit()
+	{
+		return messagesConfig.getString("Messages.Coin.Deposit");
+	}
+
+	public static String getCoinZero()
+	{
+		return messagesConfig.getString("Messages.Coin.Zero");
+	}
 	
 	public static String getReload()
 	{
 		return messagesConfig.getString("Messages.Reload.Admin_Message");
 	}
+	
+	public static ArrayList<String> getHelp()
+	{
+		return (ArrayList<String>) messagesConfig.getStringList("Messages.Help");
+	}
+	
 }

@@ -56,12 +56,12 @@ public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 
 	public void onDisable()
 	{
+		saveBalance();
 		System.out.print("-------------------------------");
 		System.out.print("");
 		System.out.print("    BAMobCoins Disabled!");
 		System.out.print("");
 		System.out.print("-------------------------------");
-		saveBalance();
 	}
 
 	private void registerEvents()

@@ -6,6 +6,9 @@ Messages:
     Never_Joined: '&7That player has never joined the server!'
     Whole_Number: '&7Please enter a whole number.'
     Non_Player: '&7You must be a player to run this command.'
+    # %COMMAND% - Will be replaced by the command format 
+    Insufficient_Permission: '&cInsufficient Permission! You don''t have access to %COMMAND%.'
+    Unknown_Command: '&cUnknown command. Type /BAMobCoins help for assistance with commands.'
   Balance:
     # %BALANCE% - Will be replaced by the players balance.
     # %PLAYER% - Will be replaced by the players name whos balance is being checked.
@@ -48,5 +51,23 @@ Messages:
     # %PRICE% - Will be replaced by the price of the item.
     Bought_Item: '&7You bought %ITEM% for %PRICE%.'
     Not_Enough: '&7You don''t have %PRICE% to buy %ITEM%'
+  Coin:
+    # %AMOUNT% - The amount of coins
+    Withdraw: '&7You have withdrawn %AMOUNT%!'
+    Deposit: '&7You have deposited %AMOUNT%!'
+    Zero: '&7You can''t withdraw 0 Mob Coins!'
   Reload:
     Admin_Message: '&7Config and messages &areloaded.'
+  Help:
+  # %VERSION% - Will be replaced by the plugins version
+  - '&7-------------[ &6BAMobCoins V%VERSION% Help &7]-------------'
+  - '&6/BAMobCoins &8: &7Opens the shop GUI.'
+  - '&6/BAMobCoins balance &8: &7See your balance.'
+  - '&6/BAMobCoins balance <players ign> &8: &7See other players balance.'
+  - '&6/BAMobCoins pay <players ign> <amount> &8: &7Pay another player from your balance.'
+  - '&6/BAMobCoins add <players ign> <amount> &8: &7Adds MobCoins to a players balance.'
+  - '&6/BAMobCoins set <players ign> <amount> &8: &7Set a players balance.'
+  - '&6/BAMobCoins remove <players ign> <amount> &8: &7Removes MobCoins from a players balance.'
+  - '&6/BAMobCoins withdraw <amount> &8: &7Withdraw MobCoins from your balance into an item.'
+  - '&6/BAMobCoins reload &8: &7Reloads the plugins config files.'
+  - '&6/BAMobCoins help &8: &7Sends the help message listing commands.'
