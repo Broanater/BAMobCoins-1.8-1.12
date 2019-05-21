@@ -1,4 +1,4 @@
-package ca.live.brodya.mobcoins.templates;
+package ba.mobcoins.templates;
 
 import java.util.ArrayList;
 import java.util.List;

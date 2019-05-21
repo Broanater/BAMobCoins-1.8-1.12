@@ -12,6 +12,10 @@ Options:
   Title: '&7[&6BAMobCoins - Shop&7]'
   CurrencyNameSingle: '&bMobCoin'
   CurrencyNamePlural: '&bMobCoins'
+  BorderItem:
+    Material: STAINED_GLASS_PANE
+    Meta: 10
+    Name: " "
 Coin:
   Item: DOUBLE_PLANT
   Meta: 0

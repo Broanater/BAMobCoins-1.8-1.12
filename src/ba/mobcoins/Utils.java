@@ -1,4 +1,4 @@
-package ca.live.brodya.mobcoins;
+package ba.mobcoins;
 
 import java.io.File;
 import java.io.InputStreamReader;
@@ -19,7 +19,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import ca.live.brodya.mobcoins.templates.CustomItem;
+import ba.mobcoins.templates.CustomItem;
 
 public class Utils implements Listener
 {
@@ -528,7 +528,20 @@ public class Utils implements Listener
 
 	private static ItemStack getBorder()
 	{
-		ItemStack item = createItem(Material.STAINED_GLASS_PANE, 1, 11, " ");
+		ItemStack item = null;
+		Material material = Material.getMaterial(plugin.getConfig().getString("Options.BorderItem.Material"));
+		int metaValue = plugin.getConfig().getInt("Options.BorderItem.Meta");
+		String name = plugin.getConfig().getString("Options.BorderItem.Name");
+		
+		if (material == null || metaValue == -1)
+		{
+			item = createItem(Material.STAINED_GLASS_PANE, 1, 10, " ");
+		}
+		else
+		{
+			item = createItem(material, 1, metaValue, name);
+		}
+		
 		return item;
 	}
 

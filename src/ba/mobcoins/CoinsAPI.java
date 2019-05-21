@@ -1,4 +1,4 @@
-package ca.live.brodya.mobcoins;
+package ba.mobcoins;
 
 public class CoinsAPI implements org.bukkit.event.Listener
 {

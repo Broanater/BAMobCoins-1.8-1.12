@@ -1,4 +1,4 @@
-package ca.live.brodya.mobcoins;
+package ba.mobcoins;
 
 import java.util.ArrayList;
 
@@ -9,7 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import ca.live.brodya.mobcoins.templates.CustomItem;
+import ba.mobcoins.templates.CustomItem;
 
 public class Commands implements CommandExecutor
 {

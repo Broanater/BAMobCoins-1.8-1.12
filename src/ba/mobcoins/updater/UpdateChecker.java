@@ -1,4 +1,4 @@
-package ca.live.brodya.mobcoins.updater;
+package ba.mobcoins.updater;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,7 +19,7 @@ import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import ca.live.brodya.mobcoins.Utils;
+import ba.mobcoins.Utils;
 
 
 public class UpdateChecker

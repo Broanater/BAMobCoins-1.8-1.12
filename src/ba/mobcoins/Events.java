@@ -1,4 +1,4 @@
-package ca.live.brodya.mobcoins;
+package ba.mobcoins;
 
 import java.io.File;
 import java.util.Random;
@@ -14,7 +14,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 
-import ca.live.brodya.mobcoins.templates.CustomItem;
+import ba.mobcoins.templates.CustomItem;
 
 public class Events implements org.bukkit.event.Listener
 {

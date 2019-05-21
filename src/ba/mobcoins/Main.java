@@ -1,4 +1,4 @@
-package ca.live.brodya.mobcoins;
+package ba.mobcoins;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,7 +16,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 
-import ca.live.brodya.mobcoins.updater.UpdateChecker;
+import ba.mobcoins.updater.UpdateChecker;
 
 public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 {
@@ -34,8 +34,13 @@ public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 
 	public void onEnable()
 	{
-		getConfig().options().copyDefaults(true);
-		saveDefaultConfig();
+		File configFile = new File(this.getDataFolder(), "config.yml");
+		if(!configFile.exists())
+		{
+			getConfig().options().copyDefaults(true);
+			saveDefaultConfig();
+		}
+		
 		Bukkit.getServer().getPluginManager().registerEvents(this, this);
 		System.out.print("-------------------------------");
 		System.out.print("");

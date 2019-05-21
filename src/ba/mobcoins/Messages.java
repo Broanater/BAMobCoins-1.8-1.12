@@ -1,4 +1,4 @@
-package ca.live.brodya.mobcoins;
+package ba.mobcoins;
 
 import java.io.File;
 import java.io.InputStreamReader;
