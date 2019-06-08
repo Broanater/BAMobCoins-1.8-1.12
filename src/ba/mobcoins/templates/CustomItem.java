@@ -3,28 +3,80 @@ package ba.mobcoins.templates;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.inventory.ItemStack;
+
 public class CustomItem
 {
-	public String itemId;
-	public String material;
-	public int meta;
-	public int amount;
-	public int slot;
-	public String displayName;
-	public int price;
-	public List<String> lore = new ArrayList<String>();
-    public List<String> commands = new ArrayList<String>();
+	public static enum ItemTypes {
+			COMMAND,
+			ITEM,
+			FILLER
+	};
+	
+	private ItemTypes itemType;
+	private String itemKey;
+	private ItemStack displayItem;
+	private int location;
+	private int price;
+	
+	/* One or the other is used for each item. Never both */
+	private ArrayList<String> commands = new ArrayList<String>();
+	private ItemStack rewardItem;
     
-    public CustomItem(String sItemId, String sMaterial, int sMeta, int sAmount, int sSlot, String sDisplayName, int sPrice, List<String> sLore, List<String> sCommands)
+    public CustomItem(ItemTypes sItemType, String sItemId, ItemStack sDisplayItem, int sLocation, int sPrice, ArrayList<String> sCommands)
     {
-    	itemId = sItemId;
-    	material = sMaterial;
-    	meta = sMeta;
-    	amount = sAmount;
-    	slot = sSlot;
-    	displayName = sDisplayName;
+    	itemType = sItemType;
+    	itemKey = sItemId;
+    	displayItem = sDisplayItem;
+    	location = sLocation;
     	price = sPrice;
-    	lore = sLore;
     	commands = sCommands;
     }
+    
+    public CustomItem(ItemTypes sItemType, String sItemId, ItemStack sDisplayItem, int sLocation, int sPrice, ItemStack sRewardItem)
+    {
+    	itemType = sItemType;
+    	itemKey = sItemId;
+    	displayItem = sDisplayItem;
+    	location = sLocation;
+    	price = sPrice;
+    	rewardItem = sRewardItem;
+    }
+    
+    public ItemTypes getItemType()
+    {
+    	return itemType;
+    }
+    
+    public String getItemKey()
+    {
+    	return itemKey;
+    }
+    
+    public ItemStack getDisplayItem()
+    {
+    	return displayItem;
+    }
+    
+    public int getLocation()
+    {
+    	return location;
+    }
+    
+    public int getPrice()
+    {
+    	return price;
+    }
+    
+    public ArrayList<String> getCommands()
+    {
+    	return commands;
+    }
+    
+    public ItemStack getRewardItem()
+    {
+    	return rewardItem;
+    }
+    
+    
 }

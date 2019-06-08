@@ -1,0 +1,76 @@
+Category:
+  Size: 27
+  Title: '&6&lKeys Shop'
+  # Set to -1 to disable
+  BackSlot: 18
+  Coin_Display_Location: 4
+  Drop_Info_Location: 21
+  Items:
+    # Must be unique
+    Key1:
+      # command - Will allow you to run commands
+      # item - Will give a specific item
+      # filler - Serves no purpose other than to fill in spaces for appearance.
+      Type: command
+      Slot: 12
+      Price: 100
+      Display:
+        Material: TRIPWIRE_HOOK
+        Damage: 0
+        Amount: 1
+        Name: '&d&lKey one'
+        Lore:
+          - '&7Line one'
+          - '&7Line two'
+      # Command Help
+      # '>' - Means run command as player.
+      # '!' - Means run command as console.
+      # ':' - Means send message to player purchasing
+      # '^' - Means broadcast message
+      # %player% - Will be replaced with the players name whos clicking
+      Commands:
+        - '^&5&l%player% &d&lhas bought Key1!'
+        - '!ce give %player% keyOne 1'
+    Key2:
+      Type: command
+      Slot: 14
+      Price: 100
+      Display:
+        Material: TRIPWIRE_HOOK
+        Damage: 0
+        Amount: 1
+        Name: '&d&lKey two'
+        Lore:
+          - '&7Line one'
+          - '&7Line two'
+      Commands:
+        - '>say I bought a key'
+        - ':&b&lThanks for buying Key2!'
+        - '!ce give %player% keyTwo 1'
+    Filler1:
+      Type: filler
+      Slot:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+        - 18
+        - 19
+        - 20
+        - 21
+        - 22
+        - 23
+        - 24
+        - 25
+        - 26
+      Display:
+        Material: STAINED_GLASS_PANE
+        Damage: 0
+        Amount: 1
+        Name: ' '
+        Lore: {}

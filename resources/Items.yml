@@ -1,0 +1,50 @@
+Category:
+  Size: 27
+  Title: '&6&lItems Shop'
+  # Set to -1 to disable
+  BackSlot: 18
+  Coin_Display_Location: 4
+  Drop_Info_Location: 21
+  Items:
+    ItemOne:
+      Type: item
+      Slot: 12
+      Price: 100
+      Display:
+        Material: PAPER
+        Damage: 0
+        Amount: 1
+        Name: '&d&lFun Paper'
+        Lore:
+          - '&7Line one'
+          - '&7Line two'
+      Item:
+        Material: GRASS
+        Damage: 0
+        Amount: 1
+        # Set to "Name: 'default'" to have the default item name.
+        Name: '&d&lKey one' 
+        # Set to "Lore: {}" to have no lore.
+        Lore:
+          - '&7Line one'
+          - '&7Line two'
+    ItemTwo:
+      Type: item
+      Slot: 14
+      Price: 100
+      Display:
+        Material: TRIPWIRE_HOOK
+        Damage: 0
+        Amount: 1
+        Name: '&d&lKey one'
+        Lore:
+          - '&7Line one'
+          - '&7Line two'
+      Item:
+        Material: GRASS
+        Damage: 0
+        Amount: 1
+        # Set to "Name: 'default'" to have the default item name.
+        Name: 'default' 
+        # Set to "Lore: {}" to have no lore.
+        Lore: {}

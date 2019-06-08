@@ -1,6 +1,9 @@
 package ba.mobcoins;
 
 import java.io.File;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import net.md_5.bungee.api.ChatColor;
 
@@ -14,7 +17,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 
-import ba.mobcoins.templates.CustomItem;
+import ba.mobcoins.templates.*;
 
 public class Events implements org.bukkit.event.Listener
 {
@@ -33,67 +36,140 @@ public class Events implements org.bukkit.event.Listener
 		String playerUuid = player.getUniqueId().toString();
 		CoinsAPI.createPlayer(playerUuid);
 	}
-	
-	
+
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void rightClickItem(PlayerInteractEvent event)
 	{
 		Player player = event.getPlayer();
-		ItemStack item = player.getItemInHand();
-		int amount = item.getAmount();
+		ItemStack item = null;
+		try
+		{
+			item = player.getInventory().getItemInHand();
+		}
+		catch (Exception e)
+		{
+			item = player.getInventory().getItemInMainHand();
+		}
 		
-		if(item.equals(Utils.getCoinItem(amount)))
+		
+		int amount = item.getAmount();
+
+		if (item.equals(Utils.getCoinItem(amount)))
 		{
 			CoinsAPI.addCoins(player.getUniqueId().toString(), amount);
 			player.getInventory().removeItem(item);
-			
+
 			String message = Messages.getCoinDeposit();
-			
+
 			message = message.replace("%AMOUNT%", String.valueOf(amount));
-			
+
 			player.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(message));
 		}
-		
+
 	}
-	
 
 	@EventHandler
 	public void OnInvClick(InventoryClickEvent e)
 	{
-		if (e.getInventory().getTitle().equals(Utils.getTitle()))
+		if (e.getCurrentItem() != null)
 		{
-			Player receiver = (Player) e.getWhoClicked();
-			for (CustomItem customItem : Utils.getShopItems())
+			/* Menu event */
+			if (e.getInventory().getTitle().equals(ShopController.getMenuTitle()))
 			{
-				if (e.getCurrentItem().equals(Utils.getItem(customItem.itemId, receiver)))
+				for (Category category : ShopController.categories)
 				{
-					String receiverUuid = receiver.getUniqueId().toString();
-					if (CoinsAPI.getCoins(receiverUuid).intValue() >= customItem.price)
+					if (e.getCurrentItem().equals(category.getItem()))
 					{
-						receiver.closeInventory();
-						CoinsAPI.removeCoins(receiverUuid, customItem.price);
-						
-						String message = Messages.getShopBoughtItem();
-						message = message.replace("%ITEM%", customItem.displayName);
-						message = message.replace("%PRICE%", String.valueOf(customItem.price));
-						
-						receiver.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(message));
-						
-						Utils.runShopCommands(receiver, customItem.commands);
-					}
-					else
-					{
-						receiver.closeInventory();
-						
-						String message = Messages.getShopNotEnough();
-						message = message.replace("%ITEM%", customItem.displayName);
-						message = message.replace("%PRICE%", String.valueOf(customItem.price));
-						
-						receiver.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(message));
+						Player player = (Player) e.getWhoClicked();
+						player.closeInventory();
+
+						if (category.getUsePermission())
+						{
+							if (player.hasPermission(category.getPermission()))
+							{
+								player.openInventory(ShopController.getShopInventory(player.getUniqueId().toString(), category.getKey()));
+							}
+						}
+						else
+						{
+							player.openInventory(ShopController.getShopInventory(player.getUniqueId().toString(), category.getKey()));
+						}
 					}
 				}
-				else
+
+				e.setCancelled(true);
+			}
+
+			Iterator<Entry<String, CustomInventory>> it = ShopController.shopInvs.entrySet().iterator();
+			while (it.hasNext())
+			{
+				Entry<String, CustomInventory> pair = it.next();
+
+				CustomInventory customInv = (CustomInventory) pair.getValue();
+				if (e.getInventory().getTitle().equals(customInv.getTitle()))
 				{
+					Player receiver = (Player) e.getWhoClicked();
+					for (CustomItem customItem : customInv.getShopItems())
+					{
+						if (e.getCurrentItem().equals(customItem.getDisplayItem()))
+						{
+							String receiverUuid = receiver.getUniqueId().toString();
+							if (CoinsAPI.getCoins(receiverUuid).intValue() >= customItem.getPrice())
+							{
+								receiver.closeInventory();
+
+								String message = Messages.getShopBoughtItem();
+								message = message.replace("%ITEM%", customItem.getDisplayItem().getItemMeta().getDisplayName());
+								message = message.replace("%PRICE%", String.valueOf(customItem.getPrice()));
+
+								if (customItem.getItemType() == CustomItem.ItemTypes.COMMAND)
+								{
+									Utils.runShopCommands(receiver, customItem.getItemKey(), customItem.getCommands());
+
+									CoinsAPI.removeCoins(receiverUuid, customItem.getPrice());
+								}
+								else if (customItem.getItemType() == CustomItem.ItemTypes.ITEM)
+								{
+									/* Give the player the item */
+									if (Utils.givePlayerItem(receiver, customItem.getRewardItem()))
+									{
+										receiver.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(message));
+										CoinsAPI.removeCoins(receiverUuid, customItem.getPrice());
+									}
+									else
+									{
+										String noSpaceMessage = Messages.getGiveItemNoSpace();
+										noSpaceMessage = noSpaceMessage.replace("%ITEM%", customItem.getDisplayItem().getItemMeta().getDisplayName());
+										receiver.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(noSpaceMessage));
+									}
+
+								}
+							}
+							else
+							{
+								receiver.closeInventory();
+
+								String message = Messages.getShopNotEnough();
+								message = message.replace("%ITEM%", customItem.getDisplayItem().getItemMeta().getDisplayName());
+								message = message.replace("%PRICE%", String.valueOf(customItem.getPrice()));
+
+								receiver.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(message));
+							}
+						}
+
+					}
+
+					/* Back button */
+					if (e.getCurrentItem().equals(ShopController.getBackButton()))
+					{
+						receiver.closeInventory();
+
+						String uuid = receiver.getUniqueId().toString();
+
+						receiver.openInventory(ShopController.getShopInventory(uuid, "MENU"));
+					}
+
 					e.setCancelled(true);
 				}
 			}
@@ -141,7 +217,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("sheep", 1));
@@ -163,7 +239,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("chicken", 1));
@@ -184,7 +260,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("bat", 1));
@@ -205,7 +281,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("squid", 1));
@@ -226,7 +302,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("rabbit", 1));
@@ -247,7 +323,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("mushroom cow", 1));
@@ -268,7 +344,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("snowman", 1));
@@ -289,7 +365,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("ocelot", 1));
@@ -310,7 +386,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("horse", 1));
@@ -338,7 +414,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("zombie", 1));
@@ -359,7 +435,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("skeleton", 1));
@@ -380,7 +456,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("spider", 1));
@@ -401,7 +477,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("creeper", 1));
@@ -422,7 +498,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("enderman", 1));
@@ -443,7 +519,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("blaze", 1));
@@ -464,7 +540,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("witch", 1));
@@ -485,7 +561,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("cave spider", 1));
@@ -506,7 +582,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("silverfish", 1));
@@ -527,7 +603,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("magma cube", 1));
@@ -548,7 +624,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("endermite", 1));
@@ -569,7 +645,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("guardian", 1));
@@ -590,7 +666,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("ghast", 1));
@@ -611,7 +687,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("slime", 1));
@@ -632,7 +708,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-						
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("giant", 1));
@@ -671,7 +747,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("ender dragon", 1));
@@ -699,7 +775,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("villager", 1));
@@ -720,7 +796,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("iron golem", 1));
@@ -741,7 +817,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("wolf", 1));
@@ -762,7 +838,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("pig zombie", 1));
@@ -789,7 +865,7 @@ public class Events implements org.bukkit.event.Listener
 					{
 						return;
 					}
-					
+
 					String player = p.getUniqueId().toString();
 
 					p.sendMessage(Utils.getCurrencyIncreaseMessage("player", 1));

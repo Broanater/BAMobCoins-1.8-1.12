@@ -1,11 +1,13 @@
 package ba.mobcoins;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
+import org.apache.commons.io.FileUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
@@ -15,7 +17,7 @@ public class Messages implements Listener
 	private static Main plugin;
 
 	private static FileConfiguration messagesConfig = null;
-	private static File messagesConfigFile = null;
+	private static File messagesFile = null;
 	
 	public Messages(Main sPlugin)
 	{
@@ -25,26 +27,54 @@ public class Messages implements Listener
 	
 	public static void reloadMessages()
 	{
-		if (messagesConfigFile == null)
+		File langFolder = new File("plugins/BAMobCoins/lang");
+		/* Lang Files */
+		File langEn = new File("plugins/BAMobCoins/lang", "lang_en.yml");
+		if (!langFolder.exists())
 		{
-			messagesConfigFile = new File(plugin.getDataFolder(), "Messages.yml");
-		}
-		messagesConfig = YamlConfiguration.loadConfiguration(messagesConfigFile);
-
-		/* Get the default from the jar. */
-		if(!messagesConfigFile.exists())
-		{
-			/* If it doesn't exists copy it from the jar */
-			plugin.saveResource("Messages.yml", false);
+			/* Create the folder */
+			langFolder.mkdir();
 		}
 		
-		if (messagesConfigFile != null)
+		if (!langEn.exists())
 		{
-			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(messagesConfigFile);
+			try
+			{
+				/* Copy the Keys.yml default file */
+				FileUtils.copyInputStreamToFile(plugin.getResource("resources/lang_en.yml"), langEn);
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		
+		
+		messagesFile = new File("plugins/BAMobCoins/lang", getLangFile() + ".yml");
+		
+		if (!messagesFile.exists())
+		{
+			System.out.println("[BAMobCoins] Failed to locate lang file, '" + messagesFile.getPath() + "'. Defaulting to lang_en.yml");
+			messagesFile = new File("plugins/BAMobCoins/lang", "lang_en.yml");
+		}
+		
+		messagesConfig = YamlConfiguration.loadConfiguration(messagesFile);
+		
+		if (messagesConfig != null)
+		{
+			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(messagesFile);
 			messagesConfig.setDefaults(defConfig);
 		}
 	}
 	
+	private static String getLangFile()
+	{
+		return plugin.getConfig().getString("Lang");
+	}
+	
+	/*
+	 * 	GLOBAL MESSAGES
+	 */
 	public static String getGlobalNeverJoined()
 	{
 		return messagesConfig.getString("Messages.Global.Never_Joined");
@@ -70,6 +100,9 @@ public class Messages implements Listener
 		return messagesConfig.getString("Messages.Global.Unknown_Command");
 	}
 	
+	/*
+	 * 	BALANCE MESSAGES
+	 */
 	public static String getYourBalance()
 	{
 		return messagesConfig.getString("Messages.Balance.Your_Balance");
@@ -80,6 +113,9 @@ public class Messages implements Listener
 		return messagesConfig.getString("Messages.Balance.Other_Balance");
 	}
 	
+	/*
+	 * 	PAY MESSAGES
+	 */
 	public static String getPaySender()
 	{
 		return messagesConfig.getString("Messages.Pay.Sender");
@@ -105,6 +141,9 @@ public class Messages implements Listener
 		return messagesConfig.getString("Messages.Pay.Not_Enough");
 	}
 	
+	/*
+	 * 	ADD MESSAGES
+	 */
 	public static String getAddAdmin()
 	{
 		return messagesConfig.getString("Messages.Add.Admin_Message");
@@ -120,6 +159,9 @@ public class Messages implements Listener
 		return messagesConfig.getString("Messages.Add.Zero");
 	}
 	
+	/*
+	 * 	SET MESSAGES
+	 */
 	public static String getSetAdmin()
 	{
 		return messagesConfig.getString("Messages.Set.Admin_Message");
@@ -130,6 +172,9 @@ public class Messages implements Listener
 		return messagesConfig.getString("Messages.Set.Player_Message");
 	}
 	
+	/*
+	 * 	REMOVE MESSAGES
+	 */
 	public static String getRemoveAdmin()
 	{
 		return messagesConfig.getString("Messages.Remove.Admin_Message");
@@ -145,6 +190,9 @@ public class Messages implements Listener
 		return messagesConfig.getString("Messages.Remove.Zero");
 	}
 	
+	/*
+	 * 	GIVE ITEM MESSAGES
+	 */
 	public static String getGiveItemAdmin()
 	{
 		return messagesConfig.getString("Messages.GiveItem.Admin_Message");
@@ -155,11 +203,24 @@ public class Messages implements Listener
 		return messagesConfig.getString("Messages.GiveItem.Player_Message");
 	}
 	
-	public static String getGiveItemUnfound()
+	public static String getGiveItemNoSpace()
+	{
+		return messagesConfig.getString("Messages.GiveItem.No_Space");
+	}
+	
+	public static String getGiveItemUnfoundItem()
 	{
 		return messagesConfig.getString("Messages.GiveItem.Unfound_Item");
 	}
 	
+	public static String getGiveItemUnfoundCategory()
+	{
+		return messagesConfig.getString("Messages.GiveItem.Unfound_Category");
+	}
+	
+	/*
+	 * 	SHOP MESSAGES
+	 */
 	public static String getShopBoughtItem()
 	{
 		return messagesConfig.getString("Messages.Shop.Bought_Item");
@@ -170,6 +231,9 @@ public class Messages implements Listener
 		return messagesConfig.getString("Messages.Shop.Not_Enough");
 	}
 
+	/*
+	 * 	COIN MESSAGES
+	 */
 	public static String getCoinWithdraw()
 	{
 		return messagesConfig.getString("Messages.Coin.Withdraw");
@@ -185,11 +249,30 @@ public class Messages implements Listener
 		return messagesConfig.getString("Messages.Coin.Zero");
 	}
 	
+	/*
+	 * 	GAIN MESSAGES
+	 */
+	public static String getGainSingle()
+	{
+		return messagesConfig.getString("Messages.Gain.Single");
+	}
+
+	public static String getGainPlural()
+	{
+		return messagesConfig.getString("Messages.Gain.Plural");
+	}
+	
+	/*
+	 * 	RELOAD MESSAGES
+	 */
 	public static String getReload()
 	{
 		return messagesConfig.getString("Messages.Reload.Admin_Message");
 	}
 	
+	/*
+	 * 	HELP MESSAGES
+	 */
 	public static ArrayList<String> getHelp()
 	{
 		return (ArrayList<String>) messagesConfig.getStringList("Messages.Help");

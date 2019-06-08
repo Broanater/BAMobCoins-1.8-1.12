@@ -1,0 +1,60 @@
+Shop:
+  Menu:
+    Title: '&6&lMob Coin Shop'
+    Size: 27
+    # Set to -1 to disable
+    Coin_Display_Location: 4
+    Drop_Info_Location: 22
+  Back:
+    Item:
+      Material: PAPER
+      Damage: 0 
+      Amount: 1
+      Name: '&1&lBACK'
+      Lore:
+        - '&7Go back to the category selector.'
+  Coin_Display:
+    Item:
+      Material: DOUBLE_PLANT
+      Damage: 0
+      Amount: 1
+      Name: '&6You have %amount% mob coins.'
+  Drop_Info:
+    Item:
+      Material: BOOK
+      Damage: 0
+      Amount: 1
+      Name: '&6&lMobCoins can be obtained by killing the following mobs.'
+    # Is placed before entity groups
+    Main_Colour: '&5&l'
+    # Is placed before entity names
+    Secondary_Colour: '&d&l'
+    # Is placed before drop precent
+    Third_Colour: '&f'
+  Categories:
+    Keys:
+      Display:
+        Material: TRIPWIRE_HOOK
+        Damage: 0
+        Amount: 1
+        Name: '&6&lKeys'
+        Lore:
+          - '&7Line one'
+          - '&7Line two'
+      UsePermission: false
+      Slot: 12
+      File: Keys
+    Items:
+      Display:
+        Material: GRASS
+        Damage: 0
+        Amount: 1
+        Name: '&6&lItems'
+        Lore:
+          - '&7Line 1'
+          - '&7Line 2'
+      UsePermission: true
+      # The permission can be whatever you want
+      Permission: 'bamobcoin.shop.items'
+      Slot: 14
+      File: Items

@@ -1,0 +1,64 @@
+#
+#    BAMobCoins
+#
+####################################################
+# %PLAYER% - Will be replaced with the player who clicked the item (Buying from the shop)
+# [MESSAGE] - Will send a message to the player
+# [BROADCAST] - Will broadcast a message to the whole server
+######################################################
+# Set to the name of the file without the extension. 
+# If you translate the entire document please send it to me so I can add it for others to use easier.
+Lang: lang_en
+Options:
+  Prefix: '&7[&6BAMobCoins&7]'
+  BroadcastPrefix: '&7[&b&lAnnouncment&7]'
+  Title: '&7[&6BAMobCoins - Shop&7]'
+Coin:
+  Item: DOUBLE_PLANT
+  Damage: 0
+  Name: '&6&lMob Coin'
+  Lore:
+  - '&7Right click to deposit!'
+DropChances:
+  # Leave value as -1 for them to not be active
+  # The value entered is the percent for the drop.
+  # eg 
+  #   BAT: 20
+  # Means theres a 20% chance a bat will give a coin when killed.
+  # Passive Mobs
+  BAT: -1
+  SQUID: -1
+  RABBIT: -1
+  CHICKEN: -1
+  PIG: -1
+  SHEEP: -1
+  COW: -1
+  MUSHROOMCOW: -1
+  SNOWMAN: -1
+  OCELOT: -1
+  HORSE: -1
+  # Hostile Mobs
+  ZOMBIE: -1
+  SKELETON: -1
+  SPIDER: -1
+  CAVESPIDER: -1
+  CREEPER: -1
+  ENDERMAN: -1
+  BLAZE: 10
+  WITCH: -1
+  SILVERFISH: -1
+  MAGMACUBE: -1
+  ENDERMITE: -1
+  GUARDIAN: -1
+  GHAST: -1
+  SLIME: -1
+  GIANT: -1
+  WITHER: -1
+  ENDERDRAGON: -1
+  # Neutral Mobs
+  VILLAGER: -1
+  IRONGOLEM: -1
+  PIGMAN: -1
+  WOLF: -1
+  # Can even set it up for players
+  PLAYER: -1

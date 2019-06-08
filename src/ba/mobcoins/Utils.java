@@ -298,252 +298,6 @@ public class Utils implements Listener
 		return item;
 	}
 
-	private static ItemStack getinfo()
-	{
-		ItemStack item = new ItemStack(Material.BOOK);
-		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName(ChatColor.GOLD + getCurrencyNamePlural() + ChatColor.GRAY + " Can be obtained by killing the following mobs.");
-		ArrayList<String> lore = new ArrayList<String>();
-		lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + ChatColor.UNDERLINE + "Available Mobs:");
-
-		/* Passive mob percents */
-		float batPercent = getBat();
-		float squidPercent = getSquid();
-		float rabbitPercent = getRabbit();
-		float chickenPercent = getChicken();
-		float pigPercent = getPig();
-		float sheepPercent = getSheep();
-		float cowPercent = getCow();
-		float mushroomCowPercent = getMushroomCow();
-		float snowmanPercent = getSnowman();
-		float ocelotPercent = getOcelot();
-		float horsePercent = getHorse();
-
-		/* Hostile mob percents */
-		float zombiePercent = getZombie();
-		float skeletonPercent = getSkeleton();
-		float spiderPercent = getSpider();
-		float caveSpiderPercent = getCaveSpider();
-		float creeperPercent = getCreeper();
-		float endermanPercent = getEnderman();
-		float blazePercent = getBlaze();
-		float witchPercent = getWitch();
-		float silverfishPercent = getSilverfish();
-		float magmaCubePercent = getMagmaCube();
-		float endermitePercent = getEndermite();
-		float guardianPercent = getGuardian();
-		float ghastPercent = getGhast();
-		float slimePercent = getSlime();
-		float giantPercent = getGiant();
-		float witherPercent = getWither();
-		float enderDragonPercent = getEnderDragon();
-
-		/* Neutral mob percents */
-		float villagerPercent = getVillager();
-		float ironGolemPercent = getIronGolem();
-		float pigmanPercent = getZombiePigman();
-		float wolfPercent = getWolf();
-
-		/* Player percent */
-		float playerPercent = getPlayer();
-
-		/* Passive mobcoin display */
-		if (batPercent > 0 || squidPercent > 0 || rabbitPercent > 0 || chickenPercent > 0 || pigPercent > 0 || sheepPercent > 0 || cowPercent > 0 || mushroomCowPercent > 0 || snowmanPercent > 0 || ocelotPercent > 0 || horsePercent > 0)
-		{
-			lore.add(ChatColor.AQUA + "" + ChatColor.BOLD + "Passive Mobs:");
-		}
-		if (getBat() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Bat (" + getBat() + "%)");
-		}
-		if (getSquid() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Squid (" + getSquid() + "%)");
-		}
-		if (getRabbit() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Rabbit (" + getRabbit() + "%)");
-		}
-		if (getChicken() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Chicken (" + getChicken() + "%)");
-		}
-		if (getPig() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Pig (" + getPig() + "%)");
-		}
-		if (getSheep() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Sheep (" + getSheep() + "%)");
-		}
-		if (getCow() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Cow (" + getCow() + "%)");
-		}
-		if (getMushroomCow() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Mushroom Cow (" + getMushroomCow() + "%)");
-		}
-		if (getSnowman() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Snowman (" + getSnowman() + "%)");
-		}
-		if (getOcelot() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Ocelot (" + getOcelot() + "%)");
-		}
-		if (getHorse() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Horse (" + getHorse() + "%)");
-		}
-
-		/* Hostile mobcoin chance display */
-		if (zombiePercent > 0 || skeletonPercent > 0 || spiderPercent > 0 || caveSpiderPercent > 0 || creeperPercent > 0 || endermanPercent > 0 || blazePercent > 0 || silverfishPercent > 0 || witchPercent > 0 || magmaCubePercent > 0 || endermitePercent > 0 || guardianPercent > 0 || ghastPercent > 0 || slimePercent > 0 || giantPercent > 0 || witherPercent > 0 || enderDragonPercent > 0)
-		{
-			lore.add(ChatColor.AQUA + "" + ChatColor.BOLD + "Hostile Mobs:");
-		}
-		if (getZombie() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Zombie (" + getZombie() + "%)");
-		}
-		if (getSkeleton() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Skeleton (" + getSkeleton() + "%)");
-		}
-		if (getSpider() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Spider (" + getSpider() + "%)");
-		}
-		if (getCaveSpider() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Cave Spider (" + getCaveSpider() + "%)");
-		}
-		if (getCreeper() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Creeper (" + getCreeper() + "%)");
-		}
-		if (getEnderman() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Enderman (" + getEnderman() + "%)");
-		}
-		if (getBlaze() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Blaze (" + getBlaze() + "%)");
-		}
-		if (getWitch() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Witch (" + getWitch() + "%)");
-		}
-		if (getSilverfish() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Silverfish (" + getSilverfish() + "%)");
-		}
-		if (getMagmaCube() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Magma Cube (" + getMagmaCube() + "%)");
-		}
-		if (getEndermite() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Endermite (" + getEndermite() + "%)");
-		}
-		if (getGuardian() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Guardian (" + getGuardian() + "%)");
-		}
-		if (getGhast() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Ghast (" + getGhast() + "%)");
-		}
-		if (getSlime() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Slime (" + getSlime() + "%)");
-		}
-		if (getGiant() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Giant (" + getGiant() + "%)");
-		}
-		if (getWither() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Wither (" + getWither() + "%)");
-		}
-		if (getEnderDragon() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Ender Dragon (" + getEnderDragon() + "%)");
-		}
-
-		/* Neutral mobcoin chance display */
-		if (villagerPercent > 0 || ironGolemPercent > 0 || pigmanPercent > 0 || wolfPercent > 0)
-		{
-			lore.add(ChatColor.AQUA + "" + ChatColor.BOLD + "Neutral Mobs:");
-		}
-		if (getVillager() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Villager (" + getVillager() + "%)");
-		}
-		if (getIronGolem() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Iron Golem (" + getIronGolem() + "%)");
-		}
-		if (getZombiePigman() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Zombie Pigman (" + getZombiePigman() + "%)");
-		}
-		if (getWolf() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Wolf (" + getWolf() + "%)");
-		}
-
-		/* Player mobcoin chance display */
-		if (playerPercent > 0)
-		{
-			lore.add(ChatColor.AQUA + "" + ChatColor.BOLD + "Players:");
-		}
-		if (getPlayer() > 0)
-		{
-			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Players (" + getPlayer() + "%)");
-		}
-
-		meta.setLore(lore);
-		item.setItemMeta(meta);
-		return item;
-	}
-
-	private static ItemStack getCoins(Player p)
-	{
-		String player = p.getUniqueId().toString();
-		ItemStack item = new ItemStack(Material.DOUBLE_PLANT);
-		ItemMeta im = item.getItemMeta();
-		if (CoinsAPI.getCoins(player) > 1)
-		{
-			im.setDisplayName(ChatColor.BOLD + "" + ChatColor.GOLD + "You have " + CoinsAPI.getCoins(player) + " " + getCurrencyNamePlural());
-		}
-		else
-		{
-
-			im.setDisplayName(ChatColor.BOLD + "" + ChatColor.GOLD + "You have " + CoinsAPI.getCoins(player) + " " + getCurrencyNameSingle());
-		}
-		item.setItemMeta(im);
-		return item;
-	}
-
-	private static ItemStack getBorder()
-	{
-		ItemStack item = null;
-		Material material = Material.getMaterial(plugin.getConfig().getString("Options.BorderItem.Material"));
-		int metaValue = plugin.getConfig().getInt("Options.BorderItem.Meta");
-		String name = plugin.getConfig().getString("Options.BorderItem.Name");
-		
-		if (material == null || metaValue == -1)
-		{
-			item = createItem(Material.STAINED_GLASS_PANE, 1, 10, " ");
-		}
-		else
-		{
-			item = createItem(material, 1, metaValue, name);
-		}
-		
-		return item;
-	}
 
 	public static String getTitle()
 	{
@@ -554,6 +308,12 @@ public class Utils implements Listener
 	public static String getPrefix()
 	{
 		String prefix = ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("Options.Prefix"));
+		
+		if (prefix.charAt(prefix.length() - 1) != ' ')
+		{
+			prefix += " ";
+		}
+		
 		return prefix;
 	}
 
@@ -574,69 +334,21 @@ public class Utils implements Listener
 		return plugin.getConfig().contains("Players." + p.getUniqueId());
 	}
 
-	public static List<CustomItem> getShopItems()
+	public static boolean fullInv(Player p, int amount)
 	{
-		List<CustomItem> customItems = new ArrayList<CustomItem>();
-		for (String key : plugin.getConfig().getConfigurationSection("Shop").getKeys(false))
+		float rawAmount = amount/64;
+		int neededSlots = (int) rawAmount + 1;
+		Inventory inv = p.getInventory();
+		int emptySlots = 0;
+		for (ItemStack item : inv)
 		{
-			String material = plugin.getConfig().getString("Shop." + key + ".Item");
-			int meta = plugin.getConfig().getInt("Shop." + key + ".Meta");
-			int amount = plugin.getConfig().getInt("Shop." + key + ".Amount");
-			int slot = plugin.getConfig().getInt("Shop." + key + ".Slot");
-			String displayName = plugin.getConfig().getString("Shop." + key + ".DisplayName");
-			int price = plugin.getConfig().getInt("Shop." + key + ".Price");
-			List<String> lore = plugin.getConfig().getStringList("Shop." + key + ".Lore");
-			List<String> commands = plugin.getConfig().getStringList("Shop." + key + ".Commands");
-
-			CustomItem customItem = new CustomItem(key, material, meta, amount, slot, displayName, price, lore, commands);
-			customItems.add(customItem);
+			if (item == null || item.getType() == Material.AIR)
+			{
+				emptySlots++;
+			}
 		}
 
-		return customItems;
-	}
-
-	public static Inventory showInventory(Player p)
-	{
-		Inventory inv = Bukkit.createInventory(null, 54, getTitle());
-		inv.setItem(0, getBorder());
-		inv.setItem(1, getBorder());
-		inv.setItem(2, getBorder());
-		inv.setItem(3, getBorder());
-		inv.setItem(4, getCoins(p));
-		inv.setItem(5, getBorder());
-		inv.setItem(6, getBorder());
-		inv.setItem(7, getBorder());
-		inv.setItem(8, getBorder());
-		inv.setItem(9, getBorder());
-		inv.setItem(17, getBorder());
-		inv.setItem(18, getBorder());
-
-		inv.setItem(26, getBorder());
-		inv.setItem(27, getBorder());
-		inv.setItem(35, getBorder());
-		inv.setItem(36, getBorder());
-		inv.setItem(44, getBorder());
-		inv.setItem(45, getBorder());
-		inv.setItem(46, getBorder());
-		inv.setItem(47, getBorder());
-		inv.setItem(48, getBorder());
-		inv.setItem(49, getinfo());
-		inv.setItem(50, getBorder());
-		inv.setItem(51, getBorder());
-		inv.setItem(52, getBorder());
-		inv.setItem(53, getBorder());
-		for (CustomItem customItem : getShopItems())
-		{
-			inv.setItem(customItem.slot, getItem(customItem.itemId, p));
-		}
-		inv.setItem(0, getBorder());
-		return inv;
-	}
-
-	public static boolean fullInv(Player p)
-	{
-		int check = p.getInventory().firstEmpty();
-		return check == -1;
+		return neededSlots < emptySlots;
 	}
 
 	public static boolean canAfford(Player p, int slot)
@@ -655,11 +367,19 @@ public class Utils implements Listener
 		String message = "";
 		if (sCoinsRecieved > 1)
 		{
-			message = Utils.getPrefix() + ChatColor.GRAY + " You killed a " + sMob + " and gained " + sCoinsRecieved + " " + getCurrencyNamePlural() + "!";
+			message = Messages.getGainSingle();
+			message = message.replace("%MOB%", sMob);
+			message = message.replace("%AMOUNT%", String.valueOf(sCoinsRecieved));
+			
+			message = Utils.getPrefix() + convertColorCodes(message);
 		}
 		else
 		{
-			message = Utils.getPrefix() + ChatColor.GRAY + " You killed a " + sMob + " and gained " + sCoinsRecieved + " " + getCurrencyNameSingle() + "!";
+			message = Messages.getGainPlural();
+			message = message.replace("%MOB%", sMob);
+			message = message.replace("%AMOUNT%", String.valueOf(sCoinsRecieved));
+			
+			message = Utils.getPrefix() + convertColorCodes(message);
 		}
 		return message;
 	}
@@ -670,12 +390,12 @@ public class Utils implements Listener
 		
 		message = message.replace("%COMMAND%", sCommand);
 		
-		sSender.sendMessage(getPrefix() + " " + convertColorCodes(message));
+		sSender.sendMessage(getPrefix() + convertColorCodes(message));
 	}
 
 	public static void sendMessage(CommandSender sSender, String sMessage)
 	{
-		sSender.sendMessage(getPrefix() + ChatColor.AQUA + sMessage);
+		sSender.sendMessage(getPrefix() + convertColorCodes(sMessage));
 	}
 
 	public static void sendBroadcast(String sMessage)
@@ -697,9 +417,9 @@ public class Utils implements Listener
 		}
 
 		String name = plugin.getConfig().getString("Coin.Name");
-		int id = plugin.getConfig().getInt("Coin.Meta");
+		int damage = plugin.getConfig().getInt("Coin.Damage");
 
-		ItemStack item = new ItemStack(Material.getMaterial(plugin.getConfig().getString("Coin.Item").toUpperCase()), amount, (short) id);
+		ItemStack item = new ItemStack(Material.getMaterial(plugin.getConfig().getString("Coin.Item").toUpperCase()), amount, (short) damage);
 		ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName(Utils.convertColorCodes(name));
 
@@ -723,25 +443,77 @@ public class Utils implements Listener
 		CoinsAPI.removeCoins(player.getUniqueId().toString(), amount);
 	}
 	
-	public static void runShopCommands(Player player, List<String> sCommands)
+	public static void runShopCommands(Player player, String itemId, List<String> sCommands)
 	{
-		for (String command : sCommands)
+		for (String request : sCommands)
 		{
-			String request = command.replace("%PLAYER%", player.getName());
-			if (request.startsWith("[MESSAGE]"))
+			request = request.replace("%player%", player.getName());
+			
+			char typeIdentifier = request.charAt(0);
+			String requestWithoutTypeId = request.substring(1, request.length());
+			
+			/* Run command as player */
+			if (typeIdentifier == '>')
 			{
-				request = request.replace("[MESSAGE]", "");
-				Utils.sendMessage(player, request);
+				Bukkit.getServer().dispatchCommand(player, requestWithoutTypeId);
 			}
-			else if (request.startsWith("[BROADCAST]"))
+			/* Run command as console. */
+			else if (typeIdentifier == '!')
 			{
-				request = request.replace("[BROADCAST]", "");
-				sendBroadcast(request);
+				Bukkit.getServer().dispatchCommand(org.bukkit.Bukkit.getServer().getConsoleSender(), requestWithoutTypeId);
+			}
+			/* Send message to player purchasing */
+			else if (typeIdentifier == ':')
+			{
+				sendMessage(player, requestWithoutTypeId);
+			}
+			/* Broadcast message to server */
+			else if (typeIdentifier == '^')
+			{
+				sendBroadcast(requestWithoutTypeId);
 			}
 			else
 			{
-				Bukkit.getServer().dispatchCommand(org.bukkit.Bukkit.getServer().getConsoleSender(), request);
+				System.out.println("[BAMobCoins] Command for item '" + itemId + "' does not have a type identifier. Ignoring command.");
 			}
 		}
 	}
+	
+	public static boolean givePlayerItem(Player player, ItemStack rewardItem)
+	{
+		int amount = rewardItem.getAmount();
+		/* Inventory full */
+		if (!fullInv(player, amount))
+		{
+			return false;
+		}
+		/* Space */
+		else
+		{
+			while (amount > 0)
+			{
+				if (amount >= 64)
+				{
+					amount -= 64;
+					
+					ItemStack item = new ItemStack(rewardItem.getType(), 64, rewardItem.getDurability());
+					item.setItemMeta(rewardItem.getItemMeta());
+					player.getInventory().addItem(item);
+				}
+				else
+				{
+					ItemStack item = new ItemStack(rewardItem.getType(), amount, rewardItem.getDurability());
+					item.setItemMeta(rewardItem.getItemMeta());
+					player.getInventory().addItem(item);
+					
+					amount -= amount;
+				}
+			}
+			
+			return true;
+		}
+		
+		
+	}
+	
 }

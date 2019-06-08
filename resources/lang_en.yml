@@ -43,9 +43,12 @@ Messages:
   GiveItem:
     # %PLAYER% - Will be replaced by the players name receiving the coins.
     # %ITEM% - Will be replaced with the name of the item being given.
+    # %CATEGORY% - Will be replaced with the name of the category entered.
     Admin_Message: '&7You gave %PLAYER% %ITEM%.'
     Player_Message: '&7You have been given %ITEM%.'
+    No_Space: '&7Not enough space to purchase %ITEM%.'
     Unfound_Item: '&7Could not find %ITEM%. Please ensure you are entering the correct name.'
+    Unfound_Category: '&7Cound not find %CATEGORY%. Please ensure you are entering the correct name.'
   Shop:
     # %ITEM% - Will be replaced by the item bought.
     # %PRICE% - Will be replaced by the price of the item.
@@ -56,8 +59,13 @@ Messages:
     Withdraw: '&7You have withdrawn %AMOUNT%!'
     Deposit: '&7You have deposited %AMOUNT%!'
     Zero: '&7You can''t withdraw 0 Mob Coins!'
+  Gain:
+    # %MOB% - Will be replaced with the mobs name that was killed.
+    # %AMOUNT% - Will be replaced with the amount recieved.
+    Single: '&bYou killed a %MOB% and gained %AMOUNT% MobCoin.'
+    Plural: '&bYou killed a %MOB% and gained %AMOUNT% MobCoins.'
   Reload:
-    Admin_Message: '&7Config and messages &areloaded.'
+    Admin_Message: '&7Config shops, and messages &areloaded.'
   Help:
   # %VERSION% - Will be replaced by the plugins version
   - '&7-------------[ &6BAMobCoins V%VERSION% Help &7]-------------'
@@ -69,5 +77,6 @@ Messages:
   - '&6/BAMobCoins set <players ign> <amount> &8: &7Set a players balance.'
   - '&6/BAMobCoins remove <players ign> <amount> &8: &7Removes MobCoins from a players balance.'
   - '&6/BAMobCoins withdraw <amount> &8: &7Withdraw MobCoins from your balance into an item.'
+  - '&6/BAMobCoins giveItem <player> <categoryId> <itemId>&8: &7Give a player a specific item from the shop for free.'
   - '&6/BAMobCoins reload &8: &7Reloads the plugins config files.'
   - '&6/BAMobCoins help &8: &7Sends the help message listing commands.'

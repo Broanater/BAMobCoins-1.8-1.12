@@ -32,7 +32,7 @@ public class Commands implements CommandExecutor
 					{
 						/* Open the shop GUI */
 						Player p = (Player) sender;
-						p.openInventory(Utils.showInventory(p));
+						p.openInventory(ShopController.getShopInventory(p.getUniqueId().toString(), "MENU"));
 						return true;
 					}
 
@@ -54,7 +54,7 @@ public class Commands implements CommandExecutor
 
 							message = message.replace("%BALANCE%", String.valueOf(balance));
 
-							p.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(message));
+							p.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(message));
 
 							return true;
 						}
@@ -69,10 +69,11 @@ public class Commands implements CommandExecutor
 						{
 							/* Reload the plugins config file. */
 							this.plugin.reloadConfig();
-							
-							
+
 							Messages.reloadMessages();
-							sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getReload()));
+							ShopController.reload();
+							
+							sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getReload()));
 
 							return true;
 						}
@@ -86,11 +87,11 @@ public class Commands implements CommandExecutor
 						if (sender.hasPermission("BAMobCoins.help"))
 						{
 							ArrayList<String> helpMessages = Messages.getHelp();
-							
-							for(String message : helpMessages)
+
+							for (String message : helpMessages)
 							{
 								message = message.replace("%VERSION%", plugin.getDescription().getVersion());
-								
+
 								sender.sendMessage(Utils.convertColorCodes(message));
 							}
 
@@ -100,8 +101,7 @@ public class Commands implements CommandExecutor
 						Utils.insufficientPermissions(sender, "/BAMobCoins help");
 						return true;
 					}
-					
-					
+
 					if (args[0].equalsIgnoreCase("messages") || args[0].equalsIgnoreCase("msgs"))
 					{
 						if (sender.hasPermission("BAMobCoins.messages"))
@@ -112,62 +112,59 @@ public class Commands implements CommandExecutor
 							String nonPlayer = Utils.convertColorCodes("&fNon_Player: " + Messages.getGlobalWholeNumber());
 							String insufficientPermission = Utils.convertColorCodes("&fInsufficient_Permission: " + Messages.getGlobalInsufficientPermission());
 							String unknownCommand = Utils.convertColorCodes("&fUnknown_Command: " + Messages.getGlobalUnknownCommand());
-							
+
 							/* Balance Messages */
 							String yourBalance = Utils.convertColorCodes("&fYour_Balance: " + Messages.getYourBalance());
 							String otherBalance = Utils.convertColorCodes("&fOther_Balance: " + Messages.getOtherBalance());
-							
+
 							/* Pay Messages */
 							String paySender = Utils.convertColorCodes("&fSender: " + Messages.getPaySender());
 							String payReceiver = Utils.convertColorCodes("&fReceiver: " + Messages.getPayReceiver());
 							String paySelf = Utils.convertColorCodes("&fSelf: " + Messages.getPaySelf());
 							String payZero = Utils.convertColorCodes("&fZero: " + Messages.getPaySendZero());
 							String payNotEnough = Utils.convertColorCodes("&fNot_Enough: " + Messages.getPayNotEnough());
-							
+
 							/* Add Messages */
 							String addAdmin = Utils.convertColorCodes("&fAdmin_Message: " + Messages.getAddAdmin());
 							String addPlayer = Utils.convertColorCodes("&fPlayer_Message: " + Messages.getAddPlayer());
 							String addZero = Utils.convertColorCodes("&fZero: " + Messages.getAddZero());
-							
+
 							/* Set Messages */
 							String setAdmin = Utils.convertColorCodes("&fAdmin_Message: " + Messages.getSetAdmin());
 							String setPlayer = Utils.convertColorCodes("&fPlayer_Message: " + Messages.getSetPlayer());
-							
+
 							/* Remove Messages */
 							String removeAdmin = Utils.convertColorCodes("&fAdmin_Message: " + Messages.getRemoveAdmin());
 							String removePlayer = Utils.convertColorCodes("&fPlayer_Message: " + Messages.getRemovePlayer());
 							String removeZero = Utils.convertColorCodes("&fZero: " + Messages.getRemoveZero());
-							
+
 							/* Give Item Messages */
 							String giveItemAdmin = Utils.convertColorCodes("&fAdmin_Message: " + Messages.getGiveItemAdmin());
 							String giveItemPlayer = Utils.convertColorCodes("&fPlayer_Message: " + Messages.getGiveItemPlayer());
-							String giveItemUnFound = Utils.convertColorCodes("&fUnfound_Item: " + Messages.getGiveItemUnfound());
-							
+							String giveItemUnfoundItem = Utils.convertColorCodes("&fUnfound_Item: " + Messages.getGiveItemUnfoundItem());
+							String giveItemUnfoundCategory = Utils.convertColorCodes("&fUnfound_Item: " + Messages.getGiveItemUnfoundCategory());
+
 							/* Shop Messages */
 							String shopBoughtItem = Utils.convertColorCodes("&fBought_Item: " + Messages.getShopBoughtItem());
 							String shopNotEnough = Utils.convertColorCodes("&fNot_Enough: " + Messages.getShopNotEnough());
-							
+
 							/* Coin Messages */
 							String coinWithdraw = Utils.convertColorCodes("&fWithdraw: " + Messages.getCoinWithdraw());
 							String coinDeposit = Utils.convertColorCodes("&fDeposit: " + Messages.getCoinDeposit());
 							String coinZero = Utils.convertColorCodes("&fZero: " + Messages.getCoinZero());
-							
+
 							/* Reload Message */
 							String reloadAdmin = Utils.convertColorCodes("&fAdmin_Message: " + Messages.getReload());
-							
-							
-							
-							
-							
+
 							sender.sendMessage(ChatColor.GRAY + "-------------[ " + ChatColor.GOLD + "BAMobCoins V" + plugin.getDescription().getVersion() + " Messages " + ChatColor.GRAY + "]-------------");
-							
+
 							sender.sendMessage(Utils.convertColorCodes("&6Global Messages"));
 							sender.sendMessage("  " + neverJoined);
 							sender.sendMessage("  " + wholeNumber);
 							sender.sendMessage("  " + nonPlayer);
 							sender.sendMessage("  " + insufficientPermission);
 							sender.sendMessage("  " + unknownCommand);
-							
+
 							sender.sendMessage(Utils.convertColorCodes("&6Balance Messages"));
 							sender.sendMessage("  " + yourBalance);
 							sender.sendMessage("  " + otherBalance);
@@ -178,26 +175,27 @@ public class Commands implements CommandExecutor
 							sender.sendMessage("  " + paySelf);
 							sender.sendMessage("  " + payZero);
 							sender.sendMessage("  " + payNotEnough);
-							
+
 							sender.sendMessage(Utils.convertColorCodes("&6Add Messages"));
 							sender.sendMessage("  " + addAdmin);
 							sender.sendMessage("  " + addPlayer);
 							sender.sendMessage("  " + addZero);
-							
+
 							sender.sendMessage(Utils.convertColorCodes("&6Set Messages"));
 							sender.sendMessage("  " + setAdmin);
 							sender.sendMessage("  " + setPlayer);
-							
+
 							sender.sendMessage(Utils.convertColorCodes("&6Remove Messages"));
 							sender.sendMessage("  " + removeAdmin);
 							sender.sendMessage("  " + removePlayer);
 							sender.sendMessage("  " + removeZero);
-							
+
 							sender.sendMessage(Utils.convertColorCodes("&6Give Item Messages"));
 							sender.sendMessage("  " + giveItemAdmin);
 							sender.sendMessage("  " + giveItemPlayer);
-							sender.sendMessage("  " + giveItemUnFound);
-							
+							sender.sendMessage("  " + giveItemUnfoundItem);
+							sender.sendMessage("  " + giveItemUnfoundCategory);
+
 							sender.sendMessage(Utils.convertColorCodes("&6Shop Messages"));
 							sender.sendMessage("  " + shopBoughtItem);
 							sender.sendMessage("  " + shopNotEnough);
@@ -206,10 +204,10 @@ public class Commands implements CommandExecutor
 							sender.sendMessage("  " + coinWithdraw);
 							sender.sendMessage("  " + coinDeposit);
 							sender.sendMessage("  " + coinZero);
-							
+
 							sender.sendMessage(Utils.convertColorCodes("&6Reload Messages"));
 							sender.sendMessage("  " + reloadAdmin);
-							
+
 							sender.sendMessage(ChatColor.GRAY + "-----------------------------------------------------");
 
 							return true;
@@ -218,7 +216,6 @@ public class Commands implements CommandExecutor
 						Utils.insufficientPermissions(sender, "/BAMobCoins messages");
 						return true;
 					}
-					
 
 				}
 
@@ -239,45 +236,44 @@ public class Commands implements CommandExecutor
 							message = message.replace("%BALANCE%", String.valueOf(balance));
 							message = message.replace("%PLAYER%", sender.getName());
 
-							sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(message));
+							sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(message));
 							return true;
 						}
 
 						Utils.insufficientPermissions(sender, "/BAMobCoins balance <players ign>");
 						return true;
 					}
-					
+
 					if (args[0].equalsIgnoreCase("withdraw"))
 					{
 						if (sender.hasPermission("BAMobCoins.withdraw"))
 						{
 							Player player = (Player) sender;
 							int amount = Integer.valueOf(args[1]);
-							
-							if(amount == 0)
+
+							if (amount == 0)
 							{
 								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getCoinZero()));
 								return true;
 							}
-							
-							if(CoinsAPI.getCoins(player.getUniqueId().toString()) >= amount)
+
+							if (CoinsAPI.getCoins(player.getUniqueId().toString()) >= amount)
 							{
 								String message = Messages.getCoinWithdraw();
-								
+
 								message = message.replace("%AMOUNT%", String.valueOf(amount));
-								
+
 								Utils.withdrawCoins(player, amount);
 								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(message));
 							}
-							
-							
+
 							return true;
 						}
 
 						Utils.insufficientPermissions(sender, "/BAHappyHour reload");
 						return true;
 					}
-					
+
 				}
 
 				if (args.length == 3)
@@ -292,7 +288,7 @@ public class Commands implements CommandExecutor
 							String receiverUuid = receiver.getUniqueId().toString();
 							if (!CoinsAPI.playerExists(receiverUuid))
 							{
-								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getGlobalNeverJoined()));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getGlobalNeverJoined()));
 								return true;
 							}
 
@@ -304,14 +300,14 @@ public class Commands implements CommandExecutor
 							}
 							catch (Exception e)
 							{
-								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getGlobalWholeNumber()));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getGlobalWholeNumber()));
 								return true;
 							}
 
 							/* Check if they're trying to add 0 */
 							if (amount == 0)
 							{
-								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getAddZero()));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getAddZero()));
 								return true;
 							}
 
@@ -322,13 +318,13 @@ public class Commands implements CommandExecutor
 								String adminMessage = Messages.getAddAdmin();
 								adminMessage = adminMessage.replace("%AMOUNT%", String.valueOf(amount));
 								adminMessage = adminMessage.replace("%PLAYER%", receiverIgn);
-								
+
 								String playerMessage = Messages.getAddPlayer();
 								playerMessage = playerMessage.replace("%AMOUNT%", String.valueOf(amount));
 								playerMessage = playerMessage.replace("%PLAYER%", receiverIgn);
-								
-								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(adminMessage));
-								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(playerMessage));
+
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(adminMessage));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(playerMessage));
 								return true;
 							}
 						}
@@ -348,7 +344,7 @@ public class Commands implements CommandExecutor
 
 							if (!CoinsAPI.playerExists(UUID))
 							{
-								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getGlobalNeverJoined()));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getGlobalNeverJoined()));
 								return true;
 							}
 
@@ -360,14 +356,14 @@ public class Commands implements CommandExecutor
 							}
 							catch (Exception e)
 							{
-								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getGlobalWholeNumber()));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getGlobalWholeNumber()));
 								return true;
 							}
 
 							/* Ensure they're not trying to remove 0. */
 							if (amount == 0)
 							{
-								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getRemoveZero()));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getRemoveZero()));
 								return true;
 							}
 
@@ -377,14 +373,13 @@ public class Commands implements CommandExecutor
 							String adminMessage = Messages.getRemoveAdmin();
 							adminMessage = adminMessage.replace("%PLAYER%", receiverIgn);
 							adminMessage = adminMessage.replace("%AMOUNT%", String.valueOf(amount));
-							
+
 							String playerMessage = Messages.getRemovePlayer();
 							playerMessage = playerMessage.replace("%PLAYER%", receiverIgn);
 							playerMessage = playerMessage.replace("%AMOUNT%", String.valueOf(amount));
-							
-							
-							sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(adminMessage));
-							receiver.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(playerMessage));
+
+							sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(adminMessage));
+							receiver.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(playerMessage));
 							return true;
 						}
 
@@ -402,7 +397,7 @@ public class Commands implements CommandExecutor
 							String pl = receiver.getUniqueId().toString();
 							if (!CoinsAPI.playerExists(pl))
 							{
-								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getGlobalNeverJoined()));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getGlobalNeverJoined()));
 								return true;
 							}
 
@@ -414,7 +409,7 @@ public class Commands implements CommandExecutor
 							}
 							catch (Exception e)
 							{
-								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getGlobalWholeNumber()));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getGlobalWholeNumber()));
 								return true;
 							}
 
@@ -424,13 +419,13 @@ public class Commands implements CommandExecutor
 							String adminMessage = Messages.getSetAdmin();
 							adminMessage = adminMessage.replace("%PLAYER%", receiverIgn);
 							adminMessage = adminMessage.replace("%AMOUNT%", String.valueOf(amount));
-							
+
 							String playerMessage = Messages.getSetPlayer();
 							playerMessage = playerMessage.replace("%PLAYER%", receiverIgn);
 							playerMessage = playerMessage.replace("%AMOUNT%", String.valueOf(amount));
-							
-							sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(adminMessage));
-							receiver.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(playerMessage));
+
+							sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(adminMessage));
+							receiver.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(playerMessage));
 							return true;
 						}
 
@@ -443,8 +438,8 @@ public class Commands implements CommandExecutor
 						/* Double check that the one running this command is a player. */
 						if (!(sender instanceof Player))
 						{
-							
-							sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getGlobalNonPlayer()));
+
+							sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getGlobalNonPlayer()));
 							return true;
 						}
 
@@ -455,7 +450,7 @@ public class Commands implements CommandExecutor
 							Player receiver = Bukkit.getServer().getPlayer(receiverIgn);
 							if (receiver == null)
 							{
-								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getGlobalNeverJoined()));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getGlobalNeverJoined()));
 								return true;
 							}
 
@@ -467,14 +462,14 @@ public class Commands implements CommandExecutor
 							/* Check if the player is attempting to pay themselves. */
 							if (sender.getName().equalsIgnoreCase(receiverIgn))
 							{
-								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getPaySelf()));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getPaySelf()));
 								return true;
 							}
 
 							/* Ensure the player exists in the balances file. */
 							if (!CoinsAPI.playerExists(receivingUuid))
 							{
-								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getGlobalNeverJoined()));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getGlobalNeverJoined()));
 								return true;
 							}
 
@@ -486,7 +481,7 @@ public class Commands implements CommandExecutor
 							}
 							catch (Exception e)
 							{
-								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getGlobalWholeNumber()));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getGlobalWholeNumber()));
 								return true;
 							}
 
@@ -498,7 +493,7 @@ public class Commands implements CommandExecutor
 								message = message.replace("%SENDER%", senderIgn);
 								message = message.replace("%RECEIVER%", receiverIgn);
 
-								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(message));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(message));
 								return true;
 							}
 
@@ -522,8 +517,8 @@ public class Commands implements CommandExecutor
 								messageReceiver = messageReceiver.replace("%SENDER%", senderIgn);
 								messageReceiver = messageReceiver.replace("%RECEIVER%", receiverIgn);
 
-								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(messageSender));
-								receiver.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(messageReceiver));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(messageSender));
+								receiver.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(messageReceiver));
 							}
 							else
 							{
@@ -532,7 +527,7 @@ public class Commands implements CommandExecutor
 								message = message.replace("%SENDER%", senderIgn);
 								message = message.replace("%RECEIVER%", receiverIgn);
 
-								sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(message));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(message));
 							}
 							return true;
 						}
@@ -540,55 +535,71 @@ public class Commands implements CommandExecutor
 						Utils.insufficientPermissions(sender, "/BaMobCoins pay <players ign> <amount>");
 						return true;
 					}
-
-					/* /bamobcoins giveItem <player> <itemId> */
+				}
+				
+				if (args.length == 4)
+				{
+					/* /bamobcoins giveItem <player> <shopId> <itemId> */
 					if (args[0].equalsIgnoreCase("giveItem"))
 					{
 						if (sender.hasPermission("BAMobCoins.giveItem"))
 						{
 							String receiverIgn = args[1];
 							Player receiver = Bukkit.getPlayer(receiverIgn);
-							String itemId = args[2];
-							
-							for (CustomItem customItem : Utils.getShopItems())
+
+							String shopKey = args[2];
+							String itemKey = args[3];
+
+							ArrayList<CustomItem> shopItems = ShopController.getShopItems(shopKey);
+							if (shopItems == null)
 							{
-								if (customItem.itemId.equalsIgnoreCase(itemId))
+								String message = Messages.getGiveItemUnfoundCategory();
+								message = message.replace("CATEGORY", shopKey);
+								message = message.replace("ITEM", itemKey);
+								message = message.replace("PLAYER", receiverIgn);
+
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(message));
+								return true;
+							}
+							for (CustomItem customItem : shopItems)
+							{
+								if (customItem.getItemKey().equalsIgnoreCase(itemKey))
 								{
 
-									Utils.runShopCommands(receiver, customItem.commands);
-									
-									
+									Utils.runShopCommands(receiver, customItem.getItemKey(), customItem.getCommands());
+
 									String adminMessage = Messages.getGiveItemAdmin();
 									adminMessage = adminMessage.replace("%PLAYER%", receiverIgn);
-									adminMessage = adminMessage.replace("%ITEM%", itemId);
-									
+									adminMessage = adminMessage.replace("%ITEM%", itemKey);
+
 									String playerMessage = Messages.getGiveItemPlayer();
 									playerMessage = playerMessage.replace("%PLAYER%", receiverIgn);
-									playerMessage = playerMessage.replace("%ITEM%", itemId);
-									
-									sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(adminMessage));
-									receiver.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(playerMessage));
-									
+									playerMessage = playerMessage.replace("%ITEM%", itemKey);
+
+									sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(adminMessage));
+									receiver.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(playerMessage));
+
 									return true;
 								}
 							}
-							
+
 							/* Item they tried to give doesn't exist */
-							String message = Messages.getGiveItemUnfound();
+							String message = Messages.getGiveItemUnfoundItem();
 							message = message.replace("%PLAYER%", receiverIgn);
-							message = message.replace("%ITEM%", itemId);
-							
-							sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(message));
+							message = message.replace("%ITEM%", itemKey);
+
+							sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(message));
 						}
 
 						Utils.insufficientPermissions(sender, "/BaMobCoins giveItem <players ign> <itemId>");
 						return true;
 					}
-
 				}
 				
 				
-				sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(Messages.getGlobalUnknownCommand()));
+				
+
+				sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getGlobalUnknownCommand()));
 				return true;
 				/* End of if testing if a player ran the command */
 			}
@@ -622,20 +633,19 @@ public class Commands implements CommandExecutor
 						String message = Messages.getAddZero();
 						message = message.replace("%AMOUNT%", String.valueOf(amount));
 						message = message.replace("%PLAYER", receiverIgn);
-						
-						sender.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(message));
+
+						sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(message));
 						return true;
 					}
 
 					/* Add the coins and send correct message. */
 					CoinsAPI.addCoins(receiverUuid, amount);
-					
+
 					String playerMessage = Messages.getAddPlayer();
 					playerMessage = playerMessage.replace("%AMOUNT%", String.valueOf(amount));
 					playerMessage = playerMessage.replace("%PLAYER%", receiverIgn);
-					
-					
-					receiver.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(playerMessage));
+
+					receiver.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(playerMessage));
 					return true;
 
 				}
@@ -675,9 +685,8 @@ public class Commands implements CommandExecutor
 					String playerMessage = Messages.getRemovePlayer();
 					playerMessage = playerMessage.replace("%AMOUNT%", String.valueOf(amount));
 					playerMessage = playerMessage.replace("%PLAYER%", receiverIgn);
-					
-					
-					receiver.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(playerMessage));
+
+					receiver.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(playerMessage));
 					return true;
 				}
 
@@ -709,32 +718,60 @@ public class Commands implements CommandExecutor
 					String playerMessage = Messages.getSetPlayer();
 					playerMessage = playerMessage.replace("%AMOUNT%", String.valueOf(amount));
 					playerMessage = playerMessage.replace("%PLAYER%", receiverIgn);
-					
-					receiver.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(playerMessage));
+
+					receiver.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(playerMessage));
 					return true;
 				}
 
+				/* /bamobcoins giveItem <player> <shopId> <itemId> */
 				if (args[0].equalsIgnoreCase("giveItem"))
 				{
-					String receiverIgn = args[0];
-					Player receiver = Bukkit.getPlayer(args[1]);
-					String itemId = args[2];
-					
-					for (CustomItem customItem : Utils.getShopItems())
+					String receiverIgn = args[1];
+					Player receiver = Bukkit.getPlayer(receiverIgn);
+
+					String shopKey = args[2];
+					String itemKey = args[3];
+
+					ArrayList<CustomItem> shopItems = ShopController.getShopItems(shopKey);
+					if (shopItems == null)
 					{
-						if (customItem.itemId.equalsIgnoreCase(itemId))
+						String message = Messages.getGiveItemUnfoundCategory();
+						message = message.replace("CATEGORY", shopKey);
+						message = message.replace("ITEM", itemKey);
+						message = message.replace("PLAYER", receiverIgn);
+
+						sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(message));
+						return true;
+					}
+					for (CustomItem customItem : shopItems)
+					{
+						if (customItem.getItemKey().equalsIgnoreCase(itemKey))
 						{
 
-							Utils.runShopCommands(receiver, customItem.commands);
-							
+							Utils.runShopCommands(receiver, customItem.getItemKey(), customItem.getCommands());
+
+							String adminMessage = Messages.getGiveItemAdmin();
+							adminMessage = adminMessage.replace("%PLAYER%", receiverIgn);
+							adminMessage = adminMessage.replace("%ITEM%", itemKey);
+
 							String playerMessage = Messages.getGiveItemPlayer();
 							playerMessage = playerMessage.replace("%PLAYER%", receiverIgn);
-							playerMessage = playerMessage.replace("%ITEM%", itemId);
-							
-							receiver.sendMessage(Utils.getPrefix() + " " + Utils.convertColorCodes(playerMessage));
+							playerMessage = playerMessage.replace("%ITEM%", itemKey);
+
+							sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(adminMessage));
+							receiver.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(playerMessage));
+
 							return true;
 						}
 					}
+
+					/* Item they tried to give doesn't exist */
+					String message = Messages.getGiveItemUnfoundItem();
+					message = message.replace("%PLAYER%", receiverIgn);
+					message = message.replace("%ITEM%", itemKey);
+
+					sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(message));
+					return true;
 				}
 			}
 		}
