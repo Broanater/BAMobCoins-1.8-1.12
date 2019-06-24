@@ -1,6 +1,10 @@
-package ba.mobcoins;
+package ba.mobcoins.apis;
 
-public class CoinsAPI implements org.bukkit.event.Listener
+import org.bukkit.event.Listener;
+
+import ba.mobcoins.Main;
+
+public class CoinsAPI implements Listener
 {
 	private static Main plugin;
 

@@ -19,130 +19,100 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 
+import ba.mobcoins.apis.*;
+import ba.mobcoins.bstats.Metrics;
+import ba.mobcoins.commands.Commands;
+import ba.mobcoins.controllers.*;
+import ba.mobcoins.events.*;
 import ba.mobcoins.updater.UpdateChecker;
+import ba.mobcoins.utilities.*;
 
 public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 {
-	HashMap<String, Integer> coins = new HashMap<String, Integer>();
+	public HashMap<String, Integer> coins = new HashMap<String, Integer>();
 	PluginDescriptionFile pdf;
 
-	public Main(Main pl)
-	{
-	}
 
 	public Main()
 	{
 		this.pdf = getDescription();
 	}
+	
+
+	public Main(Main pl)
+	{
+	}
 
 	public void onEnable()
 	{
-		File configFile = new File(this.getDataFolder(), "config.yml");
-		if(!configFile.exists())
-		{
-			try
-			{
-				FileUtils.copyInputStreamToFile(this.getResource("resources/config.yml"), new File("plugins/BAMobCoins/config.yml"));
-			}
-			catch (Exception e)
-			{
-				System.out.println("[BAMobCoins] Failed to copy default config.yml");
-			}
-		}
-		
-		Bukkit.getServer().getPluginManager().registerEvents(this, this);
-		getCommand("BAMobCoins").setExecutor(new Commands(this));
 		registerEvents();
+		getCommand("BAMobCoins").setExecutor(new Commands(this));
 		
-		
-		createBalanceFile();
-		loadBalance();
-		Messages.reloadMessages();
+		initializeFiles();
 
 		/* Check if theres any updates for the plugin on spigot. */
 		new UpdateChecker(this).checkForUpdate();
 		
+		/* Enable bStats */
+		new Metrics(this);
 
 		System.out.print("-------------------------------");
 		System.out.print("");
-		System.out.print("    BAMobCoins Enabled!");
+		System.out.print("    " + this.getName() + " Enabled!");
 		System.out.print("");
 		System.out.print("-------------------------------");
 	}
 
 	public void onDisable()
 	{
-		saveBalance();
+		BalanceController.save();
 		
 		
 		System.out.print("-------------------------------");
 		System.out.print("");
-		System.out.print("    BAMobCoins Disabled!");
+		System.out.print("    " + this.getName() + " Disabled!");
 		System.out.print("");
 		System.out.print("-------------------------------");
 	}
 
 	private void registerEvents()
 	{
+		Bukkit.getServer().getPluginManager().registerEvents(this, this);
+		
 		PluginManager pm = Bukkit.getServer().getPluginManager();
+		
+		/* Utilities */
 		pm.registerEvents(new Utils(this), this);
-		pm.registerEvents(new Events(this), this);
+		
+		/* Events */
+		pm.registerEvents(new InventoryClick(), this);
+		pm.registerEvents(new EntityDeath(), this);
+		pm.registerEvents(new PlayerInteract(), this);
+		pm.registerEvents(new PlayerJoin(), this);
+		
+		/* Apis */
 		pm.registerEvents(new CoinsAPI(this), this);
-		pm.registerEvents(new Messages(this), this);
+		
+		/* Controllers */
+		pm.registerEvents(new MessagesController(this), this);
+		pm.registerEvents(new BalanceController(this), this);
+		pm.registerEvents(new ConfigController(this), this);
+		pm.registerEvents(new MobNameController(this), this);
+		
+
 		pm.registerEvents(new ShopController(this), this);
 	}
-
 	
-	/*
-	 * Balance file stuff
-	 */
-	public void createBalanceFile()
+	private void initializeFiles()
 	{
-		File folder = new File("plugins/BAMobCoins/data");
-		File file = new File("plugins/BAMobCoins/data/balances.yml");
-		if (!folder.exists())
-		{
-			folder.mkdir();
-		}
-		if (!file.exists())
-		{
-			try
-			{
-				file.createNewFile();
-			}
-			catch (Exception e)
-			{
-				System.out.println("[BAMobCoins] Failed to create 'balances.yml'. Balance saving will be compromised.");
-			}
-		}
-	}
-
-	public void saveBalance()
-	{
-		File file = new File("plugins/BAMobCoins/data/balances.yml");
-		YamlConfiguration bal = YamlConfiguration.loadConfiguration(file);
-		for (String UUID : this.coins.keySet())
-		{
-			bal.set(UUID, this.coins.get(UUID));
-		}
-
-		try
-		{
-			bal.save(file);
-		}
-		catch (Exception e)
-		{
-			System.out.println("[BAMobCoins] Failed to save 'balances.yml'. Balance saving will be compromised.");
-		}
-	}
-
-	public void loadBalance()
-	{
-		File file = new File("plugins/BAMobCoins/data/balances.yml");
-		YamlConfiguration bal = YamlConfiguration.loadConfiguration(file);
-		for (String UUID : bal.getKeys(false))
-		{
-			this.coins.put(UUID, Integer.valueOf(bal.getInt(UUID)));
-		}
+		ConfigController.reload();
+		MessagesController.reload();
+		MobNameController.reload();
+		
+		ShopController.reload();
+		
+		/* Balance Work */
+		BalanceController.createFile();
+		BalanceController.load();
 	}
 }

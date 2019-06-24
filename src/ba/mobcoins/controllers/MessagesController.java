@@ -1,4 +1,4 @@
-package ba.mobcoins;
+package ba.mobcoins.controllers;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,24 +12,30 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
 
-public class Messages implements Listener
+import ba.mobcoins.Main;
+import ba.mobcoins.utilities.Utils;
+
+public class MessagesController implements Listener
 {
 	private static Main plugin;
 
-	private static FileConfiguration messagesConfig = null;
 	private static File messagesFile = null;
+	private static FileConfiguration messagesConfig = null;
 	
-	public Messages(Main sPlugin)
+	public MessagesController(Main sPlugin)
 	{
 		plugin = sPlugin;
 		
 	}
 	
-	public static void reloadMessages()
+	public static void reload()
 	{
 		File langFolder = new File("plugins/BAMobCoins/lang");
+		
 		/* Lang Files */
 		File langEn = new File("plugins/BAMobCoins/lang", "lang_en.yml");
+		
+		
 		if (!langFolder.exists())
 		{
 			/* Create the folder */
@@ -40,7 +46,7 @@ public class Messages implements Listener
 		{
 			try
 			{
-				/* Copy the Keys.yml default file */
+				/* Copy the lang_en.yml default file */
 				FileUtils.copyInputStreamToFile(plugin.getResource("resources/lang_en.yml"), langEn);
 			}
 			catch (IOException e)
@@ -54,7 +60,7 @@ public class Messages implements Listener
 		
 		if (!messagesFile.exists())
 		{
-			System.out.println("[BAMobCoins] Failed to locate lang file, '" + messagesFile.getPath() + "'. Defaulting to lang_en.yml");
+			Utils.sendError("Failed to locate lang file, '" + messagesFile.getPath() + "'. Defaulting to lang_en.yml");
 			messagesFile = new File("plugins/BAMobCoins/lang", "lang_en.yml");
 		}
 		
@@ -66,6 +72,8 @@ public class Messages implements Listener
 			messagesConfig.setDefaults(defConfig);
 		}
 	}
+	
+	
 	
 	private static String getLangFile()
 	{

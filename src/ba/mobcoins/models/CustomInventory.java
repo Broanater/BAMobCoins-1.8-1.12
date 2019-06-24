@@ -1,4 +1,4 @@
-package ba.mobcoins.templates;
+package ba.mobcoins.models;
 
 import java.util.ArrayList;
 

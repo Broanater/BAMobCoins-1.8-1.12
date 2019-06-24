@@ -19,7 +19,7 @@ import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import ba.mobcoins.Utils;
+import ba.mobcoins.utilities.Utils;
 
 
 public class UpdateChecker

@@ -1,4 +1,4 @@
-package ba.mobcoins;
+package ba.mobcoins.commands;
 
 import java.util.ArrayList;
 
@@ -9,15 +9,22 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import ba.mobcoins.templates.CustomItem;
+import ba.mobcoins.Main;
+import ba.mobcoins.apis.CoinsAPI;
+import ba.mobcoins.controllers.ConfigController;
+import ba.mobcoins.controllers.MessagesController;
+import ba.mobcoins.controllers.MobNameController;
+import ba.mobcoins.controllers.ShopController;
+import ba.mobcoins.models.CustomItem;
+import ba.mobcoins.utilities.Utils;
 
 public class Commands implements CommandExecutor
 {
-	Main plugin;
+	private Main plugin;
 
-	public Commands(Main plugin)
+	public Commands(Main main)
 	{
-		this.plugin = plugin;
+		plugin = main;
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
@@ -50,7 +57,7 @@ public class Commands implements CommandExecutor
 							Player p = (Player) sender;
 							int balance = CoinsAPI.getCoins(p.getUniqueId().toString());
 
-							String message = Messages.getYourBalance();
+							String message = MessagesController.getYourBalance();
 
 							message = message.replace("%BALANCE%", String.valueOf(balance));
 
@@ -68,12 +75,12 @@ public class Commands implements CommandExecutor
 						if (sender.hasPermission("BAMobCoins.reload"))
 						{
 							/* Reload the plugins config file. */
-							this.plugin.reloadConfig();
-
-							Messages.reloadMessages();
+							ConfigController.reload();
+							MessagesController.reload();
 							ShopController.reload();
+							MobNameController.reload();
 							
-							sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getReload()));
+							sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(MessagesController.getReload()));
 
 							return true;
 						}
@@ -86,7 +93,7 @@ public class Commands implements CommandExecutor
 					{
 						if (sender.hasPermission("BAMobCoins.help"))
 						{
-							ArrayList<String> helpMessages = Messages.getHelp();
+							ArrayList<String> helpMessages = MessagesController.getHelp();
 
 							for (String message : helpMessages)
 							{
@@ -107,54 +114,54 @@ public class Commands implements CommandExecutor
 						if (sender.hasPermission("BAMobCoins.messages"))
 						{
 							/* Global Messages */
-							String neverJoined = Utils.convertColorCodes("&fNever_Joined: " + Messages.getGlobalNeverJoined());
-							String wholeNumber = Utils.convertColorCodes("&fWhole_Number: " + Messages.getGlobalWholeNumber());
-							String nonPlayer = Utils.convertColorCodes("&fNon_Player: " + Messages.getGlobalWholeNumber());
-							String insufficientPermission = Utils.convertColorCodes("&fInsufficient_Permission: " + Messages.getGlobalInsufficientPermission());
-							String unknownCommand = Utils.convertColorCodes("&fUnknown_Command: " + Messages.getGlobalUnknownCommand());
+							String neverJoined = Utils.convertColorCodes("&fNever_Joined: " + MessagesController.getGlobalNeverJoined());
+							String wholeNumber = Utils.convertColorCodes("&fWhole_Number: " + MessagesController.getGlobalWholeNumber());
+							String nonPlayer = Utils.convertColorCodes("&fNon_Player: " + MessagesController.getGlobalWholeNumber());
+							String insufficientPermission = Utils.convertColorCodes("&fInsufficient_Permission: " + MessagesController.getGlobalInsufficientPermission());
+							String unknownCommand = Utils.convertColorCodes("&fUnknown_Command: " + MessagesController.getGlobalUnknownCommand());
 
 							/* Balance Messages */
-							String yourBalance = Utils.convertColorCodes("&fYour_Balance: " + Messages.getYourBalance());
-							String otherBalance = Utils.convertColorCodes("&fOther_Balance: " + Messages.getOtherBalance());
+							String yourBalance = Utils.convertColorCodes("&fYour_Balance: " + MessagesController.getYourBalance());
+							String otherBalance = Utils.convertColorCodes("&fOther_Balance: " + MessagesController.getOtherBalance());
 
 							/* Pay Messages */
-							String paySender = Utils.convertColorCodes("&fSender: " + Messages.getPaySender());
-							String payReceiver = Utils.convertColorCodes("&fReceiver: " + Messages.getPayReceiver());
-							String paySelf = Utils.convertColorCodes("&fSelf: " + Messages.getPaySelf());
-							String payZero = Utils.convertColorCodes("&fZero: " + Messages.getPaySendZero());
-							String payNotEnough = Utils.convertColorCodes("&fNot_Enough: " + Messages.getPayNotEnough());
+							String paySender = Utils.convertColorCodes("&fSender: " + MessagesController.getPaySender());
+							String payReceiver = Utils.convertColorCodes("&fReceiver: " + MessagesController.getPayReceiver());
+							String paySelf = Utils.convertColorCodes("&fSelf: " + MessagesController.getPaySelf());
+							String payZero = Utils.convertColorCodes("&fZero: " + MessagesController.getPaySendZero());
+							String payNotEnough = Utils.convertColorCodes("&fNot_Enough: " + MessagesController.getPayNotEnough());
 
 							/* Add Messages */
-							String addAdmin = Utils.convertColorCodes("&fAdmin_Message: " + Messages.getAddAdmin());
-							String addPlayer = Utils.convertColorCodes("&fPlayer_Message: " + Messages.getAddPlayer());
-							String addZero = Utils.convertColorCodes("&fZero: " + Messages.getAddZero());
+							String addAdmin = Utils.convertColorCodes("&fAdmin_Message: " + MessagesController.getAddAdmin());
+							String addPlayer = Utils.convertColorCodes("&fPlayer_Message: " + MessagesController.getAddPlayer());
+							String addZero = Utils.convertColorCodes("&fZero: " + MessagesController.getAddZero());
 
 							/* Set Messages */
-							String setAdmin = Utils.convertColorCodes("&fAdmin_Message: " + Messages.getSetAdmin());
-							String setPlayer = Utils.convertColorCodes("&fPlayer_Message: " + Messages.getSetPlayer());
+							String setAdmin = Utils.convertColorCodes("&fAdmin_Message: " + MessagesController.getSetAdmin());
+							String setPlayer = Utils.convertColorCodes("&fPlayer_Message: " + MessagesController.getSetPlayer());
 
 							/* Remove Messages */
-							String removeAdmin = Utils.convertColorCodes("&fAdmin_Message: " + Messages.getRemoveAdmin());
-							String removePlayer = Utils.convertColorCodes("&fPlayer_Message: " + Messages.getRemovePlayer());
-							String removeZero = Utils.convertColorCodes("&fZero: " + Messages.getRemoveZero());
+							String removeAdmin = Utils.convertColorCodes("&fAdmin_Message: " + MessagesController.getRemoveAdmin());
+							String removePlayer = Utils.convertColorCodes("&fPlayer_Message: " + MessagesController.getRemovePlayer());
+							String removeZero = Utils.convertColorCodes("&fZero: " + MessagesController.getRemoveZero());
 
 							/* Give Item Messages */
-							String giveItemAdmin = Utils.convertColorCodes("&fAdmin_Message: " + Messages.getGiveItemAdmin());
-							String giveItemPlayer = Utils.convertColorCodes("&fPlayer_Message: " + Messages.getGiveItemPlayer());
-							String giveItemUnfoundItem = Utils.convertColorCodes("&fUnfound_Item: " + Messages.getGiveItemUnfoundItem());
-							String giveItemUnfoundCategory = Utils.convertColorCodes("&fUnfound_Item: " + Messages.getGiveItemUnfoundCategory());
+							String giveItemAdmin = Utils.convertColorCodes("&fAdmin_Message: " + MessagesController.getGiveItemAdmin());
+							String giveItemPlayer = Utils.convertColorCodes("&fPlayer_Message: " + MessagesController.getGiveItemPlayer());
+							String giveItemUnfoundItem = Utils.convertColorCodes("&fUnfound_Item: " + MessagesController.getGiveItemUnfoundItem());
+							String giveItemUnfoundCategory = Utils.convertColorCodes("&fUnfound_Item: " + MessagesController.getGiveItemUnfoundCategory());
 
 							/* Shop Messages */
-							String shopBoughtItem = Utils.convertColorCodes("&fBought_Item: " + Messages.getShopBoughtItem());
-							String shopNotEnough = Utils.convertColorCodes("&fNot_Enough: " + Messages.getShopNotEnough());
+							String shopBoughtItem = Utils.convertColorCodes("&fBought_Item: " + MessagesController.getShopBoughtItem());
+							String shopNotEnough = Utils.convertColorCodes("&fNot_Enough: " + MessagesController.getShopNotEnough());
 
 							/* Coin Messages */
-							String coinWithdraw = Utils.convertColorCodes("&fWithdraw: " + Messages.getCoinWithdraw());
-							String coinDeposit = Utils.convertColorCodes("&fDeposit: " + Messages.getCoinDeposit());
-							String coinZero = Utils.convertColorCodes("&fZero: " + Messages.getCoinZero());
+							String coinWithdraw = Utils.convertColorCodes("&fWithdraw: " + MessagesController.getCoinWithdraw());
+							String coinDeposit = Utils.convertColorCodes("&fDeposit: " + MessagesController.getCoinDeposit());
+							String coinZero = Utils.convertColorCodes("&fZero: " + MessagesController.getCoinZero());
 
 							/* Reload Message */
-							String reloadAdmin = Utils.convertColorCodes("&fAdmin_Message: " + Messages.getReload());
+							String reloadAdmin = Utils.convertColorCodes("&fAdmin_Message: " + MessagesController.getReload());
 
 							sender.sendMessage(ChatColor.GRAY + "-------------[ " + ChatColor.GOLD + "BAMobCoins V" + plugin.getDescription().getVersion() + " Messages " + ChatColor.GRAY + "]-------------");
 
@@ -231,7 +238,7 @@ public class Commands implements CommandExecutor
 							/* Get the balance of the player. */
 							int balance = CoinsAPI.getCoins(toCheck.getUniqueId().toString());
 
-							String message = Messages.getOtherBalance();
+							String message = MessagesController.getOtherBalance();
 
 							message = message.replace("%BALANCE%", String.valueOf(balance));
 							message = message.replace("%PLAYER%", sender.getName());
@@ -253,13 +260,13 @@ public class Commands implements CommandExecutor
 
 							if (amount == 0)
 							{
-								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getCoinZero()));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(MessagesController.getCoinZero()));
 								return true;
 							}
 
 							if (CoinsAPI.getCoins(player.getUniqueId().toString()) >= amount)
 							{
-								String message = Messages.getCoinWithdraw();
+								String message = MessagesController.getCoinWithdraw();
 
 								message = message.replace("%AMOUNT%", String.valueOf(amount));
 
@@ -288,7 +295,7 @@ public class Commands implements CommandExecutor
 							String receiverUuid = receiver.getUniqueId().toString();
 							if (!CoinsAPI.playerExists(receiverUuid))
 							{
-								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getGlobalNeverJoined()));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(MessagesController.getGlobalNeverJoined()));
 								return true;
 							}
 
@@ -300,14 +307,14 @@ public class Commands implements CommandExecutor
 							}
 							catch (Exception e)
 							{
-								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getGlobalWholeNumber()));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(MessagesController.getGlobalWholeNumber()));
 								return true;
 							}
 
 							/* Check if they're trying to add 0 */
 							if (amount == 0)
 							{
-								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getAddZero()));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(MessagesController.getAddZero()));
 								return true;
 							}
 
@@ -315,11 +322,11 @@ public class Commands implements CommandExecutor
 							CoinsAPI.addCoins(receiverUuid, amount);
 							if (amount > 1)
 							{
-								String adminMessage = Messages.getAddAdmin();
+								String adminMessage = MessagesController.getAddAdmin();
 								adminMessage = adminMessage.replace("%AMOUNT%", String.valueOf(amount));
 								adminMessage = adminMessage.replace("%PLAYER%", receiverIgn);
 
-								String playerMessage = Messages.getAddPlayer();
+								String playerMessage = MessagesController.getAddPlayer();
 								playerMessage = playerMessage.replace("%AMOUNT%", String.valueOf(amount));
 								playerMessage = playerMessage.replace("%PLAYER%", receiverIgn);
 
@@ -344,7 +351,7 @@ public class Commands implements CommandExecutor
 
 							if (!CoinsAPI.playerExists(UUID))
 							{
-								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getGlobalNeverJoined()));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(MessagesController.getGlobalNeverJoined()));
 								return true;
 							}
 
@@ -356,25 +363,25 @@ public class Commands implements CommandExecutor
 							}
 							catch (Exception e)
 							{
-								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getGlobalWholeNumber()));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(MessagesController.getGlobalWholeNumber()));
 								return true;
 							}
 
 							/* Ensure they're not trying to remove 0. */
 							if (amount == 0)
 							{
-								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getRemoveZero()));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(MessagesController.getRemoveZero()));
 								return true;
 							}
 
 							/* Remove the coins. */
 							CoinsAPI.removeCoins(UUID, amount);
 
-							String adminMessage = Messages.getRemoveAdmin();
+							String adminMessage = MessagesController.getRemoveAdmin();
 							adminMessage = adminMessage.replace("%PLAYER%", receiverIgn);
 							adminMessage = adminMessage.replace("%AMOUNT%", String.valueOf(amount));
 
-							String playerMessage = Messages.getRemovePlayer();
+							String playerMessage = MessagesController.getRemovePlayer();
 							playerMessage = playerMessage.replace("%PLAYER%", receiverIgn);
 							playerMessage = playerMessage.replace("%AMOUNT%", String.valueOf(amount));
 
@@ -397,7 +404,7 @@ public class Commands implements CommandExecutor
 							String pl = receiver.getUniqueId().toString();
 							if (!CoinsAPI.playerExists(pl))
 							{
-								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getGlobalNeverJoined()));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(MessagesController.getGlobalNeverJoined()));
 								return true;
 							}
 
@@ -409,18 +416,18 @@ public class Commands implements CommandExecutor
 							}
 							catch (Exception e)
 							{
-								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getGlobalWholeNumber()));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(MessagesController.getGlobalWholeNumber()));
 								return true;
 							}
 
 							/* Set the balance */
 							CoinsAPI.setCoins(pl, amount);
 
-							String adminMessage = Messages.getSetAdmin();
+							String adminMessage = MessagesController.getSetAdmin();
 							adminMessage = adminMessage.replace("%PLAYER%", receiverIgn);
 							adminMessage = adminMessage.replace("%AMOUNT%", String.valueOf(amount));
 
-							String playerMessage = Messages.getSetPlayer();
+							String playerMessage = MessagesController.getSetPlayer();
 							playerMessage = playerMessage.replace("%PLAYER%", receiverIgn);
 							playerMessage = playerMessage.replace("%AMOUNT%", String.valueOf(amount));
 
@@ -439,7 +446,7 @@ public class Commands implements CommandExecutor
 						if (!(sender instanceof Player))
 						{
 
-							sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getGlobalNonPlayer()));
+							sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(MessagesController.getGlobalNonPlayer()));
 							return true;
 						}
 
@@ -450,7 +457,7 @@ public class Commands implements CommandExecutor
 							Player receiver = Bukkit.getServer().getPlayer(receiverIgn);
 							if (receiver == null)
 							{
-								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getGlobalNeverJoined()));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(MessagesController.getGlobalNeverJoined()));
 								return true;
 							}
 
@@ -462,14 +469,14 @@ public class Commands implements CommandExecutor
 							/* Check if the player is attempting to pay themselves. */
 							if (sender.getName().equalsIgnoreCase(receiverIgn))
 							{
-								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getPaySelf()));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(MessagesController.getPaySelf()));
 								return true;
 							}
 
 							/* Ensure the player exists in the balances file. */
 							if (!CoinsAPI.playerExists(receivingUuid))
 							{
-								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getGlobalNeverJoined()));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(MessagesController.getGlobalNeverJoined()));
 								return true;
 							}
 
@@ -481,14 +488,14 @@ public class Commands implements CommandExecutor
 							}
 							catch (Exception e)
 							{
-								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getGlobalWholeNumber()));
+								sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(MessagesController.getGlobalWholeNumber()));
 								return true;
 							}
 
 							/* Ensure they aren't trying to send 0 coins. */
 							if (toSend == 0)
 							{
-								String message = Messages.getPaySendZero();
+								String message = MessagesController.getPaySendZero();
 								message = message.replace("%AMOUNT%", "0");
 								message = message.replace("%SENDER%", senderIgn);
 								message = message.replace("%RECEIVER%", receiverIgn);
@@ -507,12 +514,12 @@ public class Commands implements CommandExecutor
 								CoinsAPI.addCoins(receivingUuid, toSend);
 								CoinsAPI.removeCoins(sendingUuid, toSend);
 
-								String messageSender = Messages.getPaySender();
+								String messageSender = MessagesController.getPaySender();
 								messageSender = messageSender.replace("%AMOUNT%", String.valueOf(toSend));
 								messageSender = messageSender.replace("%SENDER%", senderIgn);
 								messageSender = messageSender.replace("%RECEIVER%", receiverIgn);
 
-								String messageReceiver = Messages.getPayReceiver();
+								String messageReceiver = MessagesController.getPayReceiver();
 								messageReceiver = messageReceiver.replace("%AMOUNT%", String.valueOf(toSend));
 								messageReceiver = messageReceiver.replace("%SENDER%", senderIgn);
 								messageReceiver = messageReceiver.replace("%RECEIVER%", receiverIgn);
@@ -522,7 +529,7 @@ public class Commands implements CommandExecutor
 							}
 							else
 							{
-								String message = Messages.getPayNotEnough();
+								String message = MessagesController.getPayNotEnough();
 								message = message.replace("%AMOUNT%", String.valueOf(toSend));
 								message = message.replace("%SENDER%", senderIgn);
 								message = message.replace("%RECEIVER%", receiverIgn);
@@ -553,7 +560,7 @@ public class Commands implements CommandExecutor
 							ArrayList<CustomItem> shopItems = ShopController.getShopItems(shopKey);
 							if (shopItems == null)
 							{
-								String message = Messages.getGiveItemUnfoundCategory();
+								String message = MessagesController.getGiveItemUnfoundCategory();
 								message = message.replace("CATEGORY", shopKey);
 								message = message.replace("ITEM", itemKey);
 								message = message.replace("PLAYER", receiverIgn);
@@ -568,11 +575,11 @@ public class Commands implements CommandExecutor
 
 									Utils.runShopCommands(receiver, customItem.getItemKey(), customItem.getCommands());
 
-									String adminMessage = Messages.getGiveItemAdmin();
+									String adminMessage = MessagesController.getGiveItemAdmin();
 									adminMessage = adminMessage.replace("%PLAYER%", receiverIgn);
 									adminMessage = adminMessage.replace("%ITEM%", itemKey);
 
-									String playerMessage = Messages.getGiveItemPlayer();
+									String playerMessage = MessagesController.getGiveItemPlayer();
 									playerMessage = playerMessage.replace("%PLAYER%", receiverIgn);
 									playerMessage = playerMessage.replace("%ITEM%", itemKey);
 
@@ -584,7 +591,7 @@ public class Commands implements CommandExecutor
 							}
 
 							/* Item they tried to give doesn't exist */
-							String message = Messages.getGiveItemUnfoundItem();
+							String message = MessagesController.getGiveItemUnfoundItem();
 							message = message.replace("%PLAYER%", receiverIgn);
 							message = message.replace("%ITEM%", itemKey);
 
@@ -599,7 +606,7 @@ public class Commands implements CommandExecutor
 				
 				
 
-				sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(Messages.getGlobalUnknownCommand()));
+				sender.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(MessagesController.getGlobalUnknownCommand()));
 				return true;
 				/* End of if testing if a player ran the command */
 			}
@@ -630,7 +637,7 @@ public class Commands implements CommandExecutor
 					/* Check if they're trying to add 0 */
 					if (amount == 0)
 					{
-						String message = Messages.getAddZero();
+						String message = MessagesController.getAddZero();
 						message = message.replace("%AMOUNT%", String.valueOf(amount));
 						message = message.replace("%PLAYER", receiverIgn);
 
@@ -641,7 +648,7 @@ public class Commands implements CommandExecutor
 					/* Add the coins and send correct message. */
 					CoinsAPI.addCoins(receiverUuid, amount);
 
-					String playerMessage = Messages.getAddPlayer();
+					String playerMessage = MessagesController.getAddPlayer();
 					playerMessage = playerMessage.replace("%AMOUNT%", String.valueOf(amount));
 					playerMessage = playerMessage.replace("%PLAYER%", receiverIgn);
 
@@ -682,7 +689,7 @@ public class Commands implements CommandExecutor
 					/* Remove the coins. */
 					CoinsAPI.removeCoins(receiverUuid, amount);
 
-					String playerMessage = Messages.getRemovePlayer();
+					String playerMessage = MessagesController.getRemovePlayer();
 					playerMessage = playerMessage.replace("%AMOUNT%", String.valueOf(amount));
 					playerMessage = playerMessage.replace("%PLAYER%", receiverIgn);
 
@@ -715,7 +722,7 @@ public class Commands implements CommandExecutor
 					/* Set the balance */
 					CoinsAPI.setCoins(receiverUuid, amount);
 
-					String playerMessage = Messages.getSetPlayer();
+					String playerMessage = MessagesController.getSetPlayer();
 					playerMessage = playerMessage.replace("%AMOUNT%", String.valueOf(amount));
 					playerMessage = playerMessage.replace("%PLAYER%", receiverIgn);
 
@@ -735,7 +742,7 @@ public class Commands implements CommandExecutor
 					ArrayList<CustomItem> shopItems = ShopController.getShopItems(shopKey);
 					if (shopItems == null)
 					{
-						String message = Messages.getGiveItemUnfoundCategory();
+						String message = MessagesController.getGiveItemUnfoundCategory();
 						message = message.replace("CATEGORY", shopKey);
 						message = message.replace("ITEM", itemKey);
 						message = message.replace("PLAYER", receiverIgn);
@@ -750,11 +757,11 @@ public class Commands implements CommandExecutor
 
 							Utils.runShopCommands(receiver, customItem.getItemKey(), customItem.getCommands());
 
-							String adminMessage = Messages.getGiveItemAdmin();
+							String adminMessage = MessagesController.getGiveItemAdmin();
 							adminMessage = adminMessage.replace("%PLAYER%", receiverIgn);
 							adminMessage = adminMessage.replace("%ITEM%", itemKey);
 
-							String playerMessage = Messages.getGiveItemPlayer();
+							String playerMessage = MessagesController.getGiveItemPlayer();
 							playerMessage = playerMessage.replace("%PLAYER%", receiverIgn);
 							playerMessage = playerMessage.replace("%ITEM%", itemKey);
 
@@ -766,7 +773,7 @@ public class Commands implements CommandExecutor
 					}
 
 					/* Item they tried to give doesn't exist */
-					String message = Messages.getGiveItemUnfoundItem();
+					String message = MessagesController.getGiveItemUnfoundItem();
 					message = message.replace("%PLAYER%", receiverIgn);
 					message = message.replace("%ITEM%", itemKey);
 

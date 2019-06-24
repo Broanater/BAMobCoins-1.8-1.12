@@ -17,7 +17,7 @@ Category:
         Name: '&d&lFun Paper'
         Lore:
           - '&7Line one'
-          - '&7Line two'
+          - '&6Price &f: %PRICE%'
       Item:
         Material: GRASS
         Damage: 0
@@ -27,19 +27,18 @@ Category:
         # Set to "Lore: {}" to have no lore.
         Lore:
           - '&7Line one'
-          - '&7Line two'
     ItemTwo:
       Type: item
       Slot: 14
       Price: 100
       Display:
-        Material: TRIPWIRE_HOOK
+        Material: GRASS
         Damage: 0
         Amount: 1
-        Name: '&d&lKey one'
+        Name: '&d&lGRASS'
         Lore:
-          - '&7Line one'
-          - '&7Line two'
+          - '&7It''s just grass'
+          - '&6Price &f: %PRICE%'
       Item:
         Material: GRASS
         Damage: 0

@@ -21,7 +21,7 @@ Category:
         Name: '&d&lKey one'
         Lore:
           - '&7Line one'
-          - '&7Line two'
+          - '&6Price &f: %PRICE%'
       # Command Help
       # '>' - Means run command as player.
       # '!' - Means run command as console.
@@ -42,7 +42,7 @@ Category:
         Name: '&d&lKey two'
         Lore:
           - '&7Line one'
-          - '&7Line two'
+          - '&6Price &f: %PRICE%'
       Commands:
         - '>say I bought a key'
         - ':&b&lThanks for buying Key2!'
