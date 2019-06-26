@@ -32,28 +32,36 @@ public class MessagesController implements Listener
 	{
 		File langFolder = new File("plugins/BAMobCoins/lang");
 		
-		/* Lang Files */
-		File langEn = new File("plugins/BAMobCoins/lang", "lang_en.yml");
-		
-		
 		if (!langFolder.exists())
 		{
 			/* Create the folder */
 			langFolder.mkdir();
 		}
 		
-		if (!langEn.exists())
+
+		String[] langFiles = {
+				"lang_en"
+		};
+		
+		for (String langName : langFiles)
 		{
-			try
+			/* Lang Files */
+			File langEn = new File("plugins/BAMobCoins/lang", langName + ".yml");
+			
+			if (!langEn.exists())
 			{
-				/* Copy the lang_en.yml default file */
-				FileUtils.copyInputStreamToFile(plugin.getResource("resources/lang_en.yml"), langEn);
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
+				try
+				{
+					/* Copy the lang_en.yml default file */
+					FileUtils.copyInputStreamToFile(plugin.getResource("resources/lang/" + langName + ".yml"), langEn);
+				}
+				catch (IOException e)
+				{
+					Utils.sendError("Failed to load " + langName + ".yml");
+				}
 			}
 		}
+		
 		
 		
 		messagesFile = new File("plugins/BAMobCoins/lang", getLangFile() + ".yml");

@@ -64,6 +64,15 @@ public class MobNameController implements Listener
 	
 	public static String getMobName(EntityType entity)
 	{
-		return mobNamesConfig.getString(entity.toString());
+		String mobName = mobNamesConfig.getString(entity.toString());
+		
+		if (mobName == null)
+		{
+			return entity.toString();
+		}
+		else
+		{
+			return mobName;
+		}
 	}
 }
