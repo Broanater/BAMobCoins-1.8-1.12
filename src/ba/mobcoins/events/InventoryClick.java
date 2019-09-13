@@ -70,7 +70,9 @@ public class InventoryClick implements Listener
 								receiver.closeInventory();
 
 								String message = MessagesController.getShopBoughtItem()
-									.replace("%ITEM%", customItem.getDisplayItem().getItemMeta().getDisplayName())
+									.replace("%ITEM_NAME%", customItem.getDisplayItem().getItemMeta().getDisplayName())
+									.replace("%ITEM%", customItem.getDisplayItem().getType().toString())
+									.replace("%ID%", customItem.getItemKey())
 									.replace("%PRICE%", String.valueOf(customItem.getPrice()));
 
 								if (customItem.getItemType() == CustomItem.ItemTypes.COMMAND)
