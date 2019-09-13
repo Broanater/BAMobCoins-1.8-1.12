@@ -40,6 +40,7 @@ Shop:
         Lore:
           - '&7Line one'
           - '&7Line two'
+        Glow: true
       UsePermission: false
       Slot: 12
       File: Keys

@@ -2,10 +2,6 @@
 #    BAMobCoins
 #
 ####################################################
-# %PLAYER% - Will be replaced with the player who clicked the item (Buying from the shop)
-# [MESSAGE] - Will send a message to the player
-# [BROADCAST] - Will broadcast a message to the whole server
-######################################################
 # Set to the name of the file without the extension. 
 # If you translate the entire document please send it to me so I can add it for others to use easier.
 Lang: lang_en
@@ -22,43 +18,70 @@ Coin:
 DropChances:
   # Leave value as -1 for them to not be active
   # The value entered is the percent for the drop.
+  # Entity Types can be found here, https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html
   # eg 
+  #   <Entity Type>: <Percent>
   #   BAT: 20
   # Means theres a 20% chance a bat will give a coin when killed.
-  # Passive Mobs
-  BAT: -1
-  SQUID: -1
-  RABBIT: -1
-  CHICKEN: -1
-  PIG: -1
-  SHEEP: -1
-  COW: -1
-  MUSHROOMCOW: -1
-  SNOWMAN: -1
-  OCELOT: -1
-  HORSE: -1
-  # Hostile Mobs
-  ZOMBIE: -1
-  SKELETON: -1
-  SPIDER: -1
-  CAVESPIDER: -1
+  # Hostile
+  BLAZE: -1 
+  CAVE_SPIDER: -1 
   CREEPER: -1
-  ENDERMAN: -1
-  BLAZE: 10
-  SILVERFISH: -1
-  WITCH: -1
-  MAGMACUBE: -1
-  ENDERMITE: -1
-  GUARDIAN: -1
+  DROWNED: -1
+  ELDER_GUARDIAN: -1 
+  ENDER_DRAGON: -1 
+  ENDERMITE: -1 
+  EVOKER: -1
   GHAST: -1
-  SLIME: -1
   GIANT: -1
-  WITHER: -1
-  ENDERDRAGON: -1
-  # Neutral Mobs
+  GUARDIAN: -1 
+  HUSK: -1 
+  ILLUSIONER: -1 
+  MAGMA_CUBE: -1
+  PHANTOM: -1
+  SHULKER: -1
+  SILVERFISH: -1
+  SKELETON: -1 
+  SLIME: -1
+  SPIDER: -1
+  STRAY: -1 
+  VEX: -1
+  VINDICATOR: -1
+  WITCH: -1 
+  WITHER: -1 
+  ZOMBIE: -1 
+  ZOMBIE_VILLAGER : -1
+  # Passive
+  BAT: -1 
+  OCELOT: -1 
+  CHICKEN: -1 
+  COD: -1 
+  COW: -1
+  DOLPHIN: -1
+  DONKEY: -1
+  HORSE: -1 
+  LLAMA: -1
+  MULE: -1 
+  MUSHROOM_COW: -1
+  PARROT: -1
+  PIG: -1 
+  PUFFERFISH: -1
+  RABBIT: -1 
+  SALMON: -1 
+  SHEEP: -1 
+  SKELETON_HORSE: -1 
+  SNOWMAN: -1
+  SQUID: -1
+  TROPICAL_FISH: -1 
+  TURTLE: -1
   VILLAGER: -1
-  IRONGOLEM: -1
-  PIGMAN: -1
+  ZOMBIE_HORSE: -1
+  # Neutral
+  ENDERMAN: -1 
+  IRON_GOLEM: -1
+  PIG_ZOMBIE: -1
+  POLAR_BEAR: -1
   WOLF: -1
-  # Can even set it up for players
+  # Can even do players
   PLAYER: -1
+Debug: false

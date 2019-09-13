@@ -1,8 +1,70 @@
 name: BAMobCoins
-version: 2.3
+version: 2.6
 description: This plugin is used to add a virtual currency to Minecraft in the form of MobCoins which are obtained by killing mobs. A shop to spend the MobCoins is also included in this plugin.
 main: ba.mobcoins.Main
 author: Brody A.
 commands:
   BAMobCoins:
     aliases: [bamc, mobcoins, mc]
+permissions:
+  bamobcoins.user:
+    description: Give the user access to user commands.
+    default: op
+    children:
+      bamobcoins.shop: true
+      bamobcoins.balance: true
+      bamobcoins.help: true
+      bamobcoins.withdraw: true
+      bamobcoins.pay: true
+  bamobcoins.shop:
+    description: Allow the user access to the main shop categories.
+    default: op
+  bamobcoins.balance:
+    description: Allow the user to check their balance.
+    default: op
+  bamobcoins.balance.others:
+    description: Allow the user to check the balance of other players.
+    default: op
+  'bamobcoins.balance.*':
+    description: Allow the user to check their own balance and other players.
+    default: op
+    children:
+      bamobcoins.balance: true
+      bamobcoins.balance.others: true
+  bamobcoins.help:
+    description: Allow the user to see the help message.
+    default: op
+  bamobcoins.withdraw:
+    description: Allow the user to withdraw their mobcoins into a physical item.
+    default: op
+  bamobcoins.pay:
+    description: Allow the user to pay/transfer their mobcoins to another player.
+    default: op
+  bamobcoins.admin:
+    description: Give the user access to admin commands.
+    default: op
+    children:
+      bamobcoins.reload: true
+      bamobcoins.messages: true
+      bamobcoins.add: true
+      bamobcoins.remove: true
+      bamobcoins.set: true
+      bamobcoins.giveitem: true
+  bamobcoins.reload:
+    description: Allow the user to reload config file, lang file, shop file, and categories.
+    default: op
+  bamobcoins.messages:
+    description: Allow the user to view all messages set in the lang file.
+    default: op
+  bamobcoins.add:
+    description: Allow the user to add mobcoins to a users balance.
+    default: op
+  bamobcoins.remove:
+    description: Allow the user to remove mobcoins from a users balance.
+    default: op
+  bamobcoins.set:
+    description: Allow the user to set a users balance.
+    default: op
+  bamobcoins.giveitem:
+    descritpion: Allow the user to give an item from the shop to a user.
+    default: op

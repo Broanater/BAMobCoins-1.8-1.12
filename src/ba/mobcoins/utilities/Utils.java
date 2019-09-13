@@ -21,6 +21,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import ba.mobcoins.Main;
 import ba.mobcoins.apis.CoinsAPI;
+import ba.mobcoins.controllers.ConfigController;
 import ba.mobcoins.controllers.MessagesController;
 import ba.mobcoins.models.CustomItem;
 
@@ -31,19 +32,6 @@ public class Utils implements Listener
 	public Utils(Main pl)
 	{
 		plugin = pl;
-	}
-
-	
-	public static String getPrefix()
-	{
-		String prefix = ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("Options.Prefix"));
-		
-		if (prefix.charAt(prefix.length() - 1) != ' ')
-		{
-			prefix += " ";
-		}
-		
-		return prefix;
 	}
 
 	public static boolean hasAccount(Player p)
@@ -79,35 +67,30 @@ public class Utils implements Listener
 		String message = "";
 		if (sCoinsRecieved > 1)
 		{
-			message = MessagesController.getGainSingle();
-			message = message.replace("%MOB%", sMob);
-			message = message.replace("%AMOUNT%", String.valueOf(sCoinsRecieved));
-			
-			message = Utils.getPrefix() + convertColorCodes(message);
+			message = MessagesController.getGainSingle()
+			.replace("%MOB%", sMob)
+			.replace("%AMOUNT%", String.valueOf(sCoinsRecieved));
 		}
 		else
 		{
-			message = MessagesController.getGainPlural();
-			message = message.replace("%MOB%", sMob);
-			message = message.replace("%AMOUNT%", String.valueOf(sCoinsRecieved));
-			
-			message = Utils.getPrefix() + convertColorCodes(message);
+			message = MessagesController.getGainPlural()
+				.replace("%MOB%", sMob)
+				.replace("%AMOUNT%", String.valueOf(sCoinsRecieved));
 		}
-		return message;
+		return convertColorCodes(message);
 	}
 
 	public static void insufficientPermissions(CommandSender sSender, String sCommand)
 	{
-		String message = MessagesController.getGlobalInsufficientPermission();
+		String message = MessagesController.getGlobalInsufficientPermission()
+				.replace("%COMMAND%", sCommand);
 		
-		message = message.replace("%COMMAND%", sCommand);
-		
-		sSender.sendMessage(getPrefix() + convertColorCodes(message));
+		sSender.sendMessage(convertColorCodes(message));
 	}
 
 	public static void sendMessage(CommandSender sSender, String sMessage)
 	{
-		sSender.sendMessage(getPrefix() + convertColorCodes(sMessage));
+		sSender.sendMessage(convertColorCodes(sMessage));
 	}
 
 	public static void sendBroadcast(String sMessage)
@@ -176,6 +159,7 @@ public class Utils implements Listener
 			/* Send message to player purchasing */
 			else if (typeIdentifier == ':')
 			{
+				requestWithoutTypeId = requestWithoutTypeId.replace("%PREFIX%", ConfigController.getPrefix());
 				sendMessage(player, requestWithoutTypeId);
 			}
 			/* Broadcast message to server */

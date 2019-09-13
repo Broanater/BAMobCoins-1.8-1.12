@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import ba.mobcoins.apis.CoinsAPI;
+import ba.mobcoins.controllers.ConfigController;
 import ba.mobcoins.controllers.MessagesController;
 import ba.mobcoins.controllers.ShopController;
 import ba.mobcoins.models.Category;
@@ -68,9 +69,9 @@ public class InventoryClick implements Listener
 							{
 								receiver.closeInventory();
 
-								String message = MessagesController.getShopBoughtItem();
-								message = message.replace("%ITEM%", customItem.getDisplayItem().getItemMeta().getDisplayName());
-								message = message.replace("%PRICE%", String.valueOf(customItem.getPrice()));
+								String message = MessagesController.getShopBoughtItem()
+									.replace("%ITEM%", customItem.getDisplayItem().getItemMeta().getDisplayName())
+									.replace("%PRICE%", String.valueOf(customItem.getPrice()));
 
 								if (customItem.getItemType() == CustomItem.ItemTypes.COMMAND)
 								{
@@ -83,14 +84,14 @@ public class InventoryClick implements Listener
 									/* Give the player the item */
 									if (Utils.givePlayerItem(receiver, customItem.getRewardItem()))
 									{
-										receiver.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(message));
+										receiver.sendMessage(Utils.convertColorCodes(message));
 										CoinsAPI.removeCoins(receiverUuid, customItem.getPrice());
 									}
 									else
 									{
 										String noSpaceMessage = MessagesController.getGiveItemNoSpace();
 										noSpaceMessage = noSpaceMessage.replace("%ITEM%", customItem.getDisplayItem().getItemMeta().getDisplayName());
-										receiver.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(noSpaceMessage));
+										receiver.sendMessage(Utils.convertColorCodes(noSpaceMessage));
 									}
 
 								}
@@ -99,11 +100,11 @@ public class InventoryClick implements Listener
 							{
 								receiver.closeInventory();
 
-								String message = MessagesController.getShopNotEnough();
-								message = message.replace("%ITEM%", customItem.getDisplayItem().getItemMeta().getDisplayName());
-								message = message.replace("%PRICE%", String.valueOf(customItem.getPrice()));
+								String message = MessagesController.getShopNotEnough()
+									.replace("%ITEM%", customItem.getDisplayItem().getItemMeta().getDisplayName())
+									.replace("%PRICE%", String.valueOf(customItem.getPrice()));
 
-								receiver.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(message));
+								receiver.sendMessage(Utils.convertColorCodes(message));
 							}
 						}
 

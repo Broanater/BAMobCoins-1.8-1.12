@@ -6,6 +6,7 @@ import java.util.Random;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 
@@ -13,46 +14,49 @@ import ba.mobcoins.Main;
 import ba.mobcoins.apis.CoinsAPI;
 import ba.mobcoins.controllers.ConfigController;
 import ba.mobcoins.controllers.MobNameController;
+import ba.mobcoins.logger.CustomLogger;
 import ba.mobcoins.utilities.Utils;
 
 public class EntityDeath implements Listener
 {
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void OnEntityDeath(EntityDeathEvent e)
 	{
-		HashMap<EntityType, Double> mobRates = ConfigController.getDropRates();
-		for (EntityType entity : mobRates.keySet())
+		if (e.getEntity().getKiller() instanceof Player)
 		{
-			if (e.getEntityType() == entity)
+			HashMap<EntityType, Double> mobRates = ConfigController.getDropRates();
+			for (EntityType entity : mobRates.keySet())
 			{
-				Random rand = new Random();
-				int randOdd = 1 + rand.nextInt(100);
-				
-				double mobOdd = mobRates.get(entity);
-				
-				if (randOdd <= mobOdd)
+				if (e.getEntityType() == entity)
 				{
-					Player p = e.getEntity().getKiller();
-					if (p == null)
-					{
-						return;
-					}
-					
-					String player = p.getUniqueId().toString();
+					Random rand = new Random();
+					int randOdd = 1 + rand.nextInt(100);
 
-					String mobName = MobNameController.getMobName(entity);
-					
-					if (mobName == null)
+					double mobOdd = mobRates.get(entity);
+
+					if (randOdd <= mobOdd)
 					{
-						p.sendMessage(Utils.getCurrencyIncreaseMessage(entity.toString(), 1));
+						Player p = e.getEntity().getKiller();
+						if (p == null)
+						{
+							return;
+						}
+
+						String player = p.getUniqueId().toString();
+
+						String mobName = MobNameController.getMobName(entity);
+
+						if (mobName == null)
+						{
+							p.sendMessage(Utils.getCurrencyIncreaseMessage(entity.toString(), 1));
+						}
+						else
+						{
+							p.sendMessage(Utils.getCurrencyIncreaseMessage(mobName, 1));
+						}
+
+						CoinsAPI.addCoins(player, 1);
 					}
-					else
-					{
-						p.sendMessage(Utils.getCurrencyIncreaseMessage(mobName, 1));
-					}
-					
-					
-					CoinsAPI.addCoins(player, 1);
 				}
 			}
 		}

@@ -4,7 +4,7 @@ Category:
   # Set to -1 to disable
   BackSlot: 18
   Coin_Display_Location: 4
-  Drop_Info_Location: 21
+  Drop_Info_Location: 22
   Items:
     # Must be unique
     Key1:
@@ -22,6 +22,7 @@ Category:
         Lore:
           - '&7Line one'
           - '&6Price &f: %PRICE%'
+        Glow: true
       # Command Help
       # '>' - Means run command as player.
       # '!' - Means run command as console.

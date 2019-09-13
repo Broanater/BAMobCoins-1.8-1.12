@@ -19,6 +19,7 @@ import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import ba.mobcoins.controllers.ConfigController;
 import ba.mobcoins.utilities.Utils;
 
 
@@ -32,7 +33,7 @@ public class UpdateChecker
 	// Constants. Customize to your liking.
 	private static final int ID = 65777; // The ID of your resource. Can be found in the resource URL.
 	private static final String ERR_MSG = "&cUpdate checker failed!";
-	private static final String UPDATE_MSG = Utils.getPrefix() + " &fA new update is available at: &bhttps://www.spigotmc.org/resources/" + ID + "/updates";
+	private static final String UPDATE_MSG = ConfigController.getPrefix() + " &fA new update is available at: &bhttps://www.spigotmc.org/resources/" + ID + "/updates";
 	private static final long CHECK_INTERVAL = 12_000; // In ticks.
 
 	public UpdateChecker(final JavaPlugin javaPlugin)

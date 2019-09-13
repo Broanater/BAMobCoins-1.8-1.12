@@ -4,7 +4,7 @@ Category:
   # Set to -1 to disable
   BackSlot: 18
   Coin_Display_Location: 4
-  Drop_Info_Location: 21
+  Drop_Info_Location: 22
   Items:
     ItemOne:
       Type: item

@@ -26,8 +26,7 @@ public class PlayerInteract implements Listener
 		{
 			item = player.getInventory().getItemInMainHand();
 		}
-		
-		
+
 		int amount = item.getAmount();
 
 		if (item.equals(Utils.getCoinItem(amount)))
@@ -35,11 +34,10 @@ public class PlayerInteract implements Listener
 			CoinsAPI.addCoins(player.getUniqueId().toString(), amount);
 			player.getInventory().removeItem(item);
 
-			String message = MessagesController.getCoinDeposit();
+			String message = MessagesController.getCoinDeposit()
+				.replace("%AMOUNT%", String.valueOf(amount));
 
-			message = message.replace("%AMOUNT%", String.valueOf(amount));
-
-			player.sendMessage(Utils.getPrefix() + Utils.convertColorCodes(message));
+			player.sendMessage(Utils.convertColorCodes(message));
 		}
 
 	}

@@ -1,71 +1,80 @@
 #
-#  All messages have the prefix infront of them.
+#  BAMobCoins English language file
 #
+# %PREFIX% - Will be replaced by the plugins prefix set in the config.yml
 Messages:
   Global:
-    Never_Joined: '&7That player has never joined the server!'
-    Whole_Number: '&7Please enter a whole number.'
-    Non_Player: '&7You must be a player to run this command.'
+    Never_Joined: '%PREFIX% &7That player has never joined the server!'
+    Whole_Number: '%PREFIX% &7Please enter a whole number.'
+    Non_Player: '%PREFIX% &7You must be a player to run this command.'
     # %COMMAND% - Will be replaced by the command format 
-    Insufficient_Permission: '&cInsufficient Permission! You don''t have access to %COMMAND%.'
-    Unknown_Command: '&cUnknown command. Type /BAMobCoins help for assistance with commands.'
+    Insufficient_Permission: '&%PREFIX% cInsufficient Permission! You don''t have access to %COMMAND%.'
+    Too_Many_Args: '%PREFIX% &7You have entered too many arguments for %COMMAND%.'
+    Not_Enough_Args: '%PREFIX% &7You have are missing some arguments for %COMMAND%.'
+    Unknown_Command: '%PREFIX% &cUnknown command. Type /BAMobCoins help for assistance with commands.'
   Balance:
     # %BALANCE% - Will be replaced by the players balance.
     # %PLAYER% - Will be replaced by the players name whos balance is being checked.
-    Your_Balance: '&bYour balance is, &a%BALANCE%.'
-    Other_Balance: '&b%PLAYER%''s balance is %BALANCE%.'
+    Your_Balance: '%PREFIX% &bYour balance is, &a%BALANCE%.'
+    Other_Balance: '%PREFIX% &b%PLAYER%''s balance is %BALANCE%.'
   Pay:
     # %AMOUNT% - Will be replaced by the amount sent.
     # %SENDER% - Will be replaced by the name of the player sending the coins.
     # %RECEIVER% - Will be replaced by the name of the player receiving the coins.
-    Sender: '&7You payed %RECEIVER% %AMOUNT% Mob Coins!'
-    Receiver: '&7You were paided %AMOUNT% Mob Coins by %SENDER%'
-    Self: '&7You can''t pay yourself!'
-    Zero: '&7You cannot send 0 Mob Coins to %RECEIVER%!'
-    Not_Enough: '&7You do not have enough Mob Coins!'
+    Sender: '%PREFIX% &7You payed %RECEIVER% %AMOUNT% Mob Coins!'
+    Receiver: '%PREFIX% &7You were paided %AMOUNT% Mob Coins by %SENDER%'
+    Self: '%PREFIX% &7You can''t pay yourself!'
+    Zero: '%PREFIX% &7You cannot send 0 Mob Coins to %RECEIVER%!'
+    Not_Enough: '%PREFIX% &7You do not have enough Mob Coins!'
   Add:
     # %AMOUNT% - Will be replaced by the amount sent.
     # %PLAYER% - Will be replaced by the players name receiving the coins.
-    Admin_Message: '&bYou have added &a%AMOUNT% &bmobcoins to %PLAYER%''s balance.'
-    Player_Message: '&bYou have received &a%AMOUNT% &bmobcoins.'
-    Zero: '&7You cannot add 0 to %PLAYER%''s balance!'
+    Admin_Message: '%PREFIX% &bYou have added &a%AMOUNT% &bmobcoins to %PLAYER%''s balance.'
+    Player_Message: '%PREFIX% &bYou have received &a%AMOUNT% &bmobcoins.'
+    Negative: '%PREFIX% &7You cannot add a negative number.'
+    Zero: '%PREFIX% &7You cannot add 0 to %PLAYER%''s balance!'
   Set:
     # %AMOUNT% - Will be replaced by the amount sent.
     # %PLAYER% - Will be replaced by the players name receiving the coins.
-    Admin_Message: '&7You set %PLAYER%''s balance to %AMOUNT%.'
-    Player_Message: '&7Your balance has been set to %AMOUNT%.'
+    Admin_Message: '%PREFIX% &7You set %PLAYER%''s balance to %AMOUNT%.'
+    Player_Message: '%PREFIX% &7Your balance has been set to %AMOUNT%.'
   Remove:
     # %AMOUNT% - Will be replaced by the amount sent
     # %PLAYER% - Will be replaced by the players name receiving the coins.
-    Admin_Message: '&7You have removed %AMOUNT% from %PLAYER%''s balance.'
-    Player_Message: '&7%AMOUNT% Mob Coins have been removed from your balance.'
-    Zero: '&7You cannot remove 0 Mob Coins from %PLAYER%''s balance.'
+    Admin_Message: '%PREFIX% &7You have removed %AMOUNT% from %PLAYER%''s balance.'
+    Player_Message: '%PREFIX% &7%AMOUNT% Mob Coins have been removed from your balance.'
+    Negative: '%PREFIX% &7You cannot remove a negative number.'
+    Zero: '%PREFIX% &7You cannot remove 0 Mob Coins from %PLAYER%''s balance.'
   GiveItem:
     # %PLAYER% - Will be replaced by the players name receiving the coins.
     # %ITEM% - Will be replaced with the name of the item being given.
     # %CATEGORY% - Will be replaced with the name of the category entered.
-    Admin_Message: '&7You gave %PLAYER% %ITEM%.'
-    Player_Message: '&7You have been given %ITEM%.'
-    No_Space: '&7Not enough space to purchase %ITEM%.'
-    Unfound_Item: '&7Could not find %ITEM%. Please ensure you are entering the correct name.'
-    Unfound_Category: '&7Cound not find %CATEGORY%. Please ensure you are entering the correct name.'
+    Admin_Message: '%PREFIX% &7You gave %PLAYER% %ITEM%.'
+    Player_Message: '%PREFIX% &7You have been given %ITEM%.'
+    No_Space: '%PREFIX% &7Not enough space to purchase %ITEM%.'
+    Unfound_Item: '%PREFIX% &7Could not find %ITEM%. Please ensure you are entering the correct name.'
+    Unfound_Category: '%PREFIX% &7Cound not find %CATEGORY%. Please ensure you are entering the correct name.'
   Shop:
     # %ITEM% - Will be replaced by the item bought.
     # %PRICE% - Will be replaced by the price of the item.
-    Bought_Item: '&7You bought %ITEM% for %PRICE%.'
-    Not_Enough: '&7You don''t have %PRICE% to buy %ITEM%'
+    Bought_Item: '%PREFIX% &7You bought %ITEM% for %PRICE%.'
+    Not_Enough: '%PREFIX% &7You don''t have %PRICE% to buy %ITEM%'
   Coin:
     # %AMOUNT% - The amount of coins
-    Withdraw: '&7You have withdrawn %AMOUNT%!'
-    Deposit: '&7You have deposited %AMOUNT%!'
-    Zero: '&7You can''t withdraw 0 Mob Coins!'
+    Withdraw: '%PREFIX% &7You have withdrawn %AMOUNT%!'
+    Deposit: '%PREFIX% &7You have deposited %AMOUNT%!'
+    Not_Enough: '%PREFIX% &7You don''t have %AMOUNT% MobCoins to withdraw!'
+    Zero: '%PREFIX% &7You can''t withdraw 0 Mob Coins!'
   Gain:
     # %MOB% - Will be replaced with the mobs name that was killed.
     # %AMOUNT% - Will be replaced with the amount recieved.
-    Single: '&bYou killed a %MOB% and gained %AMOUNT% MobCoin.'
-    Plural: '&bYou killed a %MOB% and gained %AMOUNT% MobCoins.'
+    Single: '%PREFIX% &bYou killed a %MOB% and gained %AMOUNT% MobCoin.'
+    Plural: '%PREFIX% &bYou killed a %MOB% and gained %AMOUNT% MobCoins.'
+  Messages:
+    # %SECTION% - Will be replaced with the section you entered.
+    Unknown_Section: '%PREFIX% &7Section %SECTION% is unknown. Ensure you are entering the ones from the language file.'
   Reload:
-    Admin_Message: '&7Config shops, and messages &areloaded.'
+    Admin_Message: '%PREFIX% &7Config, shops, and messages &areloaded.'
   Help:
   # %VERSION% - Will be replaced by the plugins version
   - '&7-------------[ &6BAMobCoins V%VERSION% Help &7]-------------'
@@ -77,6 +86,7 @@ Messages:
   - '&6/BAMobCoins set <players ign> <amount> &8: &7Set a players balance.'
   - '&6/BAMobCoins remove <players ign> <amount> &8: &7Removes MobCoins from a players balance.'
   - '&6/BAMobCoins withdraw <amount> &8: &7Withdraw MobCoins from your balance into an item.'
+  - '&6/BAMobCoins messages <header> &8: &7Easily test the way your messages will look for a section.'
   - '&6/BAMobCoins giveItem <player> <categoryId> <itemId>&8: &7Give a player a specific item from the shop for free.'
   - '&6/BAMobCoins reload &8: &7Reloads the plugins config files.'
   - '&6/BAMobCoins help &8: &7Sends the help message listing commands.'
