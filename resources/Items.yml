@@ -47,3 +47,30 @@ Category:
         Name: 'default' 
         # Set to "Lore: {}" to have no lore.
         Lore: {}
+    Filler1:
+      Type: filler
+      Slot:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+        - 18
+        - 19
+        - 20
+        - 21
+        - 22
+        - 23
+        - 24
+        - 25
+        - 26
+      Display:
+        Material: STAINED_GLASS_PANE
+        Damage: 0
+        Amount: 1
+        Name: ' '
+        Lore: {}
