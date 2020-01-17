@@ -13,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -24,7 +25,8 @@ import org.bukkit.util.FileUtil;
 import com.google.common.io.Files;
 
 import net.md_5.bungee.api.ChatColor;
-
+import net.minecraft.server.v1_8_R3.NBTTagCompound;
+import net.minecraft.server.v1_8_R3.NBTTagList;
 import ba.mobcoins.*;
 import ba.mobcoins.apis.CoinsAPI;
 import ba.mobcoins.enchants.Glow;
@@ -199,14 +201,32 @@ public class ShopController implements Listener
 			itemMeta.setDisplayName(name);
 			itemMeta.setLore(lore);
 
-			if (glow)
+			/* Enable glow effects depending on if the server is 1.8.* or a newer version. */
+			if (plugin.getServer().getVersion().contains("MC: 1.8"))
 			{
-				Glow glowEnchant = new Glow(new NamespacedKey(plugin, "GlowingEnchant"));
-				itemMeta.addEnchant(glowEnchant, 1, true);
+				net.minecraft.server.v1_8_R3.ItemStack nmsStack = CraftItemStack.asNMSCopy(item);
+				NBTTagCompound tag = null;
+				if (!nmsStack.hasTag())
+				{
+					tag = new NBTTagCompound();
+					nmsStack.setTag(tag);
+				}
+				if (tag == null)
+					tag = nmsStack.getTag();
+				NBTTagList ench = new NBTTagList();
+				tag.set("ench", ench);
+				nmsStack.setTag(tag);
+			}
+			else
+			{
+				if (glow)
+				{
+					Glow glowEnchant = new Glow(new NamespacedKey(plugin, "GlowingEnchant"));
+					itemMeta.addEnchant(glowEnchant, 1, true);
+				}
+
 				item.setItemMeta(itemMeta);
 			}
-
-			item.setItemMeta(itemMeta);
 
 			if (usePermission)
 			{
@@ -258,14 +278,15 @@ public class ShopController implements Listener
 					}
 					catch (Exception e)
 					{
-						System.out.println("[BAMobCoins] Type given for 'Category.Items." + key + ".Type' is unknown. Make sure you use 'COMMAND' or 'ITEM'. Skipping item.");
+						System.out
+							.println("[BAMobCoins] Type given for 'Category.Items." + key + ".Type' is unknown. Make sure you use 'COMMAND' or 'ITEM'. Skipping item.");
 						continue;
 					}
-					
+
 					String all = "";
 					int location = 0;
 					ArrayList<Integer> fillerLocations = new ArrayList<Integer>();
-					
+
 					if (type == ItemTypes.COMMAND || type == ItemTypes.ITEM)
 					{
 						location = categoryConfig.getInt("Category.Items." + key + ".Slot");
@@ -281,7 +302,7 @@ public class ShopController implements Listener
 							fillerLocations = (ArrayList<Integer>) categoryConfig.getIntegerList("Category.Items." + key + ".Slot");
 						}
 					}
-					
+
 					int price = categoryConfig.getInt("Category.Items." + key + ".Price");
 
 					/* Get Display Item */
@@ -292,21 +313,23 @@ public class ShopController implements Listener
 					}
 					catch (Exception e)
 					{
-						System.out.println("[BAMobCoins] Material given for 'Category.Items." + key + ".Display.Material' is unknown. Skipping item.");
+						System.out
+							.println("[BAMobCoins] Material given for 'Category.Items." + key + ".Display.Material' is unknown. Skipping item.");
 						continue;
 					}
 					int damage = categoryConfig.getInt("Category.Items." + key + ".Display.Damage");
 					int amount = categoryConfig.getInt("Category.Items." + key + ".Display.Amount");
 					String name = Utils.convertColorCodes(categoryConfig.getString("Category.Items." + key + ".Display.Name"));
 					ArrayList<String> rawLore = (ArrayList<String>) categoryConfig.getStringList("Category.Items." + key + ".Display.Lore");
-					
+
 					boolean glow = false;
 					try
 					{
 						glow = categoryConfig.getBoolean("Category.Items." + key + ".Display.Glow");
 					}
 					catch (Exception e)
-					{}
+					{
+					}
 
 					ArrayList<String> lore = new ArrayList<String>();
 					for (String line : rawLore)
@@ -317,17 +340,37 @@ public class ShopController implements Listener
 
 					ItemStack displayItem = new ItemStack(material, amount, (short) damage);
 					ItemMeta displayMeta = displayItem.getItemMeta();
-					
+
 					displayMeta.setDisplayName(name);
 					displayMeta.setLore(lore);
-					
-					if (glow)
+
+					/* Enable glow effects depending on if the server is 1.8.* or a newer version. */
+					if (plugin.getServer().getVersion().contains("MC: 1.8"))
 					{
-						Glow glowEnchant = new Glow(new NamespacedKey(plugin, "GlowingEnchant"));
-						displayMeta.addEnchant(glowEnchant, 1, true);
+						net.minecraft.server.v1_8_R3.ItemStack nmsStack = CraftItemStack.asNMSCopy(displayItem);
+						NBTTagCompound tag = null;
+						if (!nmsStack.hasTag())
+						{
+							tag = new NBTTagCompound();
+							nmsStack.setTag(tag);
+						}
+						if (tag == null)
+							tag = nmsStack.getTag();
+						NBTTagList ench = new NBTTagList();
+						tag.set("ench", ench);
+						nmsStack.setTag(tag);
+					}
+					else
+					{
+						if (glow)
+						{
+							Glow glowEnchant = new Glow(new NamespacedKey(plugin, "GlowingEnchant"));
+							displayMeta.addEnchant(glowEnchant, 1, true);
+						}
+
 						displayItem.setItemMeta(displayMeta);
 					}
-					
+
 					displayItem.setItemMeta(displayMeta);
 
 					/* Get reward (commands or item) */
@@ -353,7 +396,8 @@ public class ShopController implements Listener
 
 						if (rewardMaterial == null)
 						{
-							System.out.println("[BAMobCoins] Material given for 'Category.Items." + key + ".Item.Material' is unknown. Skipping item.");
+							System.out
+								.println("[BAMobCoins] Material given for 'Category.Items." + key + ".Item.Material' is unknown. Skipping item.");
 							continue;
 						}
 
@@ -373,10 +417,10 @@ public class ShopController implements Listener
 					{
 						if (all.equalsIgnoreCase("all"))
 						{
-							for (int counter = 0 ; counter < inv.getSize() ; counter++)
+							for (int counter = 0; counter < inv.getSize(); counter++)
 							{
 								ItemStack stack = inv.getItem(counter);
-								
+
 								if (stack == null)
 								{
 									inv.setItem(counter, displayItem);
@@ -385,23 +429,21 @@ public class ShopController implements Listener
 						}
 						else
 						{
-						for (int fillerLocation : fillerLocations)
-						{
-							inv.setItem(fillerLocation, displayItem);
-						}
+							for (int fillerLocation : fillerLocations)
+							{
+								inv.setItem(fillerLocation, displayItem);
+							}
 						}
 					}
 				}
 
-				
 				/* Back button */
 				int backSlot = categoryConfig.getInt("Category.BackSlot");
 				if (backSlot > -1)
 				{
 					inv.setItem(backSlot, getBackButton());
 				}
-				
-				
+
 				shopInvs.put(id, new CustomInventory(title, inv, displayLoc, dropInfoLoc, shopItems));
 			}
 		}
@@ -530,452 +572,455 @@ public class ShopController implements Listener
 		ItemStack item = getDropInfoItem();
 		ItemMeta meta = item.getItemMeta();
 
-		HashMap<EntityType, Double> dropRates = ConfigController.getDropRates();
+		HashMap<String, Double> dropRates = ConfigController.getDropRates();
 
 		ArrayList<String> lore = new ArrayList<String>();
 
 		String mobFormat = getPercentFormat();
 
-		/* Hostile mobcoin chance display */
-		if (dropRates.get(EntityType.BLAZE) > 0 || dropRates.get(EntityType.CAVE_SPIDER) > 0 || dropRates.get(EntityType.CREEPER) > 0 || dropRates
-			.get(EntityType.DROWNED) > 0 || dropRates.get(EntityType.ELDER_GUARDIAN) > 0 || dropRates.get(EntityType.ENDER_DRAGON) > 0 || dropRates
-				.get(EntityType.ENDERMITE) > 0 || dropRates.get(EntityType.EVOKER) > 0 || dropRates.get(EntityType.GHAST) > 0 || dropRates
-					.get(EntityType.GIANT) > 0 || dropRates.get(EntityType.GUARDIAN) > 0 || dropRates.get(EntityType.HUSK) > 0 || dropRates
-						.get(EntityType.ILLUSIONER) > 0 || dropRates.get(EntityType.MAGMA_CUBE) > 0 || dropRates
-							.get(EntityType.PHANTOM) > 0 || dropRates.get(EntityType.SHULKER) > 0 || dropRates
-								.get(EntityType.SILVERFISH) > 0 || dropRates.get(EntityType.SKELETON) > 0 || dropRates
-									.get(EntityType.SLIME) > 0 || dropRates.get(EntityType.SPIDER) > 0 || dropRates
-										.get(EntityType.STRAY) > 0 || dropRates.get(EntityType.VEX) > 0 || dropRates
-											.get(EntityType.VINDICATOR) > 0 || dropRates.get(EntityType.WITCH) > 0 || dropRates
-												.get(EntityType.WITHER) > 0 || dropRates.get(EntityType.ZOMBIE) > 0 || dropRates
-													.get(EntityType.ZOMBIE_VILLAGER) > 0)
+		/*
+		 * HOSTILE MOBS
+		 */
+		if (Utils.getDropRate("BLAZE") > 0 || Utils.getDropRate("CAVE_SPIDER") > 0 || Utils.getDropRate("CREEPER") > 0 || Utils
+			.getDropRate("DROWNED") > 0 || Utils.getDropRate("ELDER_GUARDIAN") > 0 || Utils.getDropRate("ENDER_DRAGON") > 0 || Utils
+				.getDropRate("ENDERMITE") > 0 || Utils.getDropRate("EVOKER") > 0 || Utils.getDropRate("GHAST") > 0 || Utils
+					.getDropRate("GIANT") > 0 || Utils.getDropRate("GUARDIAN") > 0 || Utils.getDropRate("HUSK") > 0 || Utils
+						.getDropRate("ILLUSIONER") > 0 || Utils.getDropRate("MAGMA_CUBE") > 0 || Utils.getDropRate("PHANTOM") > 0 || Utils
+							.getDropRate("SHULKER") > 0 || Utils.getDropRate("SILVERFISH") > 0 || Utils.getDropRate("SKELETON") > 0 || Utils
+								.getDropRate("SLIME") > 0 || Utils.getDropRate("SPIDER") > 0 || Utils.getDropRate("STRAY") > 0 || Utils
+									.getDropRate("VEX") > 0 || Utils.getDropRate("WITHER") > 0 || Utils.getDropRate("ZOMBIE") > 0 || Utils
+										.getDropRate("ZOMBIE_VILLAGER") > 0)
 		{
 			lore.add(getMainColour() + "Hostile Mobs:");
 		}
-		if (dropRates.get(EntityType.BLAZE) > 0)
+		if (Utils.getDropRate("BLAZE") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.BLAZE));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.BLAZE)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("BLAZE")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.CAVE_SPIDER) > 0)
+		if (Utils.getDropRate("CAVE_SPIDER") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.CAVE_SPIDER));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.CAVE_SPIDER)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("CAVE_SPIDER")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.CREEPER) > 0)
+		if (Utils.getDropRate("CREEPER") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.CREEPER));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.CREEPER)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("CREEPER")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.DROWNED) > 0)
+		if (Utils.getDropRate("DROWNED") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.DROWNED));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.DROWNED)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("DROWNED")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.ELDER_GUARDIAN) > 0)
+		if (Utils.getDropRate("ELDER_GUARDIAN") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.ELDER_GUARDIAN));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.ELDER_GUARDIAN)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("ELDER_GUARDIAN")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.ENDER_DRAGON) > 0)
+		if (Utils.getDropRate("ENDER_DRAGON") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.ENDER_DRAGON));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.ENDER_DRAGON)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("ENDER_DRAGON")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.ENDERMITE) > 0)
+		if (Utils.getDropRate("ENDERMITE") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.ENDERMITE));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.ENDERMITE)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("ENDERMITE")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.EVOKER) > 0)
+		if (Utils.getDropRate("EVOKER") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.EVOKER));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.EVOKER)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("EVOKER")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.GHAST) > 0)
+		if (Utils.getDropRate("GHAST") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.GHAST));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.GHAST)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("GHAST")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.GIANT) > 0)
+		if (Utils.getDropRate("GIANT") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.GIANT));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.GIANT)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("GIANT")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.GUARDIAN) > 0)
+		if (Utils.getDropRate("GUARDIAN") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.GUARDIAN));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.GUARDIAN)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("GUARDIAN")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.HUSK) > 0)
+		if (Utils.getDropRate("HUSK") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.HUSK));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.HUSK)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("HUSK")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.ILLUSIONER) > 0)
+		if (Utils.getDropRate("ILLUSIONER") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.ILLUSIONER));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.ILLUSIONER)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("ILLUSIONER")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.MAGMA_CUBE) > 0)
+		if (Utils.getDropRate("MAGMA_CUBE") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.MAGMA_CUBE));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.MAGMA_CUBE)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("MAGMA_CUBE")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.PHANTOM) > 0)
+		if (Utils.getDropRate("PHANTOM") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.PHANTOM));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.PHANTOM)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("PHANTOM")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.SHULKER) > 0)
+		if (Utils.getDropRate("SHULKER") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.SHULKER));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.SHULKER)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("SHULKER")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.SILVERFISH) > 0)
+		if (Utils.getDropRate("SILVERFISH") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.SILVERFISH));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.SILVERFISH)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("SILVERFISH")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.SKELETON) > 0)
+		if (Utils.getDropRate("SKELETON") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.SKELETON));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.SKELETON)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("SKELETON")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.SLIME) > 0)
+		if (Utils.getDropRate("SLIME") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.SLIME));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.SLIME)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("SLIME")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.SPIDER) > 0)
+		if (Utils.getDropRate("SPIDER") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.SPIDER));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.SPIDER)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("SPIDER")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.STRAY) > 0)
+		if (Utils.getDropRate("STRAY") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.STRAY));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.STRAY)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("STRAY")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.VEX) > 0)
+		if (Utils.getDropRate("VEX") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.VEX));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.VEX)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("VEX")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.VINDICATOR) > 0)
+		if (Utils.getDropRate("VINDICATOR") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.VINDICATOR));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.VINDICATOR)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("VINDICATOR")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.WITCH) > 0)
+		if (Utils.getDropRate("WITCH") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.WITCH));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.WITCH)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("WITCH")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.WITHER) > 0)
+		if (Utils.getDropRate("WITHER") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.WITHER));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.WITHER)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("WITHER")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.ZOMBIE) > 0)
+		if (Utils.getDropRate("ZOMBIE") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.ZOMBIE));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.ZOMBIE)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("ZOMBIE")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.ZOMBIE_VILLAGER) > 0)
+		if (Utils.getDropRate("ZOMBIE_VILLAGER") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.ZOMBIE_VILLAGER));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.ZOMBIE_VILLAGER)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("ZOMBIE_VILLAGER")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
 
-		/* Passive mob chance display */
-		if (dropRates.get(EntityType.BAT) > 0 || dropRates.get(EntityType.OCELOT) > 0 || dropRates.get(EntityType.CHICKEN) > 0 || dropRates
-			.get(EntityType.COD) > 0 || dropRates.get(EntityType.COW) > 0 || dropRates.get(EntityType.DOLPHIN) > 0 || dropRates
-				.get(EntityType.DONKEY) > 0 || dropRates.get(EntityType.HORSE) > 0 || dropRates.get(EntityType.LLAMA) > 0 || dropRates
-					.get(EntityType.MULE) > 0 || dropRates.get(EntityType.MUSHROOM_COW) > 0 || dropRates.get(EntityType.PARROT) > 0 || dropRates
-						.get(EntityType.PIG) > 0 || dropRates.get(EntityType.PUFFERFISH) > 0 || dropRates.get(EntityType.RABBIT) > 0 || dropRates
-							.get(EntityType.SALMON) > 0 || dropRates.get(EntityType.SHEEP) > 0 || dropRates
-								.get(EntityType.SKELETON_HORSE) > 0 || dropRates.get(EntityType.SNOWMAN) > 0 || dropRates
-									.get(EntityType.SQUID) > 0 || dropRates.get(EntityType.TROPICAL_FISH) > 0 || dropRates
-										.get(EntityType.TURTLE) > 0 || dropRates.get(EntityType.VILLAGER) > 0 || dropRates
-											.get(EntityType.ZOMBIE_HORSE) > 0)
+		/*
+		 * PASSIVE MOBS
+		 */
+		if (Utils.getDropRate("BAT") > 0 || Utils.getDropRate("OCELOT") > 0 || Utils.getDropRate("CHICKEN") > 0 || Utils
+			.getDropRate("COD") > 0 || Utils.getDropRate("COW") > 0 || Utils.getDropRate("DOLPHIN") > 0 || Utils.getDropRate("DONKEY") > 0 || Utils
+				.getDropRate("HORSE") > 0 || Utils.getDropRate("LLAMA") > 0 || Utils.getDropRate("MULE") > 0 || Utils
+					.getDropRate("MUSHROOM_COW") > 0 || Utils.getDropRate("PARROT") > 0 || Utils.getDropRate("PIG") > 0 || Utils
+						.getDropRate("PUFFERFISH") > 0 || Utils.getDropRate("RABBIT") > 0 || Utils.getDropRate("SALMON") > 0 || Utils
+							.getDropRate("SHEEP") > 0 || Utils.getDropRate("SKELETON_HORSE") > 0 || Utils.getDropRate("SNOWMAN") > 0 || Utils
+								.getDropRate("SQUID") > 0 || Utils.getDropRate("TROPICAL_FISH") > 0 || Utils.getDropRate("TURTLE") > 0 || Utils
+									.getDropRate("VILLAGER") > 0 || Utils.getDropRate("ZOMBIE_HORSE") > 0)
 		{
 			lore.add(getMainColour() + "Passive Mobs:");
 		}
-		if (dropRates.get(EntityType.BAT) > 0)
+		if (Utils.getDropRate("BAT") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.BAT));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.BAT)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("BAT")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.OCELOT) > 0)
+		if (Utils.getDropRate("OCELOT") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.OCELOT));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.OCELOT)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("OCELOT")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.CHICKEN) > 0)
+		if (Utils.getDropRate("CHICKEN") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.CHICKEN));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.CHICKEN)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("CHICKEN")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.COD) > 0)
+		if (Utils.getDropRate("COD") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.COD));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.COD)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("COD")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.COW) > 0)
+		if (Utils.getDropRate("COW") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.COW));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.COW)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("COW")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.DOLPHIN) > 0)
+		if (Utils.getDropRate("DOLPHIN") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.DOLPHIN));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.DOLPHIN)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("DOLPHIN")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.DONKEY) > 0)
+		if (Utils.getDropRate("DONKEY") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.DONKEY));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.DONKEY)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("DONKEY")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.HORSE) > 0)
+		if (Utils.getDropRate("HORSE") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.HORSE));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.HORSE)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("HORSE")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.LLAMA) > 0)
+		if (Utils.getDropRate("LLAMA") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.LLAMA));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.LLAMA)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("LLAMA")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.MULE) > 0)
+		if (Utils.getDropRate("MULE") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.MULE));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.MULE)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("MULE")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.MUSHROOM_COW) > 0)
+		if (Utils.getDropRate("MUSHROOM_COW") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.MUSHROOM_COW));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.MUSHROOM_COW)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("MUSHROOM_COW")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.PARROT) > 0)
+		if (Utils.getDropRate("PARROT") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.PARROT));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.PARROT)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("PARROT")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.PIG) > 0)
+		if (Utils.getDropRate("PIG") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.PIG));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.PIG)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("PIG")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.PUFFERFISH) > 0)
+		if (Utils.getDropRate("PUFFERFISH") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.PUFFERFISH));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.PUFFERFISH)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("PUFFERFISH")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.RABBIT) > 0)
+		if (Utils.getDropRate("RABBIT") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.RABBIT));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.RABBIT)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("RABBIT")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.SALMON) > 0)
+		if (Utils.getDropRate("SALMON") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.SALMON));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.SALMON)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("SALMON")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.SHEEP) > 0)
+		if (Utils.getDropRate("SHEEP") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.SHEEP));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.SHEEP)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("SHEEP")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.SKELETON_HORSE) > 0)
+		if (Utils.getDropRate("SKELETON_HORSE") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.SKELETON_HORSE));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.SKELETON_HORSE)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("SKELETON_HORSE")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.SNOWMAN) > 0)
+		if (Utils.getDropRate("SNOWMAN") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.SNOWMAN));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.SNOWMAN)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("SNOWMAN")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.SQUID) > 0)
+		if (Utils.getDropRate("SQUID") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.SQUID));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.SQUID)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("SQUID")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.TROPICAL_FISH) > 0)
+		if (Utils.getDropRate("TROPICAL_FISH") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.TROPICAL_FISH));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.TROPICAL_FISH)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("TROPICAL_FISH")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.TURTLE) > 0)
+		if (Utils.getDropRate("TURTLE") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.TURTLE));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.TURTLE)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("TURTLE")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.VILLAGER) > 0)
+		if (Utils.getDropRate("VILLAGER") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.VILLAGER));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.VILLAGER)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("VILLAGER")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.ZOMBIE_HORSE) > 0)
+		if (Utils.getDropRate("ZOMBIE_HORSE") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.ZOMBIE_HORSE));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.ZOMBIE_HORSE)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("ZOMBIE_HORSE")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
 
-		/* Neutral mobcoin chance display */
-		if (dropRates.get(EntityType.ENDERMAN) > 0 || dropRates.get(EntityType.IRON_GOLEM) > 0 || dropRates
-			.get(EntityType.PIG_ZOMBIE) > 0 || dropRates.get(EntityType.POLAR_BEAR) > 0 || dropRates.get(EntityType.WOLF) > 0)
+		/*
+		 * NEUTRAL MOBS
+		 */
+		if (Utils.getDropRate("ENDERMAN") > 0 || Utils.getDropRate("IRON_GOLEM") > 0 || Utils.getDropRate("PIG_ZOMBIE") > 0 || Utils
+			.getDropRate("POLAR_BEAR") > 0 || Utils.getDropRate("WOLF") > 0)
 		{
 			lore.add(getMainColour() + "Neutral Mobs:");
 		}
-		if (dropRates.get(EntityType.ENDERMAN) > 0)
+		if (Utils.getDropRate("ENDERMAN") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.ENDERMAN));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.ENDERMAN)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("ENDERMAN")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.IRON_GOLEM) > 0)
+		if (Utils.getDropRate("IRON_GOLEM") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.IRON_GOLEM));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.IRON_GOLEM)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("IRON_GOLEM")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.PIG_ZOMBIE) > 0)
+		if (Utils.getDropRate("PIG_ZOMBIE") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.PIG_ZOMBIE));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.PIG_ZOMBIE)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("PIG_ZOMBIE")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.POLAR_BEAR) > 0)
+		if (Utils.getDropRate("POLAR_BEAR") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.POLAR_BEAR));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.POLAR_BEAR)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("POLAR_BEAR")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
-		if (dropRates.get(EntityType.WOLF) > 0)
+		if (Utils.getDropRate("WOLF") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.WOLF));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.WOLF)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("WOLF")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}
 
-		/* Player mobcoin chance display */
-		if (dropRates.get(EntityType.PLAYER) > 0)
+		/*
+		 * PLAYER
+		 */
+		if (Utils.getDropRate("PLAYER") > 0)
 		{
 			lore.add(getMainColour() + "Players:");
 		}
-		if (dropRates.get(EntityType.PLAYER) > 0)
+		if (Utils.getDropRate("PLAYER") > 0)
 		{
 			String newMobFormat = mobFormat.replace("%MOB%", MobNameController.getMobName(EntityType.PLAYER));
-			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(dropRates.get(EntityType.PLAYER)));
+			newMobFormat = newMobFormat.replace("%RATE%", String.valueOf(Utils.getDropRate("PLAYER")));
 
 			lore.add(Utils.convertColorCodes(newMobFormat));
 		}

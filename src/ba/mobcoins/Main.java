@@ -53,7 +53,7 @@ public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 		registerCommands();
 
 		initializeFiles();
-		
+
 		initializeEnchants();
 
 		/* Check if theres any updates for the plugin on spigot. */
@@ -140,8 +140,11 @@ public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 		}
 		try
 		{
-			Glow glow = new Glow(new NamespacedKey(this, "GlowingEnchant"));
-			Enchantment.registerEnchantment(glow);
+			if (!this.getServer().getVersion().contains("MC: 1.8"))
+			{
+				Glow glow = new Glow(new NamespacedKey(this, "GlowingEnchant"));
+				Enchantment.registerEnchantment(glow);
+			}
 		}
 		catch (IllegalArgumentException e)
 		{

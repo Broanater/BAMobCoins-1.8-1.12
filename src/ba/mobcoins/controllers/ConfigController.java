@@ -20,7 +20,7 @@ public class ConfigController implements Listener
 	
 	private static String pluginFolderPath;
 	
-	private static HashMap<EntityType, Double> dropRates = new HashMap<EntityType, Double>();
+	private static HashMap<String, Double> dropRates = new HashMap<String, Double>();
 	
 	public ConfigController(Main pl)
 	{
@@ -76,7 +76,7 @@ public class ConfigController implements Listener
 			{
 				double rate = plugin.getConfig().getDouble("DropChances." + entity);
 				
-				dropRates.put(entityType, rate);
+				dropRates.put(entity.toUpperCase(), rate);
 			}
 		}
 	}
@@ -94,7 +94,7 @@ public class ConfigController implements Listener
 	 * --------------------------------------------------------------
 	 * --------------------------------------------------------------
 	 */
-	public static HashMap<EntityType, Double> getDropRates()
+	public static HashMap<String, Double> getDropRates()
 	{
 		return dropRates;
 	}

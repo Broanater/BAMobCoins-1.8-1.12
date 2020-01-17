@@ -24,10 +24,12 @@ public class EntityDeath implements Listener
 	{
 		if (e.getEntity().getKiller() instanceof Player)
 		{
-			HashMap<EntityType, Double> mobRates = ConfigController.getDropRates();
-			for (EntityType entity : mobRates.keySet())
+			HashMap<String, Double> mobRates = ConfigController.getDropRates();
+			for (String entity : mobRates.keySet())
 			{
-				if (e.getEntityType() == entity)
+				String entityKilled = e.getEntityType().getName().toUpperCase();
+				
+				if (entityKilled.equals(entity))
 				{
 					Random rand = new Random();
 					int randOdd = 1 + rand.nextInt(100);
@@ -44,7 +46,7 @@ public class EntityDeath implements Listener
 
 						String player = p.getUniqueId().toString();
 
-						String mobName = MobNameController.getMobName(entity);
+						String mobName = MobNameController.getMobName(e.getEntityType());
 
 						if (mobName == null)
 						{
