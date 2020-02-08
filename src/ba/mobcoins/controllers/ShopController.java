@@ -204,6 +204,7 @@ public class ShopController implements Listener
 			/* Enable glow effects depending on if the server is 1.8.* or a newer version. */
 			if (plugin.getServer().getVersion().contains("MC: 1.8"))
 			{
+				item.setItemMeta(itemMeta);
 				net.minecraft.server.v1_8_R3.ItemStack nmsStack = CraftItemStack.asNMSCopy(item);
 				NBTTagCompound tag = null;
 				if (!nmsStack.hasTag())
