@@ -9,6 +9,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import ba.mobcoins.Main;
 import ba.mobcoins.apis.*;
@@ -154,11 +155,32 @@ public class Commands implements CommandExecutor
 
 						if (playersCoins >= amount)
 						{
-							String message = MessagesController.getCoinWithdraw()
-								.replace("%AMOUNT%", String.valueOf(amount));
+							/* Check there is space */
+							int emptySpaces = 0;
+							for (ItemStack is : player.getInventory().getStorageContents())
+							{
+								if (is == null)
+								{
+									emptySpaces = emptySpaces + 1;
+								}
+							}
 
-							Utils.withdrawCoins(player, amount);
-							sender.sendMessage(Utils.convertColorCodes(message));
+							if (amount <= emptySpaces * 64)
+							{
+								String message = MessagesController.getCoinWithdraw()
+									.replace("%AMOUNT%", String.valueOf(amount));
+
+								Utils.withdrawCoins(player, amount);
+								sender.sendMessage(Utils.convertColorCodes(message));
+							}
+							else
+							{
+								String message = MessagesController.getCoinNoSpace()
+									.replace("%AMOUNT%", String.valueOf(amount));
+
+								sender.sendMessage(Utils.convertColorCodes(message));
+							}
+
 						}
 						else
 						{
@@ -171,7 +193,7 @@ public class Commands implements CommandExecutor
 						return true;
 					}
 
-					Utils.insufficientPermissions(sender, "/BAHappyHour withdraw <amount>");
+					Utils.insufficientPermissions(sender, "/BAMobCoins withdraw <amount>");
 					return true;
 				}
 
@@ -472,22 +494,20 @@ public class Commands implements CommandExecutor
 
 							/* Add the coins and send correct message. */
 							CoinsAPI.addCoins(receiverUuid, amount);
-							if (amount > 1)
-							{
-								/* Get the messages */
-								String adminMessage = MessagesController.getAddAdmin()
-									.replace("%AMOUNT%", String.valueOf(amount))
-									.replace("%PLAYER%", receiverIgn);
+							/* Get the messages */
+							String adminMessage = MessagesController.getAddAdmin()
+								.replace("%AMOUNT%", String.valueOf(amount))
+								.replace("%PLAYER%", receiverIgn);
 
-								String playerMessage = MessagesController.getAddPlayer()
-									.replace("%AMOUNT%", String.valueOf(amount))
-									.replace("%PLAYER%", receiverIgn);
+							String playerMessage = MessagesController.getAddPlayer()
+								.replace("%AMOUNT%", String.valueOf(amount))
+								.replace("%PLAYER%", receiverIgn);
 
-								/* Send the messages */
-								sender.sendMessage(Utils.convertColorCodes(adminMessage));
-								receiver.sendMessage(Utils.convertColorCodes(playerMessage));
-								return true;
-							}
+							/* Send the messages */
+							sender.sendMessage(Utils.convertColorCodes(adminMessage));
+							receiver.sendMessage(Utils.convertColorCodes(playerMessage));
+							return true;
+
 						}
 						else if (args.length > 3)
 						{

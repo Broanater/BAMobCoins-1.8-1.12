@@ -13,7 +13,6 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -25,11 +24,10 @@ import org.bukkit.util.FileUtil;
 import com.google.common.io.Files;
 
 import net.md_5.bungee.api.ChatColor;
-import net.minecraft.server.v1_8_R3.NBTTagCompound;
-import net.minecraft.server.v1_8_R3.NBTTagList;
 import ba.mobcoins.*;
 import ba.mobcoins.apis.CoinsAPI;
 import ba.mobcoins.enchants.Glow;
+import ba.mobcoins.logger.CustomLogger;
 import ba.mobcoins.models.*;
 import ba.mobcoins.models.CustomItem.ItemTypes;
 import ba.mobcoins.utilities.Utils;
@@ -204,19 +202,7 @@ public class ShopController implements Listener
 			/* Enable glow effects depending on if the server is 1.8.* or a newer version. */
 			if (plugin.getServer().getVersion().contains("MC: 1.8"))
 			{
-				item.setItemMeta(itemMeta);
-				net.minecraft.server.v1_8_R3.ItemStack nmsStack = CraftItemStack.asNMSCopy(item);
-				NBTTagCompound tag = null;
-				if (!nmsStack.hasTag())
-				{
-					tag = new NBTTagCompound();
-					nmsStack.setTag(tag);
-				}
-				if (tag == null)
-					tag = nmsStack.getTag();
-				NBTTagList ench = new NBTTagList();
-				tag.set("ench", ench);
-				nmsStack.setTag(tag);
+				CustomLogger.sendError("Glow effect is not an option for 1.8 versions of spigot.");
 			}
 			else
 			{
@@ -226,7 +212,6 @@ public class ShopController implements Listener
 					itemMeta.addEnchant(glowEnchant, 1, true);
 				}
 
-				item.setItemMeta(itemMeta);
 			}
 
 			if (usePermission)
@@ -237,7 +222,8 @@ public class ShopController implements Listener
 			{
 				categories.add(new Category(key, item, location, file, usePermission));
 			}
-
+			item.setItemMeta(itemMeta);
+			
 			inv.setItem(location, item);
 
 		}
@@ -348,18 +334,7 @@ public class ShopController implements Listener
 					/* Enable glow effects depending on if the server is 1.8.* or a newer version. */
 					if (plugin.getServer().getVersion().contains("MC: 1.8"))
 					{
-						net.minecraft.server.v1_8_R3.ItemStack nmsStack = CraftItemStack.asNMSCopy(displayItem);
-						NBTTagCompound tag = null;
-						if (!nmsStack.hasTag())
-						{
-							tag = new NBTTagCompound();
-							nmsStack.setTag(tag);
-						}
-						if (tag == null)
-							tag = nmsStack.getTag();
-						NBTTagList ench = new NBTTagList();
-						tag.set("ench", ench);
-						nmsStack.setTag(tag);
+						CustomLogger.sendError("Glow effect is not an option for 1.8 versions of spigot.");
 					}
 					else
 					{

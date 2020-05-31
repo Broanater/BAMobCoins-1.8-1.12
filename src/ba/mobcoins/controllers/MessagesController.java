@@ -289,6 +289,11 @@ public class MessagesController implements Listener
 		return getMessage("Messages.Coin.Zero");
 	}
 	
+	public static String getCoinNoSpace()
+	{
+		return getMessage("Messages.Coin.No_Space");
+	}
+	
 	/*
 	 * 	GAIN MESSAGES
 	 */

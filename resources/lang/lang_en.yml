@@ -8,7 +8,7 @@ Messages:
     Whole_Number: '%PREFIX% &7Please enter a whole number.'
     Non_Player: '%PREFIX% &7You must be a player to run this command.'
     # %COMMAND% - Will be replaced by the command format 
-    Insufficient_Permission: '&%PREFIX% cInsufficient Permission! You don''t have access to %COMMAND%.'
+    Insufficient_Permission: '%PREFIX% Insufficient Permission! You don''t have access to %COMMAND%.'
     Too_Many_Args: '%PREFIX% &7You have entered too many arguments for %COMMAND%.'
     Not_Enough_Args: '%PREFIX% &7You have are missing some arguments for %COMMAND%.'
     Unknown_Command: '%PREFIX% &cUnknown command. Type /BAMobCoins help for assistance with commands.'
@@ -65,6 +65,7 @@ Messages:
     Deposit: '%PREFIX% &7You have deposited %AMOUNT%!'
     Not_Enough: '%PREFIX% &7You don''t have %AMOUNT% MobCoins to withdraw!'
     Zero: '%PREFIX% &7You can''t withdraw 0 Mob Coins!'
+    No_Space: '%PREFIX% &7You don''t have enough space in your inventory to hold &6%AMOUNT% &7MobCoins!'
   Gain:
     # %MOB% - Will be replaced with the mobs name that was killed.
     # %AMOUNT% - Will be replaced with the amount recieved.

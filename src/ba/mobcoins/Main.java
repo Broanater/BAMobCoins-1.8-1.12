@@ -10,7 +10,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 
-import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -91,7 +90,7 @@ public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 		pm.registerEvents(new CustomLogger(this), this);
 
 		/* Events */
-		pm.registerEvents(new InventoryClick(), this);
+		pm.registerEvents(new InventoryClick(this), this);
 		pm.registerEvents(new EntityDeath(), this);
 		pm.registerEvents(new PlayerInteract(), this);
 		pm.registerEvents(new PlayerJoin(), this);
