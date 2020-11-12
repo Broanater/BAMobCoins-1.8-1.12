@@ -16,6 +16,10 @@ Coin:
   Lore:
   - '&7Right click to deposit!'
 DropChances:
+  # -------------- IMPORTANT --------------
+  # ALL ENTITIES FROM ALL VERSIONS ARE LISTED. WARNING MESSAGES WILL APPEAR IN CONSOLE UNLESS THE ENTITIES THAT ARE NOT
+  # FROM YOUR VERSION ARE REMOVED FROM THIS FILE.
+  # -------------- IMPORTANT --------------
   # Leave value as -1 for them to not be active
   # The value entered is the percent for the drop.
   # Entity Types can be found here, https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html

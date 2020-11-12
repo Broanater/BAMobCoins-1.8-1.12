@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 public class Glow extends Enchantment
 {
 
-	public Glow(NamespacedKey key)
+	public Glow(int key)
 	{
 		super(key);
 	}

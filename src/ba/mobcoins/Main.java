@@ -127,6 +127,7 @@ public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 
 	private void initializeEnchants()
 	{
+		/* Glow */
 		try
 		{
 			Field f = Enchantment.class.getDeclaredField("acceptingNew");
@@ -139,11 +140,8 @@ public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 		}
 		try
 		{
-			if (!this.getServer().getVersion().contains("MC: 1.8"))
-			{
-				Glow glow = new Glow(new NamespacedKey(this, "GlowingEnchant"));
-				Enchantment.registerEnchantment(glow);
-			}
+			Glow glow = new Glow(70);
+			Enchantment.registerEnchantment(glow);
 		}
 		catch (IllegalArgumentException e)
 		{

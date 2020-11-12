@@ -5,8 +5,8 @@
 	<groupId>ba.development</groupId>
 	<artifactId>BAMobCoins</artifactId>
 	<packaging>jar</packaging>
-	<version>3.0</version>
-	<name>BAMobCoins</name>
+	<version>3.1</version>
+	<name>BAMobCoins 1.8-1.12</name>
 	<description>Minecraft plugin that adds another form of currency.</description>
 	<build>
 		<resources>
@@ -69,13 +69,7 @@
 		<dependency>
 			<groupId>org.spigotmc.</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.13.2-R0.1-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.spigotmc..</groupId>
-			<artifactId>spigot-api</artifactId>
-			<version>1.15.2-R0.1-SNAPSHOT</version>
+			<version>1.12.2-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
