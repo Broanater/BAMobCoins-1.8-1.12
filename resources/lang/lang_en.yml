@@ -55,7 +55,9 @@ Messages:
     Unfound_Item: '{prefix} &7Could not find {item}. Please ensure you are entering the correct name.'
     Unfound_Category: '{prefix} &7Cound not find {category}. Please ensure you are entering the correct name.'
   Shop:
-    # {item} - Will be replaced by the item bought.
+    # {item_name} - Will be replaced with the display item name
+    # {item} - Will be replaced by the material type name.
+    # {id} - Will be replaced with the shop item id
     # {price} - Will be replaced by the price of the item.
     Bought_Item: '{prefix} &7You bought {item} for {price}.'
     Not_Enough: '{prefix} &7You don''t have {price} to buy {item}'
