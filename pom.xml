@@ -5,7 +5,7 @@
 	<groupId>ba.development</groupId>
 	<artifactId>BAMobCoins</artifactId>
 	<packaging>jar</packaging>
-	<version>3.1</version>
+	<version>4.0</version>
 	<name>BAMobCoins 1.8-1.12</name>
 	<description>Minecraft plugin that adds another form of currency.</description>
 	<build>
