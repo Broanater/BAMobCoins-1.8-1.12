@@ -301,7 +301,7 @@ public class ShopController implements Listener
 					ArrayList<String> lore = new ArrayList<String>();
 					for (String line : rawLore)
 					{
-						line = line.replace("%PRICE%", String.valueOf(price));
+						line = line.replace("{price}", String.valueOf(price));
 						lore.add(Utils.convertColorCodes(line));
 					}
 
@@ -460,7 +460,7 @@ public class ShopController implements Listener
 		int amount = shopConfig.getInt("Shop.Coin_Display.Item.Amount");
 		String name = shopConfig.getString("Shop.Coin_Display.Item.Name");
 
-		String updatedName = name.replace("%amount%", String.valueOf(CoinsAPI.getCoins(playerUuid)));
+		String updatedName = name.replace("{amount}", String.valueOf(CoinsAPI.getCoins(playerUuid)));
 
 		ItemStack item = new ItemStack(material, amount, (short) damage);
 
