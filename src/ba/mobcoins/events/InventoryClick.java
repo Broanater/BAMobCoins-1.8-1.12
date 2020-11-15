@@ -7,6 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import ba.mobcoins.*;
 import ba.mobcoins.apis.*;
@@ -33,8 +35,9 @@ public class InventoryClick implements Listener
 			{
 				for (Category category : ShopController.categories)
 				{
-					if (e.getCurrentItem().equals(category.getItem()))
+					if (e.getCurrentItem() == category.getItem())
 					{
+						System.out.println("Category Match");
 						Player player = (Player) e.getWhoClicked();
 						player.closeInventory();
 

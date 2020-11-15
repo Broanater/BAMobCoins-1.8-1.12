@@ -25,7 +25,6 @@ import ba.mobcoins.apis.*;
 import ba.mobcoins.bstats.*;
 import ba.mobcoins.commands.*;
 import ba.mobcoins.controllers.*;
-import ba.mobcoins.enchants.*;
 import ba.mobcoins.events.*;
 import ba.mobcoins.logger.*;
 import ba.mobcoins.updater.*;
@@ -52,8 +51,6 @@ public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 		registerCommands();
 
 		initializeFiles();
-
-		initializeEnchants();
 
 		/* Check if theres any updates for the plugin on spigot. */
 		new UpdateChecker(this).checkForUpdate();
@@ -123,32 +120,5 @@ public class Main extends org.bukkit.plugin.java.JavaPlugin implements Listener
 		/* Balance Work */
 		BalanceController.createFile();
 		BalanceController.load();
-	}
-
-	private void initializeEnchants()
-	{
-		/* Glow */
-		try
-		{
-			Field f = Enchantment.class.getDeclaredField("acceptingNew");
-			f.setAccessible(true);
-			f.set(null, true);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		try
-		{
-			Glow glow = new Glow(70);
-			Enchantment.registerEnchantment(glow);
-		}
-		catch (IllegalArgumentException e)
-		{
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
 	}
 }

@@ -26,7 +26,6 @@ import com.google.common.io.Files;
 import net.md_5.bungee.api.ChatColor;
 import ba.mobcoins.*;
 import ba.mobcoins.apis.CoinsAPI;
-import ba.mobcoins.enchants.Glow;
 import ba.mobcoins.logger.CustomLogger;
 import ba.mobcoins.models.*;
 import ba.mobcoins.models.CustomItem.ItemTypes;
@@ -180,15 +179,6 @@ public class ShopController implements Listener
 				permission = shopConfig.getString("Shop.Categories." + key + ".Permission");
 			}
 
-			boolean glow = false;
-			try
-			{
-				glow = shopConfig.getBoolean("Shop.Categories." + key + ".Display.Glow");
-			}
-			catch (Exception e)
-			{
-			}
-
 			int location = shopConfig.getInt("Shop.Categories." + key + ".Slot");
 
 			String file = shopConfig.getString("Shop.Categories." + key + ".File");
@@ -199,11 +189,6 @@ public class ShopController implements Listener
 			itemMeta.setDisplayName(name);
 			itemMeta.setLore(lore);
 
-			if (glow)
-			{
-//				Glow glowEnchant = new Glow(6969);
-//				itemMeta.addEnchant(glowEnchant, 1, true);
-			}
 			item.setItemMeta(itemMeta);
 			
 			if (usePermission)
@@ -310,22 +295,6 @@ public class ShopController implements Listener
 
 					displayMeta.setDisplayName(name);
 					displayMeta.setLore(lore);
-
-					/* Handle Glowing effect */
-					boolean glow = false;
-					try
-					{
-						glow = categoryConfig.getBoolean("Category.Items." + key + ".Display.Glow");
-					}
-					catch (Exception e)
-					{
-					}
-					
-					if (glow)
-					{
-//						Glow glowEnchant = new Glow(6969);
-//						displayMeta.addEnchant(glowEnchant, 1, true);
-					}
 
 					displayItem.setItemMeta(displayMeta);
 
