@@ -21,7 +21,7 @@ Category:
         Name: '&d&lKey one'
         Lore:
           - '&7Line one'
-          - '&6Price &f: %PRICE%'
+          - '&6Price &f: {price}'
         Glow: true
       # Command Help
       # '>' - Means run command as player.
@@ -30,8 +30,8 @@ Category:
       # '^' - Means broadcast message
       # %player% - Will be replaced with the players name whos clicking
       Commands:
-        - '^&5&l%player% &d&lhas bought Key1!'
-        - '!ce give %player% keyOne 1'
+        - '^&5&l{player} &d&lhas bought Key1!'
+        - '!ce give {player} keyOne 1'
     Key2:
       Type: command
       Slot: 14
@@ -43,11 +43,11 @@ Category:
         Name: '&d&lKey two'
         Lore:
           - '&7Line one'
-          - '&6Price &f: %PRICE%'
+          - '&6Price &f: {price}'
       Commands:
         - '>say I bought a key'
         - ':&b&lThanks for buying Key2!'
-        - '!ce give %player% keyTwo 1'
+        - '!ce give {player} keyTwo 1'
     AllFiller:
       Type: filler
       Slot: all

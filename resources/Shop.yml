@@ -18,7 +18,7 @@ Shop:
       Material: DOUBLE_PLANT
       Damage: 0
       Amount: 1
-      Name: '&6You have %amount% mob coins.'
+      Name: '&6You have {amount} mob coins.'
   Drop_Info:
     Enabled: true
     Item:
@@ -30,7 +30,7 @@ Shop:
     Main_Colour: '&5&l'
     # %MOB% - Will be replaced with the entity name OR custom name if one is given in lang/Mobs.yml
     # %RATE% - Will be replaced with the mob coins drop rate.
-    Percent_Format: '&d&l%MOB% - &f%RATE%%'
+    Percent_Format: '&d&l{mob} - &f{rate}%'
   Categories:
     Keys:
       Display:

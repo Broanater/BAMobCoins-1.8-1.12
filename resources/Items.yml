@@ -17,7 +17,7 @@ Category:
         Name: '&d&lFun Paper'
         Lore:
           - '&7Line one'
-          - '&6Price &f: %PRICE%'
+          - '&6Price &f: {price}'
       Item:
         Material: GRASS
         Damage: 0
@@ -38,7 +38,7 @@ Category:
         Name: '&d&lGRASS'
         Lore:
           - '&7It''s just grass'
-          - '&6Price &f: %PRICE%'
+          - '&6Price &f: {price}'
       Item:
         Material: GRASS
         Damage: 0
