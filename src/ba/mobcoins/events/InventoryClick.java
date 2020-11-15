@@ -18,6 +18,7 @@ import ba.mobcoins.utilities.*;
 
 public class InventoryClick implements Listener
 {
+	@SuppressWarnings("unused")
 	private Main plugin;
 
 	public InventoryClick(Main pl)

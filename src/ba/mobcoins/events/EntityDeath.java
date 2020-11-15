@@ -27,7 +27,7 @@ public class EntityDeath implements Listener
 			HashMap<String, Double> mobRates = ConfigController.getDropRates();
 			for (String entity : mobRates.keySet())
 			{
-				String entityKilled = e.getEntityType().getName().toUpperCase();
+				String entityKilled = e.getEntity().getName().toUpperCase();
 				
 				if (entityKilled.equals(entity))
 				{
