@@ -74,10 +74,10 @@ public class InventoryClick implements Listener
 								receiver.closeInventory();
 
 								String message = MessagesController.getShopBoughtItem()
-									.replace("%ITEM_NAME%", customItem.getDisplayItem().getItemMeta().getDisplayName())
-									.replace("%ITEM%", customItem.getDisplayItem().getType().toString())
-									.replace("%ID%", customItem.getItemKey())
-									.replace("%PRICE%", String.valueOf(customItem.getPrice()));
+									.replace("{item_name}", customItem.getDisplayItem().getItemMeta().getDisplayName())
+									.replace("{item}", customItem.getDisplayItem().getType().toString())
+									.replace("{id}", customItem.getItemKey())
+									.replace("{price}", String.valueOf(customItem.getPrice()));
 
 								if (customItem.getItemType() == CustomItem.ItemTypes.COMMAND)
 								{
@@ -90,14 +90,13 @@ public class InventoryClick implements Listener
 									/* Give the player the item */
 									if (Utils.givePlayerItem(receiver, customItem.getRewardItem()))
 									{
-										System.out.println("Giving Item");
 										receiver.sendMessage(Utils.convertColorCodes(message));
 										CoinsAPI.removeCoins(receiverUuid, customItem.getPrice());
 									}
 									else
 									{
 										String noSpaceMessage = MessagesController.getGiveItemNoSpace();
-										noSpaceMessage = noSpaceMessage.replace("%ITEM%", customItem.getDisplayItem().getItemMeta().getDisplayName());
+										noSpaceMessage = noSpaceMessage.replace("{item}", customItem.getDisplayItem().getItemMeta().getDisplayName());
 										receiver.sendMessage(Utils.convertColorCodes(noSpaceMessage));
 									}
 
@@ -108,8 +107,8 @@ public class InventoryClick implements Listener
 								receiver.closeInventory();
 
 								String message = MessagesController.getShopNotEnough()
-									.replace("%ITEM%", customItem.getDisplayItem().getItemMeta().getDisplayName())
-									.replace("%PRICE%", String.valueOf(customItem.getPrice()));
+									.replace("{item}", customItem.getDisplayItem().getItemMeta().getDisplayName())
+									.replace("{price}", String.valueOf(customItem.getPrice()));
 
 								receiver.sendMessage(Utils.convertColorCodes(message));
 							}
