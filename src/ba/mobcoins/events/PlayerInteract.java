@@ -35,7 +35,7 @@ public class PlayerInteract implements Listener
 			player.getInventory().removeItem(item);
 
 			String message = MessagesController.getCoinDeposit()
-				.replace("%AMOUNT%", String.valueOf(amount));
+				.replace("{amount}", String.valueOf(amount));
 
 			player.sendMessage(Utils.convertColorCodes(message));
 		}
