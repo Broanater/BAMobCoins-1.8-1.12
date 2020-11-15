@@ -14,6 +14,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
 
 import ba.mobcoins.Main;
+import ba.mobcoins.logger.CustomLogger;
 import ba.mobcoins.utilities.Utils;
 
 public class MessagesController implements Listener
@@ -58,7 +59,7 @@ public class MessagesController implements Listener
 				}
 				catch (IOException e)
 				{
-					Utils.sendError("Failed to load " + langName + ".yml");
+					CustomLogger.sendError("Failed to load " + langName + ".yml");
 				}
 			}
 		}
@@ -67,7 +68,7 @@ public class MessagesController implements Listener
 		
 		if (!messagesFile.exists())
 		{
-			Utils.sendError("Failed to locate lang file, '" + messagesFile.getPath() + "'. Defaulting to lang_en.yml");
+			CustomLogger.sendError("Failed to locate lang file, '" + messagesFile.getPath() + "'. Defaulting to lang_en.yml");
 			messagesFile = new File("plugins/BAMobCoins/lang", "lang_en.yml");
 		}
 		

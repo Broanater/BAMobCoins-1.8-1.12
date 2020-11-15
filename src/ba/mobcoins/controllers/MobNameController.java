@@ -10,6 +10,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.Listener;
 
 import ba.mobcoins.Main;
+import ba.mobcoins.logger.CustomLogger;
 import ba.mobcoins.utilities.*;
 
 public class MobNameController implements Listener
@@ -46,7 +47,7 @@ public class MobNameController implements Listener
 			}
 			catch (IOException e)
 			{
-				Utils.sendError("Failed to create Mobs.yml. Names will be defaulted to the entity name.");
+				CustomLogger.sendError("Failed to create Mobs.yml. Names will be defaulted to the entity name.");
 			}
 		}
 		

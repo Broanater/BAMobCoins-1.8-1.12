@@ -39,7 +39,7 @@ public class ConfigController implements Listener
 			}
 			catch (Exception e)
 			{
-				Utils.sendError("Failed to load default config.yml");
+				CustomLogger.sendError("Failed to load default config.yml");
 			}
 		}
 		

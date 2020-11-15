@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
 
 import ba.mobcoins.Main;
+import ba.mobcoins.logger.CustomLogger;
 import ba.mobcoins.utilities.Utils;
 
 public class BalanceController implements Listener
@@ -34,7 +35,7 @@ public class BalanceController implements Listener
 			}
 			catch (Exception e)
 			{
-				Utils.sendError("Failed to create 'balances.yml'. Balance saving will be compromised.");
+				CustomLogger.sendError("Failed to create 'balances.yml'. Balance saving will be compromised.");
 			}
 		}
 	}
@@ -54,7 +55,7 @@ public class BalanceController implements Listener
 		}
 		catch (Exception e)
 		{
-			Utils.sendError("Failed to save 'balances.yml'. Balance saving will be compromised.");
+			CustomLogger.sendError("Failed to save 'balances.yml'. Balance saving will be compromised.");
 		}
 	}
 
