@@ -508,7 +508,7 @@ public class MessagesController implements Listener
 	private static String getMessage(String path)
 	{
 		String message = messagesConfig.getString(path)
-				.replace("%PREFIX%", ConfigController.getPrefix());
+				.replace("{prefix}", ConfigController.getPrefix());
 		
 		return message;
 	}
